@@ -1,6 +1,6 @@
 import { resolve } from 'path'
 import chalk from 'chalk'
-import { addPlugin, addTemplate, defineNuxtModule,getNuxtVersion, isNuxt2   } from '@nuxt/kit'
+import { addPlugin, addTemplate, defineNuxtModule, isNuxt2   } from '@nuxt/kit'
 import {runEmulator} from './emulator'
 import { prepare, writeEntryFile, watch } from './build'
 import { writePackageJson, writeFirebaseDefaults } from './build/config'
@@ -18,7 +18,6 @@ const firestead = defineNuxtModule({
         if(nuxt.options.ssr){ 
           console.log(`${chalk.bold.red('!')} ${chalk.bold.yellow('Firestead:')} ${chalk.bold.red('Be careful, Firebase Web SDK does not support SSR. You should disable SSR for pages where Firebase SDK is used!')}`)
         }
-        console.log('firestead module ' + getNuxtVersion())
         if(!firebaseEmulator){
           const firesteadContext = await prepare(nuxt)
           await writeEntryFile(firesteadContext)
@@ -27,8 +26,10 @@ const firestead = defineNuxtModule({
           await writePackageJson(firesteadContext)
           // run rollup watch function to build firestead index.mjs
           await watch(firesteadContext)
-          //start firebase emulator and watch 
-          firebaseEmulator = await runEmulator(nuxt)
+          //start firebase emulator and watch
+          if(!options.disableEmulator){
+            firebaseEmulator = await runEmulator(nuxt)
+          } 
         }
         //add firestead composables
         nuxt.hook('autoImports:dirs', (composablesDirs)=>{

@@ -1,4 +1,4 @@
-import {onUnmounted} from 'vue'
+import {onUnmounted, ref} from 'vue'
 import { doc, collection, query, orderBy, onSnapshot, setDoc, updateDoc, deleteDoc, serverTimestamp } from "firebase/firestore"
 
 export const useFirestore = () => {
@@ -17,22 +17,25 @@ export const useFirestoreCollection = (document) =>{
     return collection(fs.firestore, document)
 }
 
-export const handleFirestoreData = (refEl,snapshot) => {
-    refEl.value = snapshot
+export const useFirestoreData = () => {
+    const data = ref(null)
+    const save = () => {}
+    const update = () => {}
+    const remove = () => {}
+    const firestoreUpdate = () => {}
+    return {
+        save,
+        update,
+        remove,
+        firestoreUpdate,
+        data
+    }
 }
 
 export const useFirestoreSubscribe = async (subFunc) => {
     onUnmounted(() => {
         unsubscribeFunctions()
-        console.log("Component is onUnmounted!");
+        console.log("Component is onUnmounted! 2");
     })
     const unsubscribeFunctions = await subFunc()
-    const save = () => {}
-    const update = () => {}
-    const remove = () => {}
-    return {
-        save,
-        update,
-        remove
-    }
   }
