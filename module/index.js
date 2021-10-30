@@ -33,8 +33,23 @@ const firestead = defineNuxtModule({
           } 
         }
         //add firestead composables
-        nuxt.hook('autoImports:dirs', (composablesDirs)=>{
-          composablesDirs.push(resolve(dirname(fileURLToPath(import.meta.url)), 'composables'))
+        const composables = [{
+          name: 'useAsyncFunction',
+          as: 'useAsyncFunction',
+          from: resolve(dirname(fileURLToPath(import.meta.url)),'composables/functions.js')
+          },{
+            name: 'useFirestore',
+            as: 'useFirestore',
+            from: resolve(dirname(fileURLToPath(import.meta.url)),'composables/firestore.js')
+          },{
+          name: 'useFirestoreFetch',
+          as: 'useFirestoreFetch',
+          from: resolve(dirname(fileURLToPath(import.meta.url)),'composables/firestore.js')
+      }]
+        nuxt.hook('autoImports:extend', (autoImports)=>{
+          for(const composable of composables){
+            autoImports.push(composable)
+          }
         })
         //add firestead options to firebase plugin
         addTemplate({
