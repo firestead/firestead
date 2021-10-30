@@ -1,5 +1,4 @@
-import { relative, dirname, resolve } from 'pathe'
-import virtual from '@rollup/plugin-virtual'
+import { resolve } from 'pathe'
 import commonjs from '@rollup/plugin-commonjs'
 import { esbuild } from './plugins/esbuild'
 import { nodeResolve } from '@rollup/plugin-node-resolve'
@@ -26,11 +25,7 @@ export function getRollupConfig(firesteadContext, type){
         target: 'es2019',
         sourceMap: true
       }))
-    // Polyfill
-    /*console.log(firesteadContext.watchFiles.map(p => `import {default as ${p.name}_import, config as ${p.name}_config} from "${p.path}";`).join('\n'))
-    rollupConfig.plugins.push(virtual({
-        '#polyfill': firesteadContext.watchFiles.map(p => `import {default as ${p.name}_import, config as ${p.name}_config} from "${p.path}";`).join('\n')
-    }))*/
+
     const moduleDirectories = [
         resolve(firesteadContext._nuxt.rootDir, 'node_modules'),
         'node_modules'

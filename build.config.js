@@ -1,0 +1,29 @@
+import { defineBuildConfig } from 'unbuild'
+
+export default defineBuildConfig({
+  declaration: true,
+  emitCJS: false,
+  entries: [
+    'module',
+    { input: 'module/nitro/', outDir: 'dist/nitro', format: 'esm' },
+    { input: 'module/build/runtime/', outDir: 'dist/runtime', ext: 'js' },
+    { input: 'module/plugins/', outDir: 'dist/plugins', ext: 'js' },
+    { input: 'module/composables/', outDir: 'dist/composables', format: 'esm' }
+  ],
+  dependencies: [
+  ],
+  externals: [
+    'vue',
+    '@nuxt/kit-edge',
+    'pathe',
+    'fs-extra',
+    'rollup',
+    '@rollup/plugin-commonjs',
+    '@rollup/plugin-node-resolve',
+    '@rollup/pluginutils',
+    '@vercel/nft',
+    'esbuild',
+    '#app',
+    '#build'
+  ]
+})

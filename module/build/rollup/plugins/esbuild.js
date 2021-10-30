@@ -1,43 +1,16 @@
 // Based on https://github.com/egoist/rollup-plugin-esbuild (MIT)
 
 import { extname, relative } from 'pathe'
-import type { Plugin, PluginContext } from 'rollup'
-import { Loader, TransformResult, transform } from 'esbuild'
+import { transform } from 'esbuild'
 import { createFilter } from '@rollup/pluginutils'
-import type { FilterPattern } from '@rollup/pluginutils'
 
-const defaultLoaders: { [ext: string]: Loader } = {
+const defaultLoaders = {
   '.ts': 'ts',
   '.js': 'js'
 }
 
-export type Options = {
-  include?: FilterPattern
-  exclude?: FilterPattern
-  sourceMap?: boolean
-  minify?: boolean
-  target?: string | string[]
-  jsxFactory?: string
-  jsxFragment?: string
-  define?: {
-    [k: string]: string
-  }
-  /**
-   * Use this tsconfig file instead
-   * Disable it by setting to `false`
-   */
-  tsconfig?: string | false
-  /**
-   * Map extension to esbuild loader
-   * Note that each entry (the extension) needs to start with a dot
-   */
-  loaders?: {
-    [ext: string]: Loader | false
-  }
-}
-
-export function esbuild (options: Options = {}): Plugin {
-  let target: string | string[]
+export function esbuild (options = {}) {
+  let target
 
   const loaders = {
     ...defaultLoaders
@@ -54,7 +27,7 @@ export function esbuild (options: Options = {}): Plugin {
     }
   }
 
-  const extensions: string[] = Object.keys(loaders)
+  const extensions = Object.keys(loaders)
   const INCLUDE_REGEXP = new RegExp(
     `\\.(${extensions.map(ext => ext.slice(1)).join('|')})$`
   )
@@ -120,9 +93,9 @@ export function esbuild (options: Options = {}): Plugin {
 }
 
 function printWarnings (
-  id: string,
-  result: TransformResult,
-  plugin: PluginContext
+  id,
+  result,
+  plugin
 ) {
   if (result.warnings) {
     for (const warning of result.warnings) {

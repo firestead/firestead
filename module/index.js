@@ -1,9 +1,10 @@
-import { resolve } from 'path'
+import { dirname, resolve } from 'pathe'
+import { fileURLToPath } from 'url'
 import chalk from 'chalk'
-import { addPlugin, addTemplate, defineNuxtModule, isNuxt2   } from '@nuxt/kit'
+import { addPlugin, addTemplate, defineNuxtModule, isNuxt2   } from '@nuxt/kit-edge'
 import {runEmulator} from './emulator'
-import { prepare, writeEntryFile, watch } from './build'
-import { writePackageJson, writeFirebaseDefaults } from './build/config'
+import { prepare, writeEntryFile, watch } from './build/index'
+import { writePackageJson, writeFirebaseDefaults } from './build/config/index'
 
 let firebaseEmulator = false
 
@@ -33,7 +34,7 @@ const firestead = defineNuxtModule({
         }
         //add firestead composables
         nuxt.hook('autoImports:dirs', (composablesDirs)=>{
-          composablesDirs.push(resolve(__dirname, 'composables'))
+          composablesDirs.push(resolve(dirname(fileURLToPath(import.meta.url)), 'composables'))
         })
         //add firestead options to firebase plugin
         addTemplate({
@@ -51,7 +52,17 @@ const firestead = defineNuxtModule({
           }
         })
         addPlugin({
-          src: resolve(__dirname, './plugins/firebase.js')
+          src: resolve(dirname(fileURLToPath(import.meta.url)), './plugins/firebase.js')
+        })
+        const firebaseDeps = [
+          '@firebase/app',
+          '@firebase/functions',
+          '@firebase/firestore',
+          '@firebase/auth'
+        ]
+    
+        firebaseDeps.forEach((dep) => {
+          nuxt.options.build.transpile.push(dep);
         })
     },
   })

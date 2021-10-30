@@ -1,9 +1,9 @@
-import { initializeApp, getApps } from "firebase/app"
-import { getFirestore, connectFirestoreEmulator } from "firebase/firestore"
-import { getAuth, connectAuthEmulator } from "firebase/auth"
-import { getFunctions, connectFunctionsEmulator } from 'firebase/functions'
+import { initializeApp, getApps } from "@firebase/app"
+import { getFirestore, connectFirestoreEmulator } from "@firebase/firestore"
+import { getAuth, connectAuthEmulator } from "@firebase/auth"
+import { getFunctions, connectFunctionsEmulator } from '@firebase/functions'
 import { defineNuxtPlugin } from '#app'
-import optionsLoader from '#build/firestead.options.js';
+import optionsLoader from '#build/firestead.options.js'
 
 //https://github.com/vuejs/vuefire/blob/master/packages/vuefire/src/firestore.ts
 //https://stackoverflow.com/questions/59114128/how-to-add-global-funtions-like-create-methods-mounted-from-a-plugin-in-vue

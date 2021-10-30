@@ -1,19 +1,9 @@
 import { resolve, dirname } from 'pathe'
 import fse from 'fs-extra'
-import { nodeFileTrace, NodeFileTraceOptions } from '@vercel/nft'
-import type { Plugin } from 'rollup'
+import { nodeFileTrace } from '@vercel/nft'
 
-export interface NodeExternalsOptions {
-  inline?: string[]
-  external?: string[]
-  outDir?: string
-  trace?: boolean
-  traceOptions?: NodeFileTraceOptions
-  moduleDirectories?: string[]
-}
-
-export function externals (opts: NodeExternalsOptions): Plugin {
-  const trackedExternals = new Set<string>()
+export function externals (opts){
+  const trackedExternals = new Set()
 
   return {
     name: 'node-externals',
@@ -71,7 +61,7 @@ export function externals (opts: NodeExternalsOptions): Plugin {
           .then(r => r.filter(file => file.includes('node_modules')))
 
         // // Find all unique package names
-        const pkgs = new Set<string>()
+        const pkgs = new Set()
         for (const file of tracedFiles) {
           // eslint-disable-next-line @typescript-eslint/no-unused-vars
           const [_, baseDir, pkgName, _importPath] = /(.+\/node_modules\/)([^@/]+|@[^/]+\/[^/]+)\/(.*)/.exec(file)

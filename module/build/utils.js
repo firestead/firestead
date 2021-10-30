@@ -1,6 +1,6 @@
 import { createRequire } from 'module'
 import fse from 'fs-extra'
-import { join, resolve, dirname } from 'path'
+import { join, resolve, dirname } from 'pathe'
 
 export async function isDirectory (path) {
     try {

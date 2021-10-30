@@ -1,10 +1,11 @@
 import fse from 'fs-extra'
 import chalk from 'chalk'
-import { resolve } from 'pathe'
+import { dirname, resolve } from 'pathe'
+import { fileURLToPath } from 'url'
 import { getRollupConfig } from './rollup/config'
 import { getFiresteadContext } from './context'
 import { isDirectory, scanDirs } from './utils'
-import { watch as rollupWatch } from 'rollup'
+import * as rollup from 'rollup'
 
 let isScanRunning = false
 const scanQueue = []
@@ -17,7 +18,7 @@ export async function prepare(nuxt){
     }
     await fse.mkdirp(`${firesteadContext._nuxt.rootDir}/${firesteadContext.buildDir}/functions`)
     await scanDirs(firesteadContext)
-    await fse.copyFile(resolve(__dirname, 'runtime/config.js'),`${firesteadContext._nuxt.rootDir}/${firesteadContext.buildDir}/config.js`)
+    await fse.copyFile(resolve(dirname(fileURLToPath(import.meta.url)), 'runtime/config.js'),`${firesteadContext._nuxt.rootDir}/${firesteadContext.buildDir}/config.js`)
     //watch dir changes
     nuxt.hook('builder:watch',async (event,path)=>{
       if(['add', 'unlink'].indexOf(event) !== -1){
@@ -34,8 +35,9 @@ export async function prepare(nuxt){
 
 export async function writeEntryFile(firesteadContext){
     let entryContent = firesteadContext.watchFiles.map(p => `import {default as ${p.name}_import, config as ${p.name}_config} from "${p.path}";`).join('\n')
-    entryContent = entryContent.concat('\n', "import {getDocument} from './config'", '\n')
-    entryContent = entryContent.concat('\n', "import functions from 'firebase-functions'", '\n', '\n')
+    entryContent = entryContent.concat('\n', "import functions from 'firebase-functions'", '\n')
+    entryContent = entryContent.concat('\n', "import {getDocument} from './config.js'", '\n', '\n')
+    //entryContent = entryContent.concat('\n', "const getDocument = (config) => config?.document ? config.document : ''", '\n', '\n')
     for( const watchFile of firesteadContext.watchFiles){
       if(watchFile.type === 'schedule'){
         entryContent = entryContent.concat(`export const ${watchFile.name} = functions.pubsub.schedule("every 1 mins").onRun(${watchFile.name}_import)`, '\n')
@@ -59,7 +61,7 @@ export async function watch (firesteadContext) {
 }
 
 function startRollupWatcher (rollupConfig) {
-    const watcher = rollupWatch(rollupConfig)
+    const watcher = rollup.watch(rollupConfig)
     let start = null
   
     watcher.on('event', (event) => {
