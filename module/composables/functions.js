@@ -1,3 +1,4 @@
+import { useNuxtApp } from '#app'
 import { httpsCallable } from "@firebase/functions"
 
 export const useAsyncFunction = async(key,name,params={},options = {server: false, defer:true}) => {

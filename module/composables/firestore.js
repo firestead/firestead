@@ -1,3 +1,4 @@
+import { useNuxtApp } from '#app'
 import {onUnmounted, ref, reactive} from 'vue'
 import { klona } from 'klona'
 import { doc, collection, query, orderBy, onSnapshot, setDoc, getDocs, updateDoc, deleteDoc, serverTimestamp } from "@firebase/firestore"

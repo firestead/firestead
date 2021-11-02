@@ -1,7 +1,7 @@
 import { dirname, resolve } from 'pathe'
 import { fileURLToPath } from 'url'
 import chalk from 'chalk'
-import { addPlugin, addTemplate, defineNuxtModule, isNuxt2   } from '@nuxt/kit-edge'
+import { addPlugin, addTemplate, defineNuxtModule, isNuxt2, requireModulePkg   } from '@nuxt/kit-edge'
 import {runEmulator} from './emulator'
 import { prepare, writeEntryFile, watch } from './build/index'
 import { writePackageJson, writeFirebaseDefaults } from './build/config/index'
@@ -19,6 +19,8 @@ const firestead = defineNuxtModule({
         if(nuxt.options.ssr){ 
           console.log(`${chalk.bold.red('!')} ${chalk.bold.yellow('Firestead:')} ${chalk.bold.red('Be careful, Firebase Web SDK does not support SSR. You should disable SSR for pages where Firebase SDK is used!')}`)
         }
+        const { version } = requireModulePkg('firestead')
+        console.log(`${chalk.bold.green('!')} ${chalk.bold.yellow('Firestead:')} ${chalk.bold.green('Running Firestead v' + version)}`)
         if(!firebaseEmulator){
           const firesteadContext = await prepare(nuxt)
           await writeEntryFile(firesteadContext)
@@ -34,18 +36,26 @@ const firestead = defineNuxtModule({
         }
         //add firestead composables
         const composables = [{
-          name: 'useAsyncFunction',
-          as: 'useAsyncFunction',
-          from: resolve(dirname(fileURLToPath(import.meta.url)),'composables/functions.js')
+            name: 'useAsyncFunction',
+            as: 'useAsyncFunction',
+            from: resolve(dirname(fileURLToPath(import.meta.url)),'composables/functions.js')
           },{
             name: 'useFirestore',
             as: 'useFirestore',
             from: resolve(dirname(fileURLToPath(import.meta.url)),'composables/firestore.js')
           },{
-          name: 'useFirestoreFetch',
-          as: 'useFirestoreFetch',
-          from: resolve(dirname(fileURLToPath(import.meta.url)),'composables/firestore.js')
-      }]
+            name: 'useFirestoreFetch',
+            as: 'useFirestoreFetch',
+            from: resolve(dirname(fileURLToPath(import.meta.url)),'composables/firestore.js')
+          },{
+            name: 'useStorage',
+            as: 'useStorage',
+            from: resolve(dirname(fileURLToPath(import.meta.url)),'composables/storage.js')
+          },{
+            name: 'useStorageUpload',
+            as: 'useStorageUpload',
+            from: resolve(dirname(fileURLToPath(import.meta.url)),'composables/storage.js')
+        }]
         nuxt.hook('autoImports:extend', (autoImports)=>{
           for(const composable of composables){
             autoImports.push(composable)
@@ -73,7 +83,8 @@ const firestead = defineNuxtModule({
           '@firebase/app',
           '@firebase/functions',
           '@firebase/firestore',
-          '@firebase/auth'
+          '@firebase/auth',
+          '@firebase/storage'
         ]
     
         firebaseDeps.forEach((dep) => {

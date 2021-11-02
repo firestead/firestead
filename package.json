@@ -1,12 +1,30 @@
 {
     "name": "firestead",
-    "version": "0.0.1",
-    "private": true,
-    "main": "./dist/module.mjs",
+    "description": "firestead - build webapps with nuxt and firebase",
+    "keywords": [
+        "nuxt",
+        "nuxt-module",
+        "firestead",
+        "firebase"
+    ],
+    "version": "0.0.6",
+    "type": "module",
     "license": "MIT",
+    "author": {
+        "name": "Johannes Hof",
+        "email": "johannes@disedia.com"
+    },
+    "files": ["dist"],
     "scripts": {
         "dev": "unbuild --stub",
         "prepack": "NODE_OPTIONS='--max-old-space-size=4096' unbuild"
+    },
+    "exports": {
+        ".": "./dist/module.mjs",
+        "./firestore": "./dist/composables/firestore.js",
+        "./storage": "./dist/composables/storage.js",
+        "./nitro": "./dist/nitro/preset.js",
+        "./package.json": "./package.json"
     },
     "dependencies": {
         "@nuxt/kit-edge": "latest",

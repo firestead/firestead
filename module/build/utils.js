@@ -83,7 +83,7 @@ function splitFile(file){
     if(name.split('.').length > 1){
       const splitName = name.split('.')
       name = splitName[0]
-      if(['onCreate','onUpdate','onDelete','onWrite'].indexOf(splitName[1])!==-1){
+      if(['onCreate','onUpdate','onDelete','onWrite','onArchive','onFinalize','onMetadataUpdate'].indexOf(splitName[1])!==-1){
         event = splitName[1]
       }
     }

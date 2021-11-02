@@ -5,7 +5,7 @@ export default defineBuildConfig({
   emitCJS: false,
   entries: [
     'module',
-    { input: 'module/nitro/', outDir: 'dist/nitro', format: 'esm' },
+    { input: 'module/nitro/', outDir: 'dist/nitro', ext: 'js' },
     { input: 'module/build/runtime/', outDir: 'dist/runtime', ext: 'js' },
     { input: 'module/plugins/', outDir: 'dist/plugins', ext: 'js' },
     { input: 'module/composables/', outDir: 'dist/composables', ext: 'js' }

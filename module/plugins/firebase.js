@@ -2,6 +2,7 @@ import { initializeApp, getApps } from "@firebase/app"
 import { getFirestore, connectFirestoreEmulator } from "@firebase/firestore"
 import { getAuth, connectAuthEmulator } from "@firebase/auth"
 import { getFunctions, connectFunctionsEmulator } from '@firebase/functions'
+import { getStorage, connectStorageEmulator } from "@firebase/storage"
 import { defineNuxtPlugin } from '#app'
 import optionsLoader from '#build/firestead.options.js'
 
@@ -32,19 +33,27 @@ export default defineNuxtPlugin(async (nuxtApp) => {
     const auth = getAuth(firebaseApp)
     const firestore = getFirestore(firebaseApp)
     const functions = getFunctions(firebaseApp)
+    const storage = (bucket = null) => {
+        if(bucket) return getStorage(firebaseApp, bucket)
+        else return getStorage(firebaseApp)
+    }
     if(firesteadOptions.dev){
         connectFunctionsEmulator(functions, "localhost", 5001)
         connectFirestoreEmulator(firestore, 'localhost', 8080)
+        connectStorageEmulator(storage(), "localhost", 9199)
         connectAuthEmulator(auth, "http://localhost:9099")
     }
+
     nuxtApp.vueApp.provide('fs', {
         auth,
         firestore,
-        functions
+        functions,
+        storage
     })
     nuxtApp.provide('fs', {
         auth,
         firestore,
-        functions
+        functions,
+        storage
     })
 })

@@ -8,6 +8,9 @@ export function getDefaultFirebaseConfig(){
           source: "functions",
           predeploy: []
         },
+        storage: {
+          rules: "storage.rules"
+        },
         emulators: {
           auth: {
             port: 9099
@@ -23,6 +26,9 @@ export function getDefaultFirebaseConfig(){
           },
           pubsub: {
             port: 8086
+          },
+          storage: {
+            port: 9199
           },
           ui: {
             enabled: true
@@ -47,4 +53,16 @@ export function getDefaultFirestoreRules(){
         }
       }
     }`
+}
+
+export function getDefaultStorageRules(){
+  return `
+  rules_version = '2';
+  service firebase.storage {
+    match /b/{bucket}/o {
+      match /{allPaths=**} {
+        allow read, write;
+      }
+    }
+  }`
 }

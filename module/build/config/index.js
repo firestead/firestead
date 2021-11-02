@@ -5,7 +5,8 @@ import { writeFile, readPackageJson } from '../utils.js'
 import {
     getDefaultFirebaseConfig, 
     getDefaultFirestoreIndexes,
-    getDefaultFirestoreRules } from './defaults.js'
+    getDefaultFirestoreRules,
+    getDefaultStorageRules } from './defaults.js'
 
 export function writeFirebaseDefaults(firesteadContext){
     console.log(`${chalk.bold.green('✔')} ${chalk.bold.yellow('Firestead:')} Create default configuration`)
@@ -15,6 +16,7 @@ export function writeFirebaseDefaults(firesteadContext){
     const firestoreIndexes = getDefaultFirestoreIndexes()
     writeFile(`${rootFBDir}/firestore.indexes.json`, JSON.stringify(firestoreIndexes))
     writeFile(`${rootFBDir}/firestore.rules`, getDefaultFirestoreRules())
+    writeFile(`${rootFBDir}/storage.rules`, getDefaultStorageRules())
 }
 
 export async function writePackageJson(firesteadContext){

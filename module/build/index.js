@@ -36,17 +36,20 @@ export async function prepare(nuxt){
 export async function writeEntryFile(firesteadContext){
     let entryContent = firesteadContext.watchFiles.map(p => `import {default as ${p.name}_import, config as ${p.name}_config} from "${p.path}";`).join('\n')
     entryContent = entryContent.concat('\n', "import functions from 'firebase-functions'", '\n')
-    entryContent = entryContent.concat('\n', "import {getDocument} from './config.js'", '\n', '\n')
-    //entryContent = entryContent.concat('\n', "const getDocument = (config) => config?.document ? config.document : ''", '\n', '\n')
+    entryContent = entryContent.concat('\n', "import { getDocument, getSchedule, getBucketName } from './config.js'", '\n')
+    entryContent = entryContent.concat('\n', `const defaultBucketName = "${firesteadContext.firebaseConfig?.storageBucket ? firesteadContext.firebaseConfig?.storageBucket:'default'}"`, '\n', '\n')
     for( const watchFile of firesteadContext.watchFiles){
       if(watchFile.type === 'schedule'){
-        entryContent = entryContent.concat(`export const ${watchFile.name} = functions.pubsub.schedule("every 1 mins").onRun(${watchFile.name}_import)`, '\n')
+        entryContent = entryContent.concat(`export const ${watchFile.name} = functions.pubsub.schedule(getSchedule(${watchFile.name}_config)).onRun(${watchFile.name}_import)`, '\n')
       }
       if(watchFile.type === 'http'){
         entryContent = entryContent.concat(`export const ${watchFile.name} = functions.https.onRequest(${watchFile.name}_import)`, '\n')
       }
       if(watchFile.type === 'functions'){
         entryContent = entryContent.concat(`export const ${watchFile.name} = functions.https.onCall(${watchFile.name}_import)`, '\n')
+      }
+      if(watchFile.type === 'storage'){
+        entryContent = entryContent.concat(`export const ${watchFile.name} = functions.storage.bucket(getBucketName(defaultBucketName,${watchFile.name}_config)).object().${watchFile.event?watchFile.event:'onFinalize'}(${watchFile.name}_import)`, '\n')
       }
       if(watchFile.type === 'firestore'){
         entryContent = entryContent.concat(`export const ${watchFile.name} = functions.firestore.document(getDocument(${watchFile.name}_config)).${watchFile.event?watchFile.event:'onWrite'}(${watchFile.name}_import)`, '\n')
