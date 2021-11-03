@@ -13,4 +13,5 @@
 # Firestead
 Firestead is an open source nuxt 3 module that helps to develop rapidly web apps with Google Firebase und nuxtjs.
 
-!!!Warning Firestead is currently under heavy development
+> **⚠ WARNING:   Use with caution** 
+> Firestead is currently under heavy development
