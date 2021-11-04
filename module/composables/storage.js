@@ -7,10 +7,10 @@ export const useStorage = (bucket=null) => {
     const fsStorageRef = (storagePath) => storageRef($fs.storage(bucket), storagePath)
     return {
         storageRef: fsStorageRef,
-        uploadBytes,
-        uploadString,
-        uploadBytesResumable,
-        getDownloadURL
+        uploadBytes: uploadBytes,
+        uploadString: uploadString,
+        uploadBytesResumable: uploadBytesResumable,
+        getDownloadURL: getDownloadURL
     }
 }
 
@@ -25,9 +25,9 @@ export const useStorageUpload = () => {
     const error = ref(null)
 
     const upload = (fsStorageRef, file = null, metadata = {}) => {
-        const uploadTask = uploadBytesResumable(fsStorageRef, file, metadata)
+        const task = uploadBytesResumable(fsStorageRef, file, metadata)
         // Listen for state changes, errors, and completion of the upload.
-        uploadTask.on('state_changed',
+        task.on('state_changed',
         (snapshot) => {
             // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
             status.progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100
@@ -49,8 +49,10 @@ export const useStorageUpload = () => {
         }, 
         async () => {
             // Upload completed successfully, now we can get the download URL
-            url.value = await getDownloadURL(uploadTask.snapshot.ref)
+            url.value = await getDownloadURL(task.snapshot.ref)
         })
+
+        return task
     }
 
     return {

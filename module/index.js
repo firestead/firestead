@@ -1,7 +1,7 @@
 import { dirname, resolve } from 'pathe'
 import { fileURLToPath } from 'url'
 import chalk from 'chalk'
-import { addPlugin, addTemplate, defineNuxtModule, isNuxt2, requireModulePkg   } from '@nuxt/kit-edge'
+import { addPluginTemplate, defineNuxtModule, isNuxt2, requireModulePkg   } from '@nuxt/kit-edge'
 import {runEmulator} from './emulator'
 import { prepare, writeEntryFile, watch } from './build/index'
 import { writePackageJson, writeFirebaseDefaults } from './build/config/index'
@@ -21,9 +21,9 @@ const firestead = defineNuxtModule({
         }
         const { version } = requireModulePkg('firestead')
         console.log(`${chalk.bold.green('!')} ${chalk.bold.yellow('Firestead:')} ${chalk.bold.green('Running Firestead v' + version)}`)
-        if(!firebaseEmulator){
+        if(!firebaseEmulator && nuxt.options.dev){
           const firesteadContext = await prepare(nuxt)
-          await writeEntryFile(firesteadContext)
+          await writeEntryFile(firesteadContext)          
           // create firebase configuration
           writeFirebaseDefaults(firesteadContext)
           await writePackageJson(firesteadContext)
@@ -34,50 +34,40 @@ const firestead = defineNuxtModule({
             firebaseEmulator = await runEmulator(nuxt)
           } 
         }
+        const firebaseConfig = {
+          dev: nuxt.options.dev,
+          config: options?.config || {}
+        }
+        addPluginTemplate({
+          src: resolve(dirname(fileURLToPath(import.meta.url)), 'plugins/firebase.js'),
+          filename: 'firebase.mjs',
+          options: {...firebaseConfig}
+        })
+
         //add firestead composables
         const composables = [{
-            name: 'useAsyncFunction',
-            as: 'useAsyncFunction',
-            from: resolve(dirname(fileURLToPath(import.meta.url)),'composables/functions.js')
-          },{
-            name: 'useFirestore',
-            as: 'useFirestore',
-            from: resolve(dirname(fileURLToPath(import.meta.url)),'composables/firestore.js')
-          },{
-            name: 'useFirestoreFetch',
-            as: 'useFirestoreFetch',
-            from: resolve(dirname(fileURLToPath(import.meta.url)),'composables/firestore.js')
-          },{
-            name: 'useStorage',
-            as: 'useStorage',
-            from: resolve(dirname(fileURLToPath(import.meta.url)),'composables/storage.js')
-          },{
-            name: 'useStorageUpload',
-            as: 'useStorageUpload',
-            from: resolve(dirname(fileURLToPath(import.meta.url)),'composables/storage.js')
+          name: 'useAsyncFunction',
+          as: 'useAsyncFunction',
+          from: resolve(dirname(fileURLToPath(import.meta.url)),'composables/functions.js')
+        },{
+          name: 'useFirestore',
+          as: 'useFirestore',
+          from: resolve(dirname(fileURLToPath(import.meta.url)),'composables/firestore.js')
+        },{
+          name: 'useFirestoreFetch',
+          as: 'useFirestoreFetch',
+          from: resolve(dirname(fileURLToPath(import.meta.url)),'composables/firestore.js')
+        },{
+          name: 'useStorage',
+          as: 'useStorage',
+          from: resolve(dirname(fileURLToPath(import.meta.url)),'composables/storage.js')
+        },{
+          name: 'useStorageUpload',
+          as: 'useStorageUpload',
+          from: resolve(dirname(fileURLToPath(import.meta.url)),'composables/storage.js')
         }]
         nuxt.hook('autoImports:extend', (autoImports)=>{
-          for(const composable of composables){
-            autoImports.push(composable)
-          }
-        })
-        //add firestead options to firebase plugin
-        addTemplate({
-          filename: 'firestead.options.js',
-          getContents: ({ utils }) => {
-            const name = utils.importName(`firestead_options_obj`)
-            const firebaseConfig = {
-              dev: nuxt.options.dev,
-              config: options?.config || {}
-            }
-            return `
-              const ${name} = () => Promise.resolve(${JSON.stringify(firebaseConfig)})\n
-              export default ${name}
-            `;
-          }
-        })
-        addPlugin({
-          src: resolve(dirname(fileURLToPath(import.meta.url)), './plugins/firebase.js')
+          autoImports.push(...composables)
         })
         const firebaseDeps = [
           '@firebase/app',
@@ -88,7 +78,7 @@ const firestead = defineNuxtModule({
         ]
     
         firebaseDeps.forEach((dep) => {
-          nuxt.options.build.transpile.push(dep);
+          nuxt.options.build.transpile.push(dep)
         })
     },
   })

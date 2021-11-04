@@ -1,5 +1,5 @@
 import { useNuxtApp } from '#app'
-import {onUnmounted, ref, reactive} from 'vue'
+import { ref, reactive, onUnmounted } from 'vue'
 import { klona } from 'klona'
 import { doc, collection, query, orderBy, onSnapshot, setDoc, getDocs, updateDoc, deleteDoc, serverTimestamp } from "@firebase/firestore"
 
@@ -9,11 +9,11 @@ export const useFirestore = () => {
     const fsCollection = (collectionPath) => collection($fs.firestore, collectionPath)
     return {
         doc: fsDoc,
-        getDocs,
-        query,
-        orderBy,
+        getDocs: getDocs,
+        query: query,
+        orderBy: orderBy,
         collection: fsCollection,
-        onSnapshot
+        onSnapshot: onSnapshot
     }
 }
 
@@ -49,10 +49,10 @@ export const useFirestoreFetch = () => {
             console.log(error)
         }
     }
-    /*
-        TODO: add options pick api to update only a few values of a document
-        check merge strategie of firebase api
-    */
+    //
+    //    TODO: add options pick api to update only a few values of a document
+    //    check merge strategie of firebase api
+    //
     const fsUpdateDoc = async (index=null, options = {timestamps:true}) => {
         try {
             status.pending.update = true
@@ -122,10 +122,10 @@ export const useFirestoreFetch = () => {
         setDoc: fsSetDoc,
         updateDoc: fsUpdateDoc,
         deleteDoc: fsDeleteDoc,
-        onDataUpdate,
+        onDataUpdate: onDataUpdate,
         subscribe: fsSubscribe,
         fetch: fsFetch,
-        data,
-        status
+        data: data,
+        status: status
     }
 }

@@ -2,8 +2,6 @@
   <img src="./.github/FiresteadLogo.svg" height="80" >
 </h1>
 
----
-
  <p>
   <a href="https://www.npmjs.com/package/firestead"><img src="https://badgen.net/npm/dm/firestead" alt="Downloads"></a>
   <a href="https://www.npmjs.com/package/firestead"><img src="https://badgen.net/npm/v/firestead" alt="Version"></a>
