@@ -7,7 +7,7 @@
         "firestead",
         "firebase"
     ],
-    "version": "0.0.7",
+    "version": "0.0.12",
     "type": "module",
     "license": "MIT",
     "author": {
@@ -21,16 +21,16 @@
     },
     "exports": {
         ".": "./dist/module.mjs",
-        "./firestore": "./dist/composables/firestore.js",
-        "./storage": "./dist/composables/storage.js",
-        "./nitro": "./dist/nitro/preset.js",
+        "./firestore": "./dist/composables/firestore.mjs",
+        "./storage": "./dist/composables/storage.mjs",
+        "./nitro": "./dist/nitro/preset.mjs",
         "./package.json": "./package.json"
     },
     "dependencies": {
         "@nuxt/kit-edge": "latest",
         "@vercel/nft": "^0.17.0",
         "klona": "^2.0.5",
-        "firebase": "^9.1.3",
+        "firebase": "^9.2.0",
         "firebase-admin": "^9.0.0",
         "firebase-functions": "3.15.7",
         "chalk": "^4.1.1"

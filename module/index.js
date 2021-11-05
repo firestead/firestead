@@ -1,10 +1,10 @@
 import { dirname, resolve } from 'pathe'
 import { fileURLToPath } from 'url'
 import chalk from 'chalk'
-import { addPluginTemplate, defineNuxtModule, isNuxt2, requireModulePkg   } from '@nuxt/kit-edge'
+import { addPluginTemplate, defineNuxtModule, isNuxt2, requireModulePkg, extendRoutes   } from '@nuxt/kit-edge'
 import {runEmulator} from './emulator'
-import { prepare, writeEntryFile, watch } from './build/index'
-import { writePackageJson, writeFirebaseDefaults } from './build/config/index'
+import { prepare, writeEntryFile, watch } from './build'
+import { writePackageJson, writeFirebaseDefaults } from './build/config'
 
 let firebaseEmulator = false
 
@@ -17,7 +17,7 @@ const firestead = defineNuxtModule({
             return
         }
         if(nuxt.options.ssr){ 
-          console.log(`${chalk.bold.red('!')} ${chalk.bold.yellow('Firestead:')} ${chalk.bold.red('Be careful, Firebase Web SDK does not support SSR. You should disable SSR for pages where Firebase SDK is used!')}`)
+          console.log(`${chalk.bold.red('!')} ${chalk.bold.yellow('Firestead:')} ${chalk.bold.red('Be careful, Firebase Web SDK does not support SSR. Firebase SDK is only available client side!')}`)
         }
         const { version } = requireModulePkg('firestead')
         console.log(`${chalk.bold.green('!')} ${chalk.bold.yellow('Firestead:')} ${chalk.bold.green('Running Firestead v' + version)}`)
@@ -39,8 +39,9 @@ const firestead = defineNuxtModule({
           config: options?.config || {}
         }
         addPluginTemplate({
-          src: resolve(dirname(fileURLToPath(import.meta.url)), 'plugins/firebase.js'),
-          filename: 'firebase.mjs',
+          src: resolve(dirname(fileURLToPath(import.meta.url)), 'plugins/firebase.mjs'),
+          filename: 'firebase.js',
+          mode: 'client',
           options: {...firebaseConfig}
         })
 
@@ -48,27 +49,46 @@ const firestead = defineNuxtModule({
         const composables = [{
           name: 'useAsyncFunction',
           as: 'useAsyncFunction',
-          from: resolve(dirname(fileURLToPath(import.meta.url)),'composables/functions.js')
+          from: resolve(dirname(fileURLToPath(import.meta.url)),'composables/functions.mjs')
         },{
           name: 'useFirestore',
           as: 'useFirestore',
-          from: resolve(dirname(fileURLToPath(import.meta.url)),'composables/firestore.js')
+          from: resolve(dirname(fileURLToPath(import.meta.url)),'composables/firestore.mjs')
         },{
           name: 'useFirestoreFetch',
           as: 'useFirestoreFetch',
-          from: resolve(dirname(fileURLToPath(import.meta.url)),'composables/firestore.js')
+          from: resolve(dirname(fileURLToPath(import.meta.url)),'composables/firestore.mjs')
         },{
           name: 'useStorage',
           as: 'useStorage',
-          from: resolve(dirname(fileURLToPath(import.meta.url)),'composables/storage.js')
+          from: resolve(dirname(fileURLToPath(import.meta.url)),'composables/storage.mjs')
         },{
           name: 'useStorageUpload',
           as: 'useStorageUpload',
-          from: resolve(dirname(fileURLToPath(import.meta.url)),'composables/storage.js')
+          from: resolve(dirname(fileURLToPath(import.meta.url)),'composables/storage.mjs')
         }]
         nuxt.hook('autoImports:extend', (autoImports)=>{
           autoImports.push(...composables)
         })
+
+        console.log(nuxt.options.router.extendRoutes)
+
+         /*
+        extendRoutes(()=>{
+          return [{
+            path: '/_fs',
+            component: resolve(dirname(fileURLToPath(import.meta.url)), 'ui/pages/index.vue')
+          }]
+        })
+
+       extendRoutes(routes, resolve) {
+          *       routes.push({
+          *         name: 'custom',
+          *         path: '*',
+          *         component: resolve(__dirname, 'pages/404.vue')
+          *       })
+          *     }
+          * */
         const firebaseDeps = [
           '@firebase/app',
           '@firebase/functions',
@@ -76,7 +96,6 @@ const firestead = defineNuxtModule({
           '@firebase/auth',
           '@firebase/storage'
         ]
-    
         firebaseDeps.forEach((dep) => {
           nuxt.options.build.transpile.push(dep)
         })

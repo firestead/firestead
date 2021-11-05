@@ -1,12 +1,12 @@
 import chalk from 'chalk'
 import { createRequire } from 'module'
 import { join, resolve } from 'pathe'
-import { writeFile, readPackageJson } from '../utils.js'
+import { writeFile, readPackageJson } from '../utils'
 import {
     getDefaultFirebaseConfig, 
     getDefaultFirestoreIndexes,
     getDefaultFirestoreRules,
-    getDefaultStorageRules } from './defaults.js'
+    getDefaultStorageRules } from './defaults'
 
 export function writeFirebaseDefaults(firesteadContext){
     console.log(`${chalk.bold.green('✔')} ${chalk.bold.yellow('Firestead:')} Create default configuration`)
