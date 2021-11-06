@@ -1,16 +1,21 @@
 import { useNuxtApp } from '#app'
 import { ref, reactive} from 'vue'
-import { ref as storageRef, uploadBytes, uploadString, uploadBytesResumable, getDownloadURL } from "@firebase/storage"
 
-export const useStorage = (bucket=null) => {
-    const { $fs } = useNuxtApp()
-    const fsStorageRef = (storagePath) => storageRef($fs.storage(bucket), storagePath)
+let storage = null
+
+export const useStorage = async (bucket=null) => {
+    let fsStorageRef = null
+    if(process.client){
+        const { $fs } = useNuxtApp()
+        if(!storage) storage = await import('@firebase/storage').then(storage => storage.default || storage)
+        fsStorageRef = (storagePath) => storage.ref($fs.storage(bucket), storagePath)
+    }
     return {
         storageRef: fsStorageRef,
-        uploadBytes: uploadBytes,
-        uploadString: uploadString,
-        uploadBytesResumable: uploadBytesResumable,
-        getDownloadURL: getDownloadURL
+        uploadBytes: storage?.uploadBytes || null,
+        uploadString: storage?.uploadString || null,
+        uploadBytesResumable: storage?.uploadBytesResumable || null,
+        getDownloadURL: storage?.getDownloadURL || null
     }
 }
 
@@ -25,7 +30,7 @@ export const useStorageUpload = () => {
     const error = ref(null)
 
     const upload = (fsStorageRef, file = null, metadata = {}) => {
-        const task = uploadBytesResumable(fsStorageRef, file, metadata)
+        const task = storage.uploadBytesResumable(fsStorageRef, file, metadata)
         // Listen for state changes, errors, and completion of the upload.
         task.on('state_changed',
         (snapshot) => {
@@ -49,7 +54,7 @@ export const useStorageUpload = () => {
         }, 
         async () => {
             // Upload completed successfully, now we can get the download URL
-            url.value = await getDownloadURL(task.snapshot.ref)
+            url.value = await storage.getDownloadURL(task.snapshot.ref)
         })
 
         return task

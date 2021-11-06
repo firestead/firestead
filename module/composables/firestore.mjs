@@ -4,23 +4,27 @@ import { klona } from 'klona'
 
 let firestore = null
 
-//const myLib = await import('my-lib').then(lib => lib.default || lib)
 export const useFirestore = async () => {
-    const { $fs } = useNuxtApp()
-    firestore = firestore ? firestore : await import('@firebase/firestore').then(firestore => firestore.default || firestore)
-    const fsDoc = (document) => firestore.doc($fs.firestore, document)
-    const fsCollection = (collectionPath) => firestore.collection($fs.firestore, collectionPath)
+    let fsDoc = null
+    let fsCollection = null
+    //firebase web sdk is working only on client side
+    if(process.client){
+        const { $fs } = useNuxtApp()
+        if(!firestore) firestore = await import('@firebase/firestore').then(firestore => firestore.default || firestore)
+        fsDoc = (document) => firestore.doc($fs.firestore, document)
+        fsCollection = (collectionPath) => firestore.collection($fs.firestore, collectionPath)
+    }
     return {
         doc: fsDoc,
-        setDoc: firestore.setDoc,
-        updateDoc: firestore.updateDoc,
-        deleteDoc: firestore.deleteDoc,
-        serverTimestamp: firestore.serverTimestamp,
-        getDocs: firestore.getDocs,
-        query: firestore.query,
-        orderBy: firestore.orderBy,
+        setDoc: firestore?.setDoc || null,
+        updateDoc: firestore?.updateDoc || null,
+        deleteDoc: firestore?.deleteDoc || null,
+        serverTimestamp: firestore?.serverTimestamp || null,
+        getDocs: firestore?.getDocs || null,
+        query: firestore?.query || null,
+        orderBy: firestore?.orderBy || null,
         collection: fsCollection,
-        onSnapshot: firestore.onSnapshot
+        onSnapshot: firestore?.onSnapshot || null,
     }
 }
 
