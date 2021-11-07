@@ -1,7 +1,7 @@
 import { dirname, resolve } from 'pathe'
 import { fileURLToPath } from 'url'
 import chalk from 'chalk'
-import { addPluginTemplate, defineNuxtModule, isNuxt2, requireModulePkg, extendRoutes   } from '@nuxt/kit-edge'
+import { addPluginTemplate, defineNuxtModule, isNuxt2, requireModulePkg   } from '@nuxt/kit-edge'
 import {runEmulator} from './emulator'
 import { prepare, writeEntryFile, watch } from './build'
 import { writePackageJson, writeFirebaseDefaults } from './build/config'
@@ -17,7 +17,7 @@ const firestead = defineNuxtModule({
             return
         }
         if(nuxt.options.ssr){ 
-          console.log(`${chalk.bold.red('!')} ${chalk.bold.yellow('Firestead:')} ${chalk.bold.red('Be careful, Firebase Web SDK does not support SSR. Firebase SDK is only available client side!')}`)
+          console.log(`${chalk.bold.red('!')} ${chalk.bold.yellow('Firestead:')} ${chalk.bold.red('Be careful, Firebase Web SDK does not support SSR. Firebase Web SDK is only available on client side!')}`)
         }
         const { version } = requireModulePkg('firestead')
         console.log(`${chalk.bold.green('!')} ${chalk.bold.yellow('Firestead:')} ${chalk.bold.green('Running Firestead v' + version)}`)
@@ -39,39 +39,39 @@ const firestead = defineNuxtModule({
           config: options?.config || {}
         }
         addPluginTemplate({
-          src: resolve(dirname(fileURLToPath(import.meta.url)), 'plugins/firebase.mjs'),
-          filename: 'firebase.js',
+          src: resolve(dirname(fileURLToPath(import.meta.url)), 'plugins/firebase.client.mjs'),
+          filename: 'firebase.client.js',
           mode: 'client',
           options: {...firebaseConfig}
+        })
+        addPluginTemplate({
+          src: resolve(dirname(fileURLToPath(import.meta.url)), 'plugins/firebase.admin.mjs'),
+          filename: 'firebase.admin.js',
+          mode: 'server'
         })
 
         //add firestead composables
         const composables = [{
-          name: 'useAsyncFunction',
-          as: 'useAsyncFunction',
-          from: resolve(dirname(fileURLToPath(import.meta.url)),'composables/functions.mjs')
+          functions: ['useFirestore','useFirestoreAdmin','useFirestoreFetch'],
+          file: 'composables/firestore.mjs'
         },{
-          name: 'useFirestore',
-          as: 'useFirestore',
-          from: resolve(dirname(fileURLToPath(import.meta.url)),'composables/firestore.mjs')
+          functions: ['useStorage','useStorageUpload'],
+          file: 'composables/storage.mjs'
         },{
-          name: 'useFirestoreFetch',
-          as: 'useFirestoreFetch',
-          from: resolve(dirname(fileURLToPath(import.meta.url)),'composables/firestore.mjs')
-        },{
-          name: 'useStorage',
-          as: 'useStorage',
-          from: resolve(dirname(fileURLToPath(import.meta.url)),'composables/storage.mjs')
-        },{
-          name: 'useStorageUpload',
-          as: 'useStorageUpload',
-          from: resolve(dirname(fileURLToPath(import.meta.url)),'composables/storage.mjs')
+          functions: ['useAsyncFunction'],
+          file: 'composables/functions.mjs'
         }]
         nuxt.hook('autoImports:extend', (autoImports)=>{
-          autoImports.push(...composables)
+          for(const composable of composables){
+            for(const func of composable.functions){
+              autoImports.push({
+                name: func,
+                as: func,
+                from: resolve(dirname(fileURLToPath(import.meta.url)),composable.file)
+              })
+            }
+          }
         })
-
-        console.log(nuxt.options.router.extendRoutes)
 
          /*
         extendRoutes(()=>{
@@ -90,11 +90,14 @@ const firestead = defineNuxtModule({
           *     }
           * */
         const firebaseDeps = [
+          'firebase-admin/app',
+          'firebase-admin/firestore',
           '@firebase/app',
           '@firebase/functions',
           '@firebase/firestore',
           '@firebase/auth',
-          '@firebase/storage'
+          '@firebase/storage',
+          'tslib'
         ]
         firebaseDeps.forEach((dep) => {
           nuxt.options.build.transpile.push(dep)
@@ -102,5 +105,4 @@ const firestead = defineNuxtModule({
     },
   })
 
-
-export default firestead
+export default firestead   

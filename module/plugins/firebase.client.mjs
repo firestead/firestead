@@ -1,9 +1,9 @@
+import { defineNuxtPlugin } from '#app'
 import { initializeApp, getApps } from "@firebase/app"
 import { getFirestore, connectFirestoreEmulator } from "@firebase/firestore"
 import { getAuth, connectAuthEmulator } from "@firebase/auth"
 import { getFunctions, connectFunctionsEmulator } from '@firebase/functions'
 import { getStorage, connectStorageEmulator } from "@firebase/storage"
-import { defineNuxtPlugin } from '#app'
 
 export default defineNuxtPlugin((nuxtApp) => {
     const firesteadOptions = JSON.parse('<%= JSON.stringify(options) %>')
