@@ -17,8 +17,10 @@ export async function prepare(nuxt){
         await fse.emptyDir(`${firesteadContext._nuxt.rootDir}/${firesteadContext.buildDir}`)
     }
     await fse.mkdirp(`${firesteadContext._nuxt.rootDir}/${firesteadContext.buildDir}/functions`)
+    await fse.mkdirp(`${firesteadContext._nuxt.rootDir}/${firesteadContext.buildDir}/runtime`)
+    //await fse.copyFile(resolve(dirname(fileURLToPath(import.meta.url)), 'runtime/config.js'),`${firesteadContext._nuxt.rootDir}/${firesteadContext.buildDir}/config.js`)
+    await fse.copy(resolve(dirname(fileURLToPath(import.meta.url)), 'runtime'), `${firesteadContext._nuxt.rootDir}/${firesteadContext.buildDir}/runtime`, { overwrite: true })
     await scanDirs(firesteadContext)
-    await fse.copyFile(resolve(dirname(fileURLToPath(import.meta.url)), 'runtime/config.js'),`${firesteadContext._nuxt.rootDir}/${firesteadContext.buildDir}/config.js`)
     //watch dir changes
     nuxt.hook('builder:watch',async (event,path)=>{
       if(['add', 'unlink'].indexOf(event) !== -1){
@@ -36,14 +38,18 @@ export async function prepare(nuxt){
 export async function writeEntryFile(firesteadContext){
     let entryContent = firesteadContext.watchFiles.map(p => `import {default as ${p.name}_import, config as ${p.name}_config} from "${p.path}";`).join('\n')
     entryContent = entryContent.concat('\n', "import functions from 'firebase-functions'", '\n')
-    entryContent = entryContent.concat('\n', "import { getDocument, getSchedule, getBucketName } from './config.js'", '\n')
-    entryContent = entryContent.concat('\n', `const defaultBucketName = "${firesteadContext.firebaseConfig?.storageBucket ? firesteadContext.firebaseConfig?.storageBucket:'default'}"`, '\n', '\n')
+    entryContent = entryContent.concat('\n', "import { default as httpWrapper } from './runtime/functions/http.js'", '\n')
+    entryContent = entryContent.concat('\n', "import { getDocument, getSchedule, getBucketName } from './runtime/config.js'", '\n')
+    entryContent = entryContent.concat('\n', `const defaultBucketName = "${firesteadContext.firebaseConfig?.storageBucket ? firesteadContext.firebaseConfig?.storageBucket:'default'}"`, '\n')
+    
     for( const watchFile of firesteadContext.watchFiles){
       if(watchFile.type === 'schedule'){
         entryContent = entryContent.concat(`export const ${watchFile.name} = functions.pubsub.schedule(getSchedule(${watchFile.name}_config)).onRun(${watchFile.name}_import)`, '\n')
       }
       if(watchFile.type === 'http'){
-        entryContent = entryContent.concat(`export const ${watchFile.name} = functions.https.onRequest(${watchFile.name}_import)`, '\n')
+        entryContent = entryContent.concat(`
+const ${watchFile.name}_httpRuntime = httpWrapper(${watchFile.name}_import)
+export const ${watchFile.name} = functions.https.onRequest(${watchFile.name}_httpRuntime)`, '\n')
       }
       if(watchFile.type === 'functions'){
         entryContent = entryContent.concat(`export const ${watchFile.name} = functions.https.onCall(${watchFile.name}_import)`, '\n')

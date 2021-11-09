@@ -41,7 +41,7 @@ export const useFirestoreAdmin = () => {
 export const useFirestoreFetch = (key='default', options={}) => {
     const { $fs, callHook } = useNuxtApp()
     const result = useState(`${key}FirestoreResult`)
-    const fetchDetails = useState(`${key}FirestoreFetchDetails`)
+    const fetchDetails = useState(`${key}FirestoreFetchDetails`,()=>{return {}})
     const state = useState(`${key}FirestoreState`)
     const error = useState(`FiresteadError`)
     
@@ -132,12 +132,10 @@ export const useFirestoreFetch = (key='default', options={}) => {
             }
         }
         result.value = retValue
-        fetchDetails.value = {
-            ssr: process.server,
-            query: isQuerySnapshot,
-            shouldSerialize: process.server,
-            lastUpdate: process.client ? new Date().getTime() : false
-        }
+        fetchDetails.value.ssr = process.server
+        fetchDetails.value.query = isQuerySnapshot
+        fetchDetails.value.shouldSerialize = process.server
+        fetchDetails.value.lastUpdate = process.client ? new Date().getTime() : false
         if(process.client) state.value = 'fetched'
     }
 
@@ -145,11 +143,18 @@ export const useFirestoreFetch = (key='default', options={}) => {
         if(process.client){
             let unsubscribeFunction = null
             onUnmounted(() => {
-                if(unsubscribeFunction) unsubscribeFunction()
+                if(unsubscribeFunction) {
+                    fetchDetails.value.subscription = false
+                    unsubscribeFunction()
+                }
             })
             try{
                 state.value = 'fetch'
-                unsubscribeFunction = await subFunc({...await useFirestore($fs)})
+                //only allow one subscription at a time
+                if(!fetchDetails.value.subscription){
+                    fetchDetails.value.subscription = true
+                    unsubscribeFunction = await subFunc({...await useFirestore($fs)})
+                }
             } catch (error) {
                 state.value = 'error'
                 error.value = error
