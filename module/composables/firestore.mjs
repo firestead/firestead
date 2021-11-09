@@ -1,46 +1,56 @@
-import { useNuxtApp } from '#app'
-import { ref, reactive, onUnmounted } from 'vue'
+import { useNuxtApp, useState } from '#app'
+import { onUnmounted } from 'vue'
 import { klona } from 'klona'
-import { doc, collection, query, orderBy, onSnapshot, setDoc, getDocs, updateDoc, deleteDoc, serverTimestamp } from "@firebase/firestore"
 
-export const useFirestore = () => {
-    const { $fs } = useNuxtApp()
-    const fsDoc = (document) => doc($fs.firestore, document)
-    const fsCollection = (collectionPath) => collection($fs.firestore, collectionPath)
+let firestore = null
+
+export const useFirestore = async ($fs = null) => {
+    let fsDoc = null
+    let fsCollection = null
+    //firebase web sdk is working only on client side
+    if(process.client){
+        if(!$fs) $fs = useNuxtApp().$fs
+        if(!firestore) firestore = await import('@firebase/firestore').then(firestore => firestore.default || firestore)
+        fsDoc = (docPathOrCollection) => {
+            if(typeof docPathOrCollection === 'string') return firestore.doc($fs.firestore, docPathOrCollection)
+            else return firestore.doc(docPathOrCollection)
+        }
+        fsCollection = (collectionPath) => firestore.collection($fs.firestore, collectionPath)
+    }
     return {
         doc: fsDoc,
-        getDocs: getDocs,
-        query: query,
-        orderBy: orderBy,
+        setDoc: firestore?.setDoc || null,
+        updateDoc: firestore?.updateDoc || null,
+        deleteDoc: firestore?.deleteDoc || null,
+        serverTimestamp: firestore?.serverTimestamp || null,
+        getDocs: firestore?.getDocs || null,
+        query: firestore?.query || null,
+        orderBy: firestore?.orderBy || null,
         collection: fsCollection,
-        onSnapshot: onSnapshot
+        onSnapshot: firestore?.onSnapshot || null,
     }
 }
 
 export const useFirestoreAdmin = () => {
     const { $fs } = useNuxtApp()
     return {
-        db: $fs.firestore
+        db: $fs.firestore?.db || null
     }
 }
 
-export const useFirestoreFetch = (options={}) => {
+export const useFirestoreFetch = (key='default', options={}) => {
     const { $fs, callHook } = useNuxtApp()
-    const data = ref(null)
-    const status = {
-        pending: reactive({
-            fetch: false,
-            create: false,
-            update: false,
-            delete: false
-        }),
-        update: ref(null),
-        error: ref(null)
-    }
+    const result = useState(`${key}FirestoreResult`)
+    const fetchDetails = useState(`${key}FirestoreFetchDetails`)
+    const state = useState(`${key}FirestoreState`)
+    const error = useState(`FiresteadError`)
+    
+    
     const fsSetDoc = async (refPath, newData, options={timestamps:true}) => {
         try {
-            status.pending.create = true
-            const docRef = doc(collection($fs.firestore, refPath))
+            const { doc, collection, setDoc, serverTimestamp } = await useFirestore($fs)
+            state.value = 'create'
+            const docRef = doc(collection(refPath))
             if(options.timestamps){
                 newData = {
                     ...newData,
@@ -50,9 +60,10 @@ export const useFirestoreFetch = (options={}) => {
             }
             await callHook('fs:firestore:data', 'set' , refPath, newData)
             await setDoc(docRef, newData)
-            status.pending.create = false 
+            state.value = 'created'
         } catch (error) {
-            status.error.value = error
+            state.value = 'error'
+            error.value = error
             console.log(error)
         }
     }
@@ -62,9 +73,10 @@ export const useFirestoreFetch = (options={}) => {
     //
     const fsUpdateDoc = async (index=null, options = {timestamps:true}) => {
         try {
-            status.pending.update = true
-            const refDoc = data.value[index].ref
-            let dataUpdate = klona(data.value[index].data)
+            const { updateDoc, serverTimestamp } = await useFirestore($fs)
+            state.value = 'update'
+            const refDoc = result.value[index].ref
+            let dataUpdate = klona(result.value[index].data)
             if(options.timestamps){
                 dataUpdate = {
                     ...dataUpdate,
@@ -73,33 +85,42 @@ export const useFirestoreFetch = (options={}) => {
             }
             await callHook('fs:firestore:data', 'update', refDoc.path ,dataUpdate)
             await updateDoc(refDoc, dataUpdate)
-            status.pending.update = false
+            state.value = 'updated'
         } catch (error) {
+            state.value = 'error'
+            error.value = error
             console.log(error)
         }
     }
 
     const fsDeleteDoc = async (index=null, options = {}) => {
-        status.pending.delete = true
-        const refDoc = data.value[index].ref
-        await deleteDoc(refDoc)
-        status.pending.delete = false
+        try {
+            const { deleteDoc } = await useFirestore($fs)
+            state.value = 'delete'
+            const refDoc = result.value[index].ref
+            await deleteDoc(refDoc)
+            state.value = 'deleted'
+        } catch (error) {
+            state.value = 'error'
+            error.value = error
+            console.log(error)
+        }
     }
 
-    const onDataUpdate = (snapshot) => {
+    const updateResult = (snapshot) => {
         let retValue = null
         const isQuerySnapshot = snapshot.query? true : false
-        status.update.value = new Date().getTime()
         if(isQuerySnapshot){
             retValue = []
-            snapshot.forEach((doc) => {
-                retValue.push({
-                    id: doc.id,
+            snapshot.forEach((docItem) => {
+                let retDoc = {
+                    id: docItem.id,
                     data: {
-                        ...doc.data()
+                        ...docItem.data()
                     },
-                    ref: doc.ref
-                })
+                    ref: docItem.ref
+                }
+                retValue.push(retDoc)
             })
         }else{
             retValue = {
@@ -107,43 +128,92 @@ export const useFirestoreFetch = (options={}) => {
                 data: {
                     ...snapshot.data()
                 },
-                ref: snapshot.ref 
+                ref: snapshot.ref
             }
         }
-        data.value = retValue
-        status.pending.fetch = false
+        result.value = retValue
+        fetchDetails.value = {
+            ssr: process.server,
+            query: isQuerySnapshot,
+            shouldSerialize: process.server,
+            lastUpdate: process.client ? new Date().getTime() : false
+        }
+        if(process.client) state.value = 'fetched'
     }
+
     const fsSubscribe = async (subFunc) => {
         if(process.client){
+            let unsubscribeFunction = null
             onUnmounted(() => {
-                unsubscribeFunction()
+                if(unsubscribeFunction) unsubscribeFunction()
             })
-            status.pending.fetch = true
-            const unsubscribeFunction = await subFunc()
+            try{
+                state.value = 'fetch'
+                unsubscribeFunction = await subFunc({...await useFirestore($fs)})
+            } catch (error) {
+                state.value = 'error'
+                error.value = error
+                console.log(error)
+            }
         }
+        //fetch should be called next time again if data are server side rendered
+        if(fetchDetails.value?.ssr && process.client) fetchDetails.value.ssr = false
     }
     const fsFetch = async (fetchFunc) => {
-        if(process.client){
-            status.pending.fetch = true
-            const fetchData = await fetchFunc()
-            onDataUpdate(fetchData)
+        //only fetch if data are not hydrated yet 
+        if(process.client && !fetchDetails.value?.ssr){
+            try{
+                state.value = 'fetch'
+                const fetchResult = await fetchFunc({...await useFirestore($fs)})
+                if(fetchResult){
+                    updateResult(fetchResult)
+                }
+            } catch (error) {
+                state.value = 'error'
+                error.value = error
+                console.log(error)
+            }
         }
+        //fetch should be called next time again if data are server side rendered
+        if(process.client && fetchDetails.value?.ssr) fetchDetails.value.ssr = false
     }
     const fsServerFetch = async (fetchFunc) => {
         if(process.server){
-            const fetchData = await fetchFunc()
-            onDataUpdate(fetchData)
+            try{
+                const fetchResult = await fetchFunc({...$fs.firestore})
+                updateResult(fetchResult)
+            } catch (error) {
+                state.value = 'error'
+                error.value = error
+                console.log(error)
+            }   
+        }
+        //TODO: add function that hydrates 
+        //serialize data if they are server side rendered and not serialized
+        if(process.client && fetchDetails.value?.shouldSerialize){
+            console.log('TODO: Serialize data')
+            fetchDetails.value.shouldSerialize = false
         }
     }
     return {
         setDoc: fsSetDoc,
         updateDoc: fsUpdateDoc,
         deleteDoc: fsDeleteDoc,
-        onDataUpdate: onDataUpdate,
+        updateResult: updateResult,
         subscribe: fsSubscribe,
         fetch: fsFetch,
         serverFetch: fsServerFetch,
-        data: data,
-        status: status
+        result: result,
+        state: state,
+        fetchDetails: fetchDetails,
+        error: error
     }
+}
+
+const serializeData = (data) => {
+    if(typeof data === 'object'){
+        if(data.hasOwnProperty('createdAt')) data.createdAt = data.createdAt.toDate()
+        if(data.hasOwnProperty('updatedAt')) data.updatedAt = data.updatedAt.toDate()
+    }
+    return data
 }

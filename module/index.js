@@ -1,10 +1,11 @@
 import { dirname, resolve } from 'pathe'
 import { fileURLToPath } from 'url'
 import chalk from 'chalk'
-import { addPluginTemplate, defineNuxtModule, isNuxt2, requireModulePkg   } from '@nuxt/kit-edge'
+import { addPluginTemplate, defineNuxtModule, isNuxt2, requireModulePkg, addServerMiddleware   } from '@nuxt/kit-edge'
 import {runEmulator} from './emulator'
 import { prepare, writeEntryFile, watch } from './build'
 import { writePackageJson, writeFirebaseDefaults } from './build/config'
+//import { default as firebaseMiddleware} from './middleware/firebase'
 
 let firebaseEmulator = false
 
@@ -39,11 +40,19 @@ const firestead = defineNuxtModule({
           config: options?.config || {}
         }
         addPluginTemplate({
-          src: resolve(dirname(fileURLToPath(import.meta.url)), 'plugins/firebase.client.mjs'),
-          filename: 'firebase.client.js',
+          src: resolve(dirname(fileURLToPath(import.meta.url)), 'plugins/firebase.web.mjs'),
+          filename: 'firebase.web.js',
           mode: 'client',
           options: {...firebaseConfig}
         })
+
+        //TODO: find a way to add init firebase-admin sdk to api server
+        //currently plugins are not loaded on api server
+        /*addServerMiddleware({
+          route: '/api',
+          handler: firebaseMiddleware
+        })*/
+        
         addPluginTemplate({
           src: resolve(dirname(fileURLToPath(import.meta.url)), 'plugins/firebase.admin.mjs'),
           filename: 'firebase.admin.js',

@@ -1,17 +1,16 @@
-import { defineNuxtPlugin  } from '#app'
 import { initializeApp, getApps } from 'firebase-admin/app'
 import { getFirestore } from 'firebase-admin/firestore'
 
 let firestore = null
 
-export default defineNuxtPlugin((nuxtApp) => {
+export default (req, res, next) => {
+    console.log('Firebase Middleware')
     const apps = getApps()
     if (!apps.length) {
         initializeApp({ 
             projectId: 'default'
         })
     }
-
     if(!firestore) {
         firestore = getFirestore()
         firestore.settings({
@@ -19,9 +18,5 @@ export default defineNuxtPlugin((nuxtApp) => {
             ssl: false
         })
     }
-    nuxtApp.provide('fs', {
-        firestore: {
-            db: firestore
-        }
-    })
-})
+    next()
+}
