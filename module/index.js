@@ -1,7 +1,7 @@
 import { dirname, resolve } from 'pathe'
 import { fileURLToPath } from 'url'
 import chalk from 'chalk'
-import { addPluginTemplate, defineNuxtModule, isNuxt2, requireModulePkg, addServerMiddleware   } from '@nuxt/kit-edge'
+import { addPluginTemplate, defineNuxtModule, isNuxt2, requireModulePkg, extendPages    } from '@nuxt/kit-edge'
 import {runEmulator} from './emulator'
 import { prepare, writeEntryFile, watch } from './build'
 import { writePackageJson, writeFirebaseDefaults } from './build/config'
@@ -82,6 +82,14 @@ const firestead = defineNuxtModule({
           }
         })
 
+        extendPages((pages) => {
+          // Add /test page
+          pages.push({
+            name: 'FiresteadHome',
+            path: '/fs',
+            file: resolve(dirname(fileURLToPath(import.meta.url)), 'ui/pages/index.vue')
+          })
+        })
          /*
         extendRoutes(()=>{
           return [{

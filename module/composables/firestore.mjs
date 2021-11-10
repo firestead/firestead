@@ -1,5 +1,5 @@
 import { useNuxtApp, useState } from '#app'
-import { onUnmounted } from 'vue'
+import { onUnmounted, onBeforeMount, getCurrentInstance } from 'vue'
 import { klona } from 'klona'
 
 let firestore = null
@@ -38,13 +38,16 @@ export const useFirestoreAdmin = () => {
     }
 }
 
-export const useFirestoreFetch = (key='default', options={}) => {
-    const { $fs, callHook } = useNuxtApp()
+export const useFirestoreFetch = (key, options={}) => {
+    if (typeof key !== 'string') {
+        throw new TypeError('useFirestoreFetch key must be a string')
+    }
+    const { $fs, callHook, isHydrating, _asyncDataPromises } = useNuxtApp()
     const result = useState(`${key}FirestoreResult`)
     const fetchDetails = useState(`${key}FirestoreFetchDetails`,()=>{return {}})
     const state = useState(`${key}FirestoreState`)
     const error = useState(`FiresteadError`)
-    
+    const reFetch = {}
     
     const fsSetDoc = async (refPath, newData, options={timestamps:true}) => {
         try {
@@ -132,9 +135,7 @@ export const useFirestoreFetch = (key='default', options={}) => {
             }
         }
         result.value = retValue
-        fetchDetails.value.ssr = process.server
         fetchDetails.value.query = isQuerySnapshot
-        fetchDetails.value.shouldSerialize = process.server
         fetchDetails.value.lastUpdate = process.client ? new Date().getTime() : false
         if(process.client) state.value = 'fetched'
     }
@@ -161,28 +162,81 @@ export const useFirestoreFetch = (key='default', options={}) => {
                 console.log(error)
             }
         }
-        //fetch should be called next time again if data are server side rendered
-        if(fetchDetails.value?.ssr && process.client) fetchDetails.value.ssr = false
     }
     const fsFetch = async (fetchFunc) => {
-        //only fetch if data are not hydrated yet 
-        if(process.client && !fetchDetails.value?.ssr){
-            try{
-                state.value = 'fetch'
-                const fetchResult = await fetchFunc({...await useFirestore($fs)})
-                if(fetchResult){
-                    updateResult(fetchResult)
-                }
-            } catch (error) {
-                state.value = 'error'
-                error.value = error
-                console.log(error)
+        if (typeof fetchFunc !== 'function') {
+            if(typeof reFetch.call === 'function') {
+                await reFetch.call()
+                return
+            }else{
+                throw new TypeError('Fetch must be a function')
             }
         }
-        //fetch should be called next time again if data are server side rendered
-        if(process.client && fetchDetails.value?.ssr) fetchDetails.value.ssr = false
+        //fetch uses firestore web sdk and is only available on client side
+        if(process.client){
+            // Setup hook callbacks once per instance
+            // cc https://github.com/nuxt/framework/blob/main/packages/nuxt3/src/app/composables/asyncData.ts
+            const instance = getCurrentInstance()
+            if (!instance._nuxtOnBeforeMountCbs) {
+                const cbs = instance._nuxtOnBeforeMountCbs = []
+                if (instance && process.client) {
+                onBeforeMount(() => {
+                    cbs.forEach((cb) => { cb() })
+                    cbs.splice(0, cbs.length)
+                })
+                onUnmounted(() => cbs.splice(0, cbs.length))
+                }
+            }
+            // cc https://github.com/nuxt/framework/blob/main/packages/nuxt3/src/app/composables/asyncData.ts
+            reFetch.call = async (force) => {
+                // Avoid fetching same key more than once at a time
+                if (_asyncDataPromises[key] && !force) {
+                  return _asyncDataPromises[key]
+                }
+                state.value = 'fetch'
+                // TODO: Cancel previus promise
+                // TODO: Handle immediate errors
+                _asyncDataPromises[key] = Promise.resolve(fetchFunc({...await useFirestore($fs)}))
+                  .then((fetchResult) => {
+                    if(fetchResult){
+                        updateResult(fetchResult)
+                    }
+                  })
+                  .catch((fetchError) => {
+                    state.value = 'error'
+                    error.value = fetchError
+                    console.log(fetchError)
+                  })
+                  .finally(() => {
+                    state.value = 'fetched'
+                    delete _asyncDataPromises[key]
+                  })
+                return _asyncDataPromises[key]
+              }
+
+            //only fetch if data are not hydrated yet 
+            if(process.client && (!isHydrating || !result.value)){
+                try{
+                    instance._nuxtOnBeforeMountCbs.push(reFetch.call)
+                } catch (error) {
+                    state.value = 'error'
+                    error.value = error
+                    console.log(error)
+                }
+            }
+            /*
+            //TODO: implement long polling
+            window.setInterval(() => {
+                refresh()
+            },2000)
+            */
+        }
     }
+
     const fsServerFetch = async (fetchFunc) => {
+        if (typeof fetchFunc !== 'function') {
+            throw new TypeError('Fetch must be a function')
+        }
         if(process.server){
             try{
                 const fetchResult = await fetchFunc({...$fs.firestore})
@@ -195,7 +249,7 @@ export const useFirestoreFetch = (key='default', options={}) => {
         }
         //TODO: add function that hydrates 
         //serialize data if they are server side rendered and not serialized
-        if(process.client && fetchDetails.value?.shouldSerialize){
+        if(process.client && isHydrating){
             console.log('TODO: Serialize data')
             fetchDetails.value.shouldSerialize = false
         }
