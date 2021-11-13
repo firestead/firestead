@@ -12,13 +12,14 @@ export const useFirestore = async ($fs = null) => {
         if(!$fs) $fs = useNuxtApp().$fs
         if(!firestore) firestore = await import('@firebase/firestore').then(firestore => firestore.default || firestore)
         fsDoc = (docPathOrCollection) => {
-            if(typeof docPathOrCollection === 'string') return firestore.doc($fs.firestore, docPathOrCollection)
+            if(typeof docPathOrCollection === 'string') return firestore.doc($fs.firestore.connection, docPathOrCollection)
             else return firestore.doc(docPathOrCollection)
         }
-        fsCollection = (collectionPath) => firestore.collection($fs.firestore, collectionPath)
+        fsCollection = (collectionPath) => firestore.collection($fs.firestore.connection, collectionPath)
     }
     return {
         doc: fsDoc,
+        collection: fsCollection,
         setDoc: firestore?.setDoc || null,
         updateDoc: firestore?.updateDoc || null,
         deleteDoc: firestore?.deleteDoc || null,
@@ -26,7 +27,6 @@ export const useFirestore = async ($fs = null) => {
         getDocs: firestore?.getDocs || null,
         query: firestore?.query || null,
         orderBy: firestore?.orderBy || null,
-        collection: fsCollection,
         onSnapshot: firestore?.onSnapshot || null,
     }
 }

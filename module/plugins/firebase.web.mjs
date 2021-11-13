@@ -4,11 +4,12 @@ import { getFirestore, connectFirestoreEmulator } from "@firebase/firestore"
 import { getAuth, connectAuthEmulator } from "@firebase/auth"
 import { getFunctions, connectFunctionsEmulator } from '@firebase/functions'
 import { getStorage, connectStorageEmulator } from "@firebase/storage"
+import { clientAuth, authUnsubscribe } from '#build/utils.auth.js'
 
-export default defineNuxtPlugin((nuxtApp) => {
+export default defineNuxtPlugin(async (nuxtApp) => {
     const firesteadOptions = JSON.parse('<%= JSON.stringify(options) %>')
     const firebaseConfig = {
-        apiKey: firesteadOptions?.config?.apiKey || '123456789',
+        apiKey: firesteadOptions?.config?.apiKey || '123456789',    
         authDomain: firesteadOptions?.config?.authDomain || '',
         databaseURL: firesteadOptions?.config?.databaseURL || '',
         projectId: firesteadOptions?.config?.projectId || '',
@@ -25,24 +26,35 @@ export default defineNuxtPlugin((nuxtApp) => {
         firebaseApp = apps[0]
     }
 
-    const auth = getAuth(firebaseApp)
-    const firestore = getFirestore(firebaseApp)
-    const functions = getFunctions(firebaseApp)
+    const authConnection = getAuth(firebaseApp)
+    const firestoreConnection = getFirestore(firebaseApp)
+    const functionsConnection = getFunctions(firebaseApp)
     const storage = (bucket = null) => {
         if(bucket) return getStorage(firebaseApp, bucket)
         else return getStorage(firebaseApp)
     }
     if(firesteadOptions.dev){
-        connectFunctionsEmulator(functions, "localhost", 5001)
-        connectFirestoreEmulator(firestore, 'localhost', 8080)
+        connectFunctionsEmulator(functionsConnection, "localhost", 5001)
+        connectFirestoreEmulator(firestoreConnection, 'localhost', 8080)
         connectStorageEmulator(storage(), "localhost", 9199)
-        connectAuthEmulator(auth, "http://localhost:9099")
+        connectAuthEmulator(authConnection, "http://localhost:9099")
     }
 
+    //auth user
+    await clientAuth(authConnection)
+
+
     nuxtApp.provide('fs', {
-        auth,
-        firestore,
-        functions,
+        auth: {
+            unsubscribe: authUnsubscribe,
+            connection: authConnection
+        },
+        firestore: {
+            connection: firestoreConnection
+        },
+        functions: {
+            connection: functionsConnection
+        },
         storage
     })
 })

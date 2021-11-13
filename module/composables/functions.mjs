@@ -5,7 +5,7 @@ export const useAsyncFunction = async(key,name,params={},options = {server: fals
     const { $fs } = useNuxtApp()
 
     return useAsyncData(key, async () => {
-        const res = await httpsCallable($fs.functions, name)(params)
+        const res = await httpsCallable($fs.functions.connection, name)(params)
         return res.data
     },options)
 }

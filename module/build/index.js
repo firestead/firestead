@@ -18,7 +18,6 @@ export async function prepare(nuxt){
     }
     await fse.mkdirp(`${firesteadContext._nuxt.rootDir}/${firesteadContext.buildDir}/functions`)
     await fse.mkdirp(`${firesteadContext._nuxt.rootDir}/${firesteadContext.buildDir}/runtime`)
-    //await fse.copyFile(resolve(dirname(fileURLToPath(import.meta.url)), 'runtime/config.js'),`${firesteadContext._nuxt.rootDir}/${firesteadContext.buildDir}/config.js`)
     await fse.copy(resolve(dirname(fileURLToPath(import.meta.url)), 'runtime'), `${firesteadContext._nuxt.rootDir}/${firesteadContext.buildDir}/runtime`, { overwrite: true })
     await scanDirs(firesteadContext)
     //watch dir changes
@@ -36,10 +35,15 @@ export async function prepare(nuxt){
 }
 
 export async function writeEntryFile(firesteadContext){
-    let entryContent = firesteadContext.watchFiles.map(p => `import {default as ${p.name}_import, config as ${p.name}_config} from "${p.path}";`).join('\n')
-    entryContent = entryContent.concat('\n', "import functions from 'firebase-functions'", '\n')
-    entryContent = entryContent.concat('\n', "import { default as httpWrapper } from './runtime/functions/http.js'", '\n')
-    entryContent = entryContent.concat('\n', "import { getDocument, getSchedule, getBucketName } from './runtime/config.js'", '\n')
+  //add all created watch files to entry file
+  let entryContent = firesteadContext.watchFiles.map(p => `import {default as ${p.name}_import, config as ${p.name}_config} from "${p.path}";`).join('\n')
+  //used imports
+  entryContent = entryContent.concat('\n', `
+import functions from 'firebase-functions'
+import { default as httpWrapper } from './runtime/wrappers/http.js'
+import { getDocument, getSchedule, getBucketName } from './runtime/config.js'    
+    `, '\n')
+    
     entryContent = entryContent.concat('\n', `const defaultBucketName = "${firesteadContext.firebaseConfig?.storageBucket ? firesteadContext.firebaseConfig?.storageBucket:'default'}"`, '\n')
     
     for( const watchFile of firesteadContext.watchFiles){

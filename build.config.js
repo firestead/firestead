@@ -8,7 +8,9 @@ export default defineBuildConfig({
     { input: 'module/nitro/', outDir: 'dist/nitro' },
     { input: 'module/build/runtime/', outDir: 'dist/runtime', ext: 'js' },
     { input: 'module/plugins/', outDir: 'dist/plugins' },
-    { input: 'module/composables/', outDir: 'dist/composables' }
+    { input: 'module/composables/', outDir: 'dist/composables' },
+    { input: 'module/ui/', outDir: 'dist/ui' },
+    { input: 'module/middleware/', outDir: 'dist/middleware' }
   ],
   devDependencies: [],
   dependencies: [

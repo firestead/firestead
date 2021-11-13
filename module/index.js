@@ -1,11 +1,11 @@
 import { dirname, resolve } from 'pathe'
 import { fileURLToPath } from 'url'
 import chalk from 'chalk'
-import { addPluginTemplate, defineNuxtModule, isNuxt2, requireModulePkg, extendPages    } from '@nuxt/kit-edge'
+import { addPluginTemplate, addServerMiddleware, addTemplate, defineNuxtModule, isNuxt2, requireModulePkg, extendPages } from '@nuxt/kit-edge'
 import {runEmulator} from './emulator'
 import { prepare, writeEntryFile, watch } from './build'
 import { writePackageJson, writeFirebaseDefaults } from './build/config'
-//import { default as firebaseMiddleware} from './middleware/firebase'
+import { default as fsApi } from './middleware/fsApi'
 
 let firebaseEmulator = false
 
@@ -16,9 +16,6 @@ const firestead = defineNuxtModule({
         if (isNuxt2()) {
             console.log('Firestead does not supporting nuxt2')
             return
-        }
-        if(nuxt.options.ssr){ 
-          console.log(`${chalk.bold.red('!')} ${chalk.bold.yellow('Firestead:')} ${chalk.bold.red('Be careful, Firebase Web SDK does not support SSR. Firebase Web SDK is only available on client side!')}`)
         }
         const { version } = requireModulePkg('firestead')
         console.log(`${chalk.bold.green('!')} ${chalk.bold.yellow('Firestead:')} ${chalk.bold.green('Running Firestead v' + version)}`)
@@ -35,29 +32,41 @@ const firestead = defineNuxtModule({
             firebaseEmulator = await runEmulator(nuxt)
           } 
         }
+        //add plugin utils
+        addTemplate({
+            src: resolve(dirname(fileURLToPath(import.meta.url)), 'plugins/utils/auth.mjs'),
+            filename: 'utils.auth.js',
+            mode: 'client'
+        })
         const firebaseConfig = {
           dev: nuxt.options.dev,
           config: options?.config || {}
         }
+        //Firebase server client sdk for web
         addPluginTemplate({
           src: resolve(dirname(fileURLToPath(import.meta.url)), 'plugins/firebase.web.mjs'),
           filename: 'firebase.web.js',
           mode: 'client',
           options: {...firebaseConfig}
         })
-
-        //TODO: find a way to add init firebase-admin sdk to api server
-        //currently plugins are not loaded on api server
-        /*addServerMiddleware({
-          route: '/api',
-          handler: firebaseMiddleware
-        })*/
-        
+        //Firebase server admin sdk for web
         addPluginTemplate({
           src: resolve(dirname(fileURLToPath(import.meta.url)), 'plugins/firebase.admin.mjs'),
           filename: 'firebase.admin.js',
           mode: 'server'
         })
+        // add firestead api
+        addServerMiddleware({
+          route: '/fsApi',
+          handle: fsApi
+        })
+        //TODO: find a way to add init firebase-admin sdk to api server
+        //currently plugins are not loaded on api server and middleware does not work
+        //addServerMiddleware({
+        //  route: '/api',
+        //  handle: firebaseMiddleware
+        //})
+      
 
         //add firestead composables
         const composables = [{
@@ -69,6 +78,9 @@ const firestead = defineNuxtModule({
         },{
           functions: ['useAsyncFunction'],
           file: 'composables/functions.mjs'
+        },{
+          functions: ['useAuth'],
+          file: 'composables/auth.mjs'
         }]
         nuxt.hook('autoImports:extend', (autoImports)=>{
           for(const composable of composables){
@@ -90,22 +102,9 @@ const firestead = defineNuxtModule({
             file: resolve(dirname(fileURLToPath(import.meta.url)), 'ui/pages/index.vue')
           })
         })
-         /*
-        extendRoutes(()=>{
-          return [{
-            path: '/_fs',
-            component: resolve(dirname(fileURLToPath(import.meta.url)), 'ui/pages/index.vue')
-          }]
-        })
-
-       extendRoutes(routes, resolve) {
-          *       routes.push({
-          *         name: 'custom',
-          *         path: '*',
-          *         component: resolve(__dirname, 'pages/404.vue')
-          *       })
-          *     }
-          * */
+        //Add firestead ui assets
+        nuxt.options.alias['firesteadUIAssets'] = resolve(dirname(fileURLToPath(import.meta.url)), 'ui/assets')
+        //add libs that have deps that are not esm compatible to transpiler
         const firebaseDeps = [
           'firebase-admin/app',
           'firebase-admin/firestore',
