@@ -2,45 +2,9 @@ import { useNuxtApp, useState } from '#app'
 import { onUnmounted, onBeforeMount, getCurrentInstance } from 'vue'
 import { klona } from 'klona'
 
-let firestore = null
-
-export const useFirestore = async ($fs = null) => {
-    let fsDoc = null
-    let fsCollection = null
-    //firebase web sdk is working only on client side
-    if(process.client){
-        if(!$fs) $fs = useNuxtApp().$fs
-        if(!firestore) firestore = await import('@firebase/firestore').then(firestore => firestore.default || firestore)
-        fsDoc = (docPathOrCollection) => {
-            if(typeof docPathOrCollection === 'string') return firestore.doc($fs.firestore.connection, docPathOrCollection)
-            else return firestore.doc(docPathOrCollection)
-        }
-        fsCollection = (collectionPath) => firestore.collection($fs.firestore.connection, collectionPath)
-    }
-    return {
-        doc: fsDoc,
-        collection: fsCollection,
-        setDoc: firestore?.setDoc || null,
-        updateDoc: firestore?.updateDoc || null,
-        deleteDoc: firestore?.deleteDoc || null,
-        serverTimestamp: firestore?.serverTimestamp || null,
-        getDocs: firestore?.getDocs || null,
-        query: firestore?.query || null,
-        orderBy: firestore?.orderBy || null,
-        onSnapshot: firestore?.onSnapshot || null,
-    }
-}
-
-export const useFirestoreAdmin = () => {
-    const { $fs } = useNuxtApp()
-    return {
-        db: $fs.firestore?.db || null
-    }
-}
-
-export const useFirestoreFetch = (key, options={}) => {
+export const useFirestore = (key, options={}) => {
     if (typeof key !== 'string') {
-        throw new TypeError('useFirestoreFetch key must be a string')
+        throw new TypeError('useFirestore key must be a string')
     }
     const { $fs, callHook, isHydrating, _asyncDataPromises } = useNuxtApp()
     const result = useState(`${key}FirestoreResult`)
@@ -51,9 +15,9 @@ export const useFirestoreFetch = (key, options={}) => {
     
     const fsSetDoc = async (refPath, newData, options={timestamps:true}) => {
         try {
-            const { doc, collection, setDoc, serverTimestamp } = await useFirestore($fs)
+            const { doc, collection, setDoc, serverTimestamp } = await import('@firebase/firestore')
             state.value = 'create'
-            const docRef = doc(collection(refPath))
+            const docRef = doc(collection($fs.firestore.db,refPath))
             if(options.timestamps){
                 newData = {
                     ...newData,
@@ -76,7 +40,7 @@ export const useFirestoreFetch = (key, options={}) => {
     //
     const fsUpdateDoc = async (index=null, options = {timestamps:true}) => {
         try {
-            const { updateDoc, serverTimestamp } = await useFirestore($fs)
+            const { updateDoc, serverTimestamp } = await import('@firebase/firestore')
             state.value = 'update'
             const refDoc = result.value[index].ref
             let dataUpdate = klona(result.value[index].data)
@@ -98,7 +62,7 @@ export const useFirestoreFetch = (key, options={}) => {
 
     const fsDeleteDoc = async (index=null, options = {}) => {
         try {
-            const { deleteDoc } = await useFirestore($fs)
+            const { deleteDoc } = await import('@firebase/firestore')
             state.value = 'delete'
             const refDoc = result.value[index].ref
             await deleteDoc(refDoc)
@@ -154,7 +118,7 @@ export const useFirestoreFetch = (key, options={}) => {
                 //only allow one subscription at a time
                 if(!fetchDetails.value.subscription){
                     fetchDetails.value.subscription = true
-                    unsubscribeFunction = await subFunc({...await useFirestore($fs)})
+                    unsubscribeFunction = await subFunc({db: $fs.firestore.db, ...await import('@firebase/firestore')})
                 }
             } catch (error) {
                 state.value = 'error'
@@ -196,7 +160,7 @@ export const useFirestoreFetch = (key, options={}) => {
                 state.value = 'fetch'
                 // TODO: Cancel previus promise
                 // TODO: Handle immediate errors
-                _asyncDataPromises[key] = Promise.resolve(fetchFunc({...await useFirestore($fs)}))
+                _asyncDataPromises[key] = Promise.resolve(fetchFunc({db: $fs.firestore.db, ...await import('@firebase/firestore')}))
                   .then((fetchResult) => {
                     if(fetchResult){
                         updateResult(fetchResult)
@@ -251,7 +215,12 @@ export const useFirestoreFetch = (key, options={}) => {
         //serialize data if they are server side rendered and not serialized
         if(process.client && isHydrating){
             console.log('TODO: Serialize data')
-            fetchDetails.value.shouldSerialize = false
+            /*
+                if(typeof data === 'object'){
+                    if(data.hasOwnProperty('createdAt')) data.createdAt = data.createdAt.toDate()
+                    if(data.hasOwnProperty('updatedAt')) data.updatedAt = data.updatedAt.toDate()
+                }
+            */
         }
     }
     return {
@@ -267,12 +236,4 @@ export const useFirestoreFetch = (key, options={}) => {
         fetchDetails: fetchDetails,
         error: error
     }
-}
-
-const serializeData = (data) => {
-    if(typeof data === 'object'){
-        if(data.hasOwnProperty('createdAt')) data.createdAt = data.createdAt.toDate()
-        if(data.hasOwnProperty('updatedAt')) data.updatedAt = data.updatedAt.toDate()
-    }
-    return data
 }

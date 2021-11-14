@@ -20,6 +20,10 @@ const firestead = defineNuxtModule({
         const { version } = requireModulePkg('firestead')
         console.log(`${chalk.bold.green('!')} ${chalk.bold.yellow('Firestead:')} ${chalk.bold.green('Running Firestead v' + version)}`)
         if(!firebaseEmulator && nuxt.options.dev){
+          //set process envs for dev
+          process.env.FIREBASE_AUTH_EMULATOR_HOST = 'localhost:9099'
+          process.env.GCLOUD_PROJECT = 'default'
+          //prepare firestead
           const firesteadContext = await prepare(nuxt)
           await writeEntryFile(firesteadContext)          
           // create firebase configuration

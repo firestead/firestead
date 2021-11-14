@@ -27,7 +27,7 @@ export default defineNuxtPlugin(async (nuxtApp) => {
     }
 
     const authConnection = getAuth(firebaseApp)
-    const firestoreConnection = getFirestore(firebaseApp)
+    const firestoreDb = getFirestore(firebaseApp)
     const functionsConnection = getFunctions(firebaseApp)
     const storage = (bucket = null) => {
         if(bucket) return getStorage(firebaseApp, bucket)
@@ -35,7 +35,7 @@ export default defineNuxtPlugin(async (nuxtApp) => {
     }
     if(firesteadOptions.dev){
         connectFunctionsEmulator(functionsConnection, "localhost", 5001)
-        connectFirestoreEmulator(firestoreConnection, 'localhost', 8080)
+        connectFirestoreEmulator(firestoreDb, 'localhost', 8080)
         connectStorageEmulator(storage(), "localhost", 9199)
         connectAuthEmulator(authConnection, "http://localhost:9099")
     }
@@ -50,7 +50,7 @@ export default defineNuxtPlugin(async (nuxtApp) => {
             connection: authConnection
         },
         firestore: {
-            connection: firestoreConnection
+            db: firestoreDb
         },
         functions: {
             connection: functionsConnection

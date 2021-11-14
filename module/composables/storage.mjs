@@ -1,42 +1,22 @@
 import { useNuxtApp, useState } from '#app'
 import { ref } from 'vue'
 
-let storage = null
-
-export const useStorage = async (bucket=null, $fs = null) => {
-    let fsStorageRef = null
-    if(process.client){
-        if(!$fs) $fs = useNuxtApp().$fs
-        if(!storage) storage = await import('@firebase/storage').then(storage => storage.default || storage)
-        fsStorageRef = (storagePath) => storage.ref($fs.storage(bucket), storagePath)
-    }
-    return {
-        storageRef: fsStorageRef,
-        uploadBytes: storage?.uploadBytes || null,
-        uploadString: storage?.uploadString || null,
-        uploadBytesResumable: storage?.uploadBytesResumable || null,
-        getDownloadURL: storage?.getDownloadURL || null
-    }
-}
-
-export const useStorageUpload = (key='default') => {
+export const useStorage = (key='default', options= {}) => {
     const { $fs } = useNuxtApp()
-
+    // init states
     const url = ref(null)
     const state = useState(`${key}StorageUploadState`)
     const uploadDetails = useState(`${key}StorageUploadDetails`)
     const progress = useState(`${key}StorageUploadProgress`)
     const error = useState(`FiresteadError`)
-    let fsStorageRef = null
-
-    //reset states
+    //reset state defaults
     state.value = false
     uploadDetails.value = {}
     progress.value = 0
 
     const createRef = async (path, bucket = null) => {
-        const { storageRef } = await useStorage(bucket, $fs)
-        fsStorageRef = storageRef(path)
+        const storageRef = (await import('@firebase/storage')).ref
+        return storageRef($fs.storage(bucket), path)
     }
 
     const upload = async (file = null, metadata = {}) => {

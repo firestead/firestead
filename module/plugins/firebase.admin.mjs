@@ -1,39 +1,31 @@
 import { defineNuxtPlugin  } from '#app'
 import { initializeApp, getApps } from 'firebase-admin/app'
 import { getFirestore } from 'firebase-admin/firestore'
-import { getAuth } from 'firebase-admin/auth'
 import { serverAuth } from '#build/utils.auth.js'
 
-let firestore = null
-let auth = null
-
 export default defineNuxtPlugin(async (nuxtApp) => {
-    process.env.FIREBASE_AUTH_EMULATOR_HOST="localhost:9099"
     const apps = getApps()
     if (!apps.length) {
         initializeApp({ 
             projectId: 'default'
         })
     }
-    if(!firestore) {
-        firestore = getFirestore()
-        firestore.settings({
+    const firestoreDb = getFirestore()
+    //it is only allowed to set settings once
+    if(!apps.length){
+        firestoreDb.settings({
             host: "localhost:8080",
             ssl: false
         })
     }
-    if(!auth) {
-        auth = getAuth()
-    }
+    const { req, res } = nuxtApp.ssrContext
+    await serverAuth(req, res)
 
-    await serverAuth(nuxtApp.ssrContext.req, auth)
-
+    // firestore admin sdk can not be async loaded in composable, so it must be provided in the context
+    // TODO: check if this is a bug in nuxt 3
     nuxtApp.provide('fs', {
         firestore: {
-            connection: firestore
-        },
-        auth:{
-            connection: auth
+            db: firestoreDb
         }
     })
 })

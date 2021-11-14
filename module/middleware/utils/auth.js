@@ -1,16 +1,21 @@
-import { createError, setCookie , useBody} from "h3"
+import { createError, setCookie , useBody, useCookie} from "h3"
 import { initializeApp, getApps } from 'firebase-admin/app'
 import { getFirestore } from 'firebase-admin/firestore'
 import { getAuth } from 'firebase-admin/auth'
 
 export const initFirebaseAdmin = (req, res, next) => {
-    process.env.FIREBASE_AUTH_EMULATOR_HOST="localhost:9099"
     const apps = getApps()
+    let adminApp = null
     if (!apps.length) {
-        initializeApp({ 
+        adminApp = initializeApp({ 
             projectId: 'default'
         })
-        const firestore = getFirestore()
+    } else {
+        adminApp = apps[0]
+    }
+    const firestore = getFirestore(adminApp)
+    //sesttings can only be called once
+    if(!apps.length){
         firestore.settings({
             host: "localhost:8080",
             ssl: false
@@ -39,6 +44,25 @@ export const sessionHandler = async (req, res) => {
         } catch (error) {
             console.log(error)
             return createError({statusCode: 401, statusMessage: 'UNAUTHORIZED REQUEST'})
+        }
+    }else{
+        return createError({statusCode: 405, statusMessage: 'Method Not Allowed'})
+    }
+}
+
+export const signOut = async (req, res) => {
+    if(req.method==='POST'){
+        const session = useCookie(req, 'session')
+        try {
+            const decodedClaims = await getAuth().verifySessionCookie(session)
+            await getAuth().revokeRefreshTokens(decodedClaims.sub)
+            const options = { maxAge: 0 }
+            setCookie(res, 'session', null, options)
+        } catch (error) {
+            return createError({statusCode: 500, statusMessage: 'INTERNAL SERVER ERROR', error: error})
+        }
+        return {
+            statusCode: 200
         }
     }else{
         return createError({statusCode: 405, statusMessage: 'Method Not Allowed'})

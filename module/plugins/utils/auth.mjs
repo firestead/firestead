@@ -77,16 +77,35 @@ export const clientAuth = async (connection, options = {}) =>{
     return Promise.all(promises)
   }
 
-  export const serverAuth = async (req, auth, options = {}) =>{
-    const useCookie = (await import('h3')).useCookie
+  export const serverAuth = async (req, res, options = {}) =>{
+    const authState = useState('FiresteadAuth')
+    if(!authState.value){
+      authState.value =  {
+        authenticated: false,
+        user: null,
+        claims: null
+      }
+    }
+    const isAuthenticated = useState('FiresteadIsAuthenticated', () => false)
+    const { useCookie, setCookie } = await import('h3')
     const session = useCookie(req, 'session')
     if(session){
       try {
+        const { getAuth } = await import('firebase-admin/auth')
+        const auth = getAuth()
         const decodedClaims = await auth.verifySessionCookie(session)
-        console.log(decodedClaims)
+        const authUser = await auth.getUser(decodedClaims.sub)
+        authState.value.user = getUserData(authUser)
+        authState.value.claims = decodedClaims
+        authState.value.authenticated = true
+        isAuthenticated.value = true
       } catch (error) {
-        console.log(error)
+        //TODO: better error management, check the reason of the error
+        //remove session cookie
+        const options = { maxAge: 0 }
+        setCookie(res, 'session', null, options)
       }
-
+    }else{
+      //TODO: handle auth security
     }
   }
