@@ -7,7 +7,7 @@
         "firestead",
         "firebase"
     ],
-    "version": "0.0.20",
+    "version": "0.0.25",
     "type": "module",
     "license": "MIT",
     "author": {
@@ -16,7 +16,7 @@
     },
     "files": ["dist"],
     "scripts": {
-        "dev": "unbuild --stub && ./node_modules/windicss/cli/index.js './module/ui/app/**/*.vue' -to ./module/ui/app/assets/style.css --dev",
+        "dev": "unbuild --stub && ./node_modules/windicss/cli/index.js './module/ui/**/*.vue' -to ./module/ui/assets/style.css --dev",
         "prepack": "NODE_OPTIONS='--max-old-space-size=4096' unbuild"
     },
     "exports": {

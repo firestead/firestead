@@ -30,7 +30,6 @@ export default defineNuxtPlugin(async (nuxtApp) => {
     let firebaseApp = null
     const apps = getApps()
     if (!apps.length) {
-        console.log(firebaseConfig)
         firebaseApp = initializeApp(firebaseConfig)
     } else {
         firebaseApp = apps[0]

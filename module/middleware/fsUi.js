@@ -1,12 +1,11 @@
 import { createApp } from 'h3'
-import { readFile } from 'fs-extra'
-import { dirname, resolve } from 'pathe'
-import { fileURLToPath } from 'url'
+import { readFileSync } from 'fs'
+import { resolve } from 'path'
 
 const app = createApp()
 
 app.use('/index.js', async (req, res)=>{
-    const firesteadUi = await readFile(resolve(dirname(fileURLToPath(import.meta.url)), '../ui/runtime/index.js'))
+    const firesteadUi = readFileSync(resolve(process.env.FIRESTEAD_BUILD_DIR, 'ui/app/index.js'), 'utf8')
     return firesteadUi
 })
 app.use('/', async (req, res)=>{

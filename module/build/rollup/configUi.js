@@ -6,17 +6,18 @@ import vue from 'rollup-plugin-vue'
 import { esbuild } from './plugins/esbuild'
 import { nodeResolve } from '@rollup/plugin-node-resolve'
 import postcss from 'rollup-plugin-postcss'
+import alias from '@rollup/plugin-alias'
 import replace from '@rollup/plugin-replace'
 import svgToVue from './plugins/svgToVue'
 
 export function getUiRollupConfig(firesteadContext){
-  
+  const firesteadDirPath = `${firesteadContext._nuxt.rootDir}/${firesteadContext.buildDir}`
   const production = false
 
   const rollupConfig = {
-      input: `${firesteadContext.ui.appDir}/index.js`,
+      input: `${firesteadDirPath}/ui/runtime/index.js`,
       output: {
-          dir: firesteadContext.ui.runtimeDir,
+          dir: `${firesteadDirPath}/ui/app`,
           format: 'iife',
           sourcemap: !production ? 'inline' : false,
           name: 'app'
@@ -24,6 +25,12 @@ export function getUiRollupConfig(firesteadContext){
       makeAbsoluteExternalsRelative: false,
       plugins: []
   }
+
+  rollupConfig.plugins.push(alias({
+    entries: {
+      '#ui': resolve(firesteadContext.moduleDir, 'ui'),
+    }
+  }))
 
   rollupConfig.plugins.push(replace({
     'process.env.NODE_ENV': production ? '"production"' : '"development"',

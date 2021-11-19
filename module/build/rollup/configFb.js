@@ -5,12 +5,13 @@ import { nodeResolve } from '@rollup/plugin-node-resolve'
 import {externals} from './plugins/externals'
 
 export function getFbRollupConfig(firesteadContext, type){
+    const firesteadDirPath = `${firesteadContext._nuxt.rootDir}/${firesteadContext.buildDir}`
     const extensions = ['.ts', '.mjs', '.js', '.json', '.node']
 
     const rollupConfig = {
-        input: `${firesteadContext._nuxt.srcDir}/${firesteadContext.buildDir}/entry.js`,
+        input: `${firesteadDirPath}/firebase/entry.js`,
         output: {
-            file: `${firesteadContext._nuxt.srcDir}/${firesteadContext.buildDir}/functions/index.mjs`,
+            file: `${firesteadDirPath}/firebase/functions/index.mjs`,
             format: 'esm',
             exports: 'auto',
             intro: '',
@@ -32,12 +33,12 @@ export function getFbRollupConfig(firesteadContext, type){
       ]
     // Externals
     rollupConfig.plugins.push(externals({
-        outDir: `${firesteadContext._nuxt.srcDir}/${firesteadContext.buildDir}/functions`,
+        outDir: `${firesteadDirPath}/firebase/functions`,
         moduleDirectories,
         external: [
         ],
         inline: [
-            `${firesteadContext._nuxt.srcDir}/${firesteadContext.buildDir}`,
+            `${firesteadDirPath}/firebase`,
             `${firesteadContext._nuxt.srcDir}/${firesteadContext.functionsDir}`
         ],
         trace: (type==='build')? true: false,

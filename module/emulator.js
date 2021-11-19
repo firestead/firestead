@@ -13,7 +13,7 @@ export async function runEmulator(nuxt){
     const nuxtOptions = nuxt.options
     let firebaseProject = nuxtOptions.firestead?.config?.projectId || 'default'
     //on nuxt start -> maybe better with hook listen if supported
-    const rootFBDir = `${process.env.INIT_CWD}/_firestead`
+    const rootFBDir = `${process.env.INIT_CWD}/_firestead/firebase`
     process.chdir(rootFBDir)
     const emulator = spawn('firebase', ['--project',firebaseProject,'emulators:start'])
     //go back to project folder

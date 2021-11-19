@@ -22,6 +22,8 @@ const firestead = defineNuxtModule({
         const { version } = requireModulePkg('firestead')
         console.log(`${chalk.bold.green('!')} ${chalk.bold.yellow('Firestead:')} ${chalk.bold.green('Running Firestead v' + version)}`)
         const firesteadContext = getFiresteadContext(nuxt)
+        //add firestead build dir to node env -> TODO: find better way to add build dir to middleware
+        process.env.FIRESTEAD_BUILD_DIR = `${nuxt.options.rootDir}/${firesteadContext.buildDir}`
         if(!firebaseEmulator && nuxt.options.dev){
           //set process envs for dev
           process.env.FIREBASE_AUTH_EMULATOR_HOST = 'localhost:9099'

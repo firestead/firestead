@@ -1,3 +1,4 @@
+import { resolveModule } from '@nuxt/kit-edge'
 import { dirname, resolve } from 'pathe'
 import { fileURLToPath } from 'url'
 
@@ -10,17 +11,17 @@ export function getFiresteadContext({options, hooks, hook}){
         hooks: hooks,
         hook: hook,
         buildDir: options?.firestead?.buildDir || '_firestead',
+        moduleDir: dirname(resolveModule('firestead')),
         functionsDir: options?.firestead?.functionsDir || 'server/firebase',
         functionsWatchDirs: ['functions', 'http', 'schedule', 'firestore', 'database', 'remoteConfig', 'storage', 'auth', 'analytics', 'pubsub', 'testLab'],
         watchFiles: [],
         firebase: {
             config: options?.firestead?.config || {},
             rollupConfig: undefined,
-            runtimeDir: getFullPath('runtime')
+            runtimeDir: getFullPath('runtime/functions')
         },
         ui:{
-            appDir: getFullPath('../ui/app'),
-            runtimeDir: getFullPath('../ui/runtime'),
+            appDir: getFullPath('runtime/ui'),
             rollupConfig: undefined
         },
         _nuxt: {

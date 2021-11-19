@@ -7,9 +7,9 @@ export default defineBuildConfig({
     'module',
     { input: 'module/composables/', outDir: 'dist/composables' },
     { input: 'module/nitro/', outDir: 'dist/nitro' },
+    { input: 'module/ui/', outDir: 'dist/ui' },
     { input: 'module/build/runtime/', outDir: 'dist/runtime', ext: 'js' },
     { input: 'module/plugins/', outDir: 'dist/plugins' },
-    { input: 'module/ui/', outDir: 'dist/ui' },
     { input: 'module/middleware/', outDir: 'dist/middleware' }
   ],
   devDependencies: [],
@@ -28,7 +28,9 @@ export default defineBuildConfig({
     '@rollup/pluginutils',
     'rollup-plugin-postcss',
     'rollup-plugin-svg-import',
+    '@rollup/plugin-alias',
     '@vercel/nft',
+    'hash-sum',
     'esbuild',
     '#app',
     '#build'

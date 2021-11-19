@@ -11,13 +11,18 @@ let isScanRunning = false
 const scanQueue = []
 
 export async function prepare(firesteadContext){
-    const firesteadDir = await isDirectory(`${firesteadContext._nuxt.rootDir}/${firesteadContext.buildDir}`)
+  const firesteadDirPath = `${firesteadContext._nuxt.rootDir}/${firesteadContext.buildDir}`
+  const currentDir = dirname(fileURLToPath(import.meta.url))
+    const firesteadDir = await isDirectory(firesteadDirPath)
     if(firesteadDir){
-        await fse.emptyDir(`${firesteadContext._nuxt.rootDir}/${firesteadContext.buildDir}`)
+        await fse.emptyDir(firesteadDirPath)
     }
-    await fse.mkdirp(`${firesteadContext._nuxt.rootDir}/${firesteadContext.buildDir}/functions`)
-    await fse.mkdirp(`${firesteadContext._nuxt.rootDir}/${firesteadContext.buildDir}/runtime`)
-    await fse.copy(resolve(dirname(fileURLToPath(import.meta.url)), 'runtime'), `${firesteadContext._nuxt.rootDir}/${firesteadContext.buildDir}/runtime`, { overwrite: true })
+    await fse.mkdirp(`${firesteadDirPath}/firebase/functions`)
+    await fse.mkdirp(`${firesteadDirPath}/firebase/runtime`)
+    await fse.copy(resolve(currentDir, 'runtime/functions'), `${firesteadDirPath}/firebase/runtime`, { overwrite: true })
+    await fse.mkdirp(`${firesteadDirPath}/ui/app`)
+    await fse.mkdirp(`${firesteadDirPath}/ui/runtime`)
+    await fse.copy(resolve(currentDir, 'runtime/ui'), `${firesteadDirPath}/ui/runtime`, { overwrite: true })
     await scanDirs(firesteadContext)
     //watch dir changes
     firesteadContext.hook('builder:watch',async (event,path)=>{
@@ -99,7 +104,7 @@ export const ${watchFile.name} = functions.https.onRequest(${watchFile.name}_htt
         entryContent = entryContent.concat(`export const ${watchFile.name} = functions.firestore.document(getDocument(${watchFile.name}_config)).${watchFile.event?watchFile.event:'onWrite'}(${watchFile.name}_import)`, '\n')
       }
     }
-    await fse.writeFile(`${firesteadContext._nuxt.rootDir}/${firesteadContext.buildDir}/entry.js`, entryContent, 'utf-8')
+    await fse.writeFile(`${firesteadContext._nuxt.rootDir}/${firesteadContext.buildDir}/firebase/entry.js`, entryContent, 'utf-8')
 }
 
 export async function watch (firesteadContext) {

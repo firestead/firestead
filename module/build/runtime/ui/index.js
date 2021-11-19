@@ -1,8 +1,8 @@
 import { createApp } from 'vue'
 import { createRouter, createWebHistory } from 'vue-router'
-import App from './app.vue'
-import Dashboard from './pages/index.vue'
-import './assets/style.css'
+import App from '#ui/app.vue'
+import Dashboard from '#ui/pages/index.vue'
+import '#ui/assets/style.css'
 
 const baseURL = '/fs'
 
@@ -21,6 +21,5 @@ const router = createRouter({
 const app = createApp(App).use(router)
 
 router.isReady().then(() => {
-    console.log('App')
     app.mount('#app')
 })
