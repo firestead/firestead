@@ -5,10 +5,10 @@ export default defineBuildConfig({
   emitCJS: false,
   entries: [
     'module',
+    { input: 'module/composables/', outDir: 'dist/composables' },
     { input: 'module/nitro/', outDir: 'dist/nitro' },
     { input: 'module/build/runtime/', outDir: 'dist/runtime', ext: 'js' },
     { input: 'module/plugins/', outDir: 'dist/plugins' },
-    { input: 'module/composables/', outDir: 'dist/composables' },
     { input: 'module/ui/', outDir: 'dist/ui' },
     { input: 'module/middleware/', outDir: 'dist/middleware' }
   ],
@@ -16,14 +16,18 @@ export default defineBuildConfig({
   dependencies: [
   ],
   externals: [
-    'vue',
+    'vue', 
+    '@vue/compiler-sfc',
     '@nuxt/kit-edge',
     'pathe',
     'fs-extra',
     'rollup',
     '@rollup/plugin-commonjs',
     '@rollup/plugin-node-resolve',
+    '@rollup/plugin-replace',
     '@rollup/pluginutils',
+    'rollup-plugin-postcss',
+    'rollup-plugin-svg-import',
     '@vercel/nft',
     'esbuild',
     '#app',

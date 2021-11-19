@@ -1,11 +1,13 @@
 import { dirname, resolve } from 'pathe'
 import { fileURLToPath } from 'url'
 import chalk from 'chalk'
-import { addPluginTemplate, addServerMiddleware, addTemplate, defineNuxtModule, isNuxt2, requireModulePkg, extendPages } from '@nuxt/kit-edge'
+import { addPluginTemplate, addServerMiddleware, addTemplate, defineNuxtModule, isNuxt2, requireModulePkg } from '@nuxt/kit-edge'
 import {runEmulator} from './emulator'
-import { prepare, writeEntryFile, watch } from './build'
+import { getFiresteadContext } from './build/context'
+import { prepare, writeEntryFile, watch, buildUi } from './build'
 import { writePackageJson, writeFirebaseDefaults } from './build/config'
-import { default as fsApi } from './middleware/fsApi'
+import fsApi from './middleware/fsApi'
+import fsUi from './middleware/fsUi'
 
 let firebaseEmulator = false
 
@@ -19,12 +21,13 @@ const firestead = defineNuxtModule({
         }
         const { version } = requireModulePkg('firestead')
         console.log(`${chalk.bold.green('!')} ${chalk.bold.yellow('Firestead:')} ${chalk.bold.green('Running Firestead v' + version)}`)
+        const firesteadContext = getFiresteadContext(nuxt)
         if(!firebaseEmulator && nuxt.options.dev){
           //set process envs for dev
           process.env.FIREBASE_AUTH_EMULATOR_HOST = 'localhost:9099'
           process.env.GCLOUD_PROJECT = 'default'
-          //prepare firestead
-          const firesteadContext = await prepare(nuxt)
+          //prepare build for firestead
+          await prepare(firesteadContext)
           await writeEntryFile(firesteadContext)          
           // create firebase configuration
           writeFirebaseDefaults(firesteadContext)
@@ -59,6 +62,13 @@ const firestead = defineNuxtModule({
           filename: 'firebase.admin.js',
           mode: 'server'
         })
+        //build fs ui
+        await buildUi(firesteadContext)
+        // firestead ui server middleware
+        addServerMiddleware({
+          route: '/fs',
+          handle: fsUi
+        })
         // add firestead api
         addServerMiddleware({
           route: '/fsApi',
@@ -70,14 +80,14 @@ const firestead = defineNuxtModule({
         //  route: '/api',
         //  handle: firebaseMiddleware
         //})
-      
+    
 
         //add firestead composables
         const composables = [{
-          functions: ['useFirestore','useFirestoreAdmin','useFirestoreFetch'],
+          functions: ['useFirestore'],
           file: 'composables/firestore.mjs'
         },{
-          functions: ['useStorage','useStorageUpload'],
+          functions: ['useStorage'],
           file: 'composables/storage.mjs'
         },{
           functions: ['useAsyncFunction'],
@@ -98,16 +108,6 @@ const firestead = defineNuxtModule({
           }
         })
 
-        extendPages((pages) => {
-          // Add /test page
-          pages.push({
-            name: 'FiresteadHome',
-            path: '/fs',
-            file: resolve(dirname(fileURLToPath(import.meta.url)), 'ui/pages/index.vue')
-          })
-        })
-        //Add firestead ui assets
-        nuxt.options.alias['firesteadUIAssets'] = resolve(dirname(fileURLToPath(import.meta.url)), 'ui/assets')
         //add libs that have deps that are not esm compatible to transpiler
         const firebaseDeps = [
           'firebase-admin/app',

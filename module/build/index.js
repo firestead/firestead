@@ -2,16 +2,15 @@ import fse from 'fs-extra'
 import chalk from 'chalk'
 import { dirname, resolve } from 'pathe'
 import { fileURLToPath } from 'url'
-import { getRollupConfig } from './rollup/config'
-import { getFiresteadContext } from './context'
+import { getFbRollupConfig } from './rollup/configFb'
+import { getUiRollupConfig } from './rollup/configUi'
 import { isDirectory, scanDirs } from './utils'
 import * as rollup from 'rollup'
 
 let isScanRunning = false
 const scanQueue = []
 
-export async function prepare(nuxt){
-    let firesteadContext =  getFiresteadContext(nuxt)
+export async function prepare(firesteadContext){
     const firesteadDir = await isDirectory(`${firesteadContext._nuxt.rootDir}/${firesteadContext.buildDir}`)
     if(firesteadDir){
         await fse.emptyDir(`${firesteadContext._nuxt.rootDir}/${firesteadContext.buildDir}`)
@@ -21,7 +20,7 @@ export async function prepare(nuxt){
     await fse.copy(resolve(dirname(fileURLToPath(import.meta.url)), 'runtime'), `${firesteadContext._nuxt.rootDir}/${firesteadContext.buildDir}/runtime`, { overwrite: true })
     await scanDirs(firesteadContext)
     //watch dir changes
-    nuxt.hook('builder:watch',async (event,path)=>{
+    firesteadContext.hook('builder:watch',async (event,path)=>{
       if(['add', 'unlink'].indexOf(event) !== -1){
         for( const dir of firesteadContext.functionsWatchDirs){
           if(path.includes(`${firesteadContext.functionsDir}/${dir}`)){
@@ -31,7 +30,42 @@ export async function prepare(nuxt){
         }
       }
     })
-    return firesteadContext
+}
+
+export async function buildUi(firesteadContext){
+  firesteadContext.ui.rollupConfig = getUiRollupConfig(firesteadContext)
+  /*
+  const build = await rollup.rollup(firesteadContext.ui.rollupConfig).catch((error) => {
+    consola.error('Rollup error: ' + error.message)
+    throw error
+  })
+  await build.write(firesteadContext.ui.rollupConfig.output)
+  */
+  let start = null
+  const watcher = rollup.watch(firesteadContext.ui.rollupConfig)
+  watcher.on('event', (event) => {
+    switch (event.code) {
+      // The watcher is (re)starting
+      case 'START':
+        return
+
+      // Building an individual bundle
+      case 'BUNDLE_START':
+        start = Date.now()
+        return
+
+      // Finished building all bundles
+      case 'END':
+        //nitroContext._internal.hooks.callHook('nitro:compiled', nitroContext)
+        console.log(`${chalk.bold.green('✔')} ${chalk.bold.yellow('Firestead:')}` + ' built UI', start ? `in ${Date.now() - start} ms` : '')
+        return
+
+      // Encountered an error while bundling
+      case 'ERROR':
+        consola.error('Firestead Rollup error: ' + event.error)
+        // consola.error(event.error)
+    }
+  })
 }
 
 export async function writeEntryFile(firesteadContext){
@@ -69,7 +103,7 @@ export const ${watchFile.name} = functions.https.onRequest(${watchFile.name}_htt
 }
 
 export async function watch (firesteadContext) {
-    const rollupConfig = getRollupConfig(firesteadContext, 'watch')
+    const rollupConfig = getFbRollupConfig(firesteadContext, 'watch')
     return _watch(rollupConfig)
 }
 

@@ -7,7 +7,7 @@
         "firestead",
         "firebase"
     ],
-    "version": "0.0.18",
+    "version": "0.0.20",
     "type": "module",
     "license": "MIT",
     "author": {
@@ -16,27 +16,31 @@
     },
     "files": ["dist"],
     "scripts": {
-        "dev": "unbuild --stub",
+        "dev": "unbuild --stub && ./node_modules/windicss/cli/index.js './module/ui/app/**/*.vue' -to ./module/ui/app/assets/style.css --dev",
         "prepack": "NODE_OPTIONS='--max-old-space-size=4096' unbuild"
     },
     "exports": {
         ".": "./dist/module.mjs",
-        "./firestore": "./dist/composables/firestore.mjs",
-        "./storage": "./dist/composables/storage.mjs",
+        "./composables": "./dist/composables/index.mjs",
         "./nitro": "./dist/nitro/preset.mjs",
         "./package.json": "./package.json"
     },
     "dependencies": {
+        "rollup-plugin-postcss": "^4.0.1",
+        "@vue/compiler-sfc": "^3.2.22",
+        "rollup-plugin-vue": "^6.0.0",
         "@nuxt/kit-edge": "latest",
-        "@vercel/nft": "^0.17.0",
-        "klona": "^2.0.5",
-        "firebase": "^9.2.0",
+        "firebase": "^9.4.1",
         "firebase-admin": "^10.0.0",
         "firebase-functions": "^3.16.0",
         "h3": "^0.3.3",
-        "chalk": "^4.1.1"
+        "chalk": "^4.1.1",
+        "@vercel/nft": "^0.17.0",
+        "klona": "^2.0.5",
+        "pathe": "^0.2.0"
     },
     "devDependencies": {
-        "unbuild": "^0.5.9"
+        "unbuild": "^0.5.9",
+        "windicss": "latest"
     }
   }

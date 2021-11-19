@@ -4,8 +4,3 @@
 <script setup>
 
 </script>
-<script>
-    export default {
-        layout: 'console'
-    }
-</script>

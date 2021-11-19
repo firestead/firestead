@@ -15,9 +15,9 @@ export const useFirestore = (key, options={}) => {
     
     const fsSetDoc = async (refPath, newData, options={timestamps:true}) => {
         try {
-            const { doc, collection, setDoc, serverTimestamp } = await import('@firebase/firestore')
+            const { doc, collection, setDoc, serverTimestamp } = await $fs.firestore.lib()
             state.value = 'create'
-            const docRef = doc(collection($fs.firestore.db,refPath))
+            const docRef = doc(collection($fs.firestore.connection,refPath))
             if(options.timestamps){
                 newData = {
                     ...newData,
@@ -40,7 +40,7 @@ export const useFirestore = (key, options={}) => {
     //
     const fsUpdateDoc = async (index=null, options = {timestamps:true}) => {
         try {
-            const { updateDoc, serverTimestamp } = await import('@firebase/firestore')
+            const { updateDoc, serverTimestamp } = await $fs.firestore.lib()
             state.value = 'update'
             const refDoc = result.value[index].ref
             let dataUpdate = klona(result.value[index].data)
@@ -62,7 +62,7 @@ export const useFirestore = (key, options={}) => {
 
     const fsDeleteDoc = async (index=null, options = {}) => {
         try {
-            const { deleteDoc } = await import('@firebase/firestore')
+            const { deleteDoc } = await $fs.firestore.lib()
             state.value = 'delete'
             const refDoc = result.value[index].ref
             await deleteDoc(refDoc)
@@ -118,7 +118,7 @@ export const useFirestore = (key, options={}) => {
                 //only allow one subscription at a time
                 if(!fetchDetails.value.subscription){
                     fetchDetails.value.subscription = true
-                    unsubscribeFunction = await subFunc({db: $fs.firestore.db, ...await import('@firebase/firestore')})
+                    unsubscribeFunction = await subFunc($fs.firestore.connection, await $fs.firestore.lib())
                 }
             } catch (error) {
                 state.value = 'error'
@@ -160,7 +160,7 @@ export const useFirestore = (key, options={}) => {
                 state.value = 'fetch'
                 // TODO: Cancel previus promise
                 // TODO: Handle immediate errors
-                _asyncDataPromises[key] = Promise.resolve(fetchFunc({db: $fs.firestore.db, ...await import('@firebase/firestore')}))
+                _asyncDataPromises[key] = Promise.resolve(fetchFunc($fs.firestore.connection, await $fs.firestore.lib()))
                   .then((fetchResult) => {
                     if(fetchResult){
                         updateResult(fetchResult)

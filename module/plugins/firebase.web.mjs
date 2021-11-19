@@ -6,6 +6,16 @@ import { getFunctions, connectFunctionsEmulator } from '@firebase/functions'
 import { getStorage, connectStorageEmulator } from "@firebase/storage"
 import { clientAuth, authUnsubscribe } from '#build/utils.auth.js'
 
+/*
+    //Auth client side security firewall
+	const router = nuxtApp.$router
+
+	router.beforeEach((to: object, from: object, next: Function) => {
+		console.log('beforeEach')
+		next()
+	})
+*/
+
 export default defineNuxtPlugin(async (nuxtApp) => {
     const firesteadOptions = JSON.parse('<%= JSON.stringify(options) %>')
     const firebaseConfig = {
@@ -17,10 +27,10 @@ export default defineNuxtPlugin(async (nuxtApp) => {
         messagingSenderId: firesteadOptions?.config?.messagingSenderId || '',
         appId: firesteadOptions?.config?.appId || ''
     }
-
     let firebaseApp = null
     const apps = getApps()
     if (!apps.length) {
+        console.log(firebaseConfig)
         firebaseApp = initializeApp(firebaseConfig)
     } else {
         firebaseApp = apps[0]
@@ -47,14 +57,20 @@ export default defineNuxtPlugin(async (nuxtApp) => {
     nuxtApp.provide('fs', {
         auth: {
             unsubscribe: authUnsubscribe,
-            connection: authConnection
+            connection: authConnection,
+            lib: async () => await import('@firebase/auth')
         },
         firestore: {
-            db: firestoreDb
+            connection: firestoreDb,
+            lib: async () => await import('@firebase/firestore')
         },
         functions: {
-            connection: functionsConnection
+            connection: functionsConnection,
+            lib: async () => await import('@firebase/functions')
         },
-        storage
+        storage:{
+            connection: storage(),
+            lib: async () => await import('@firebase/storage')
+        }
     })
 })

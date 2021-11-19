@@ -4,7 +4,7 @@ import { esbuild } from './plugins/esbuild'
 import { nodeResolve } from '@rollup/plugin-node-resolve'
 import {externals} from './plugins/externals'
 
-export function getRollupConfig(firesteadContext, type){
+export function getFbRollupConfig(firesteadContext, type){
     const extensions = ['.ts', '.mjs', '.js', '.json', '.node']
 
     const rollupConfig = {
