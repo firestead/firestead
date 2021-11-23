@@ -6,7 +6,8 @@
                   <SVGFiresteadLogo class="h-10 w-auto"></SVGFiresteadLogo>
                 </div>
             </div>
-            <div class="border-b-1 border-gray-300 h-10 px-6">
+            <div class="border-b-1 border-gray-300 h-10 px-6 py-2">
+              <topnav></topnav>
             </div>
         </header>
         <aside><!--TODO--></aside>
@@ -17,6 +18,7 @@
 </template>
 <script setup>
   import SVGFiresteadLogo from './assets/FiresteadLogo.svg'
+  import topnav from './components/topnav.vue'
 
 </script>
 <style scoped>

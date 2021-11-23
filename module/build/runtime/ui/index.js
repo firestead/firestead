@@ -1,20 +1,13 @@
 import { createApp } from 'vue'
 import { createRouter, createWebHistory } from 'vue-router'
 import App from '#ui/app.vue'
-import Dashboard from '#ui/pages/index.vue'
+import routes from './routes.js'
 import '#ui/assets/style.css'
 
-const baseURL = '/fs'
-
-//create page dir routing
-const routes = [{
-    path: `${baseURL}/`,
-    name: "dashboard",
-    component: Dashboard,
-}]
+const baseURL = 'fs'
 
 const router = createRouter({
-    history: createWebHistory(),
+    history: createWebHistory(`/${baseURL}/`),
     routes: routes
 })
 

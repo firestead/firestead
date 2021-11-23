@@ -30,6 +30,7 @@ export default defineBuildConfig({
     'rollup-plugin-svg-import',
     '@rollup/plugin-alias',
     '@vercel/nft',
+    'ufo',
     'hash-sum',
     'esbuild',
     '#app',

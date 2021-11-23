@@ -3,8 +3,13 @@ import commonjs from '@rollup/plugin-commonjs'
 import { esbuild } from './plugins/esbuild'
 import { nodeResolve } from '@rollup/plugin-node-resolve'
 import {externals} from './plugins/externals'
+import vue from 'rollup-plugin-vue'
+import postcss from 'rollup-plugin-postcss'
+import alias from '@rollup/plugin-alias'
+import replace from '@rollup/plugin-replace'
+import svgToVue from './plugins/svgToVue'
 
-export function getFbRollupConfig(firesteadContext, type){
+export function getFirebaseRollupConfig(firesteadContext, type){
     const firesteadDirPath = `${firesteadContext._nuxt.rootDir}/${firesteadContext.buildDir}`
     const extensions = ['.ts', '.mjs', '.js', '.json', '.node']
 
@@ -69,3 +74,62 @@ export function getFbRollupConfig(firesteadContext, type){
     }))
     return rollupConfig
 }
+
+
+export function getUIRollupConfig(firesteadContext){
+    const firesteadDirPath = `${firesteadContext._nuxt.rootDir}/${firesteadContext.buildDir}`
+    const production = false
+  
+    const rollupConfig = {
+        input: `${firesteadDirPath}/ui/runtime/index.js`,
+        output: {
+            dir: `${firesteadDirPath}/ui/app`,
+            format: 'iife',
+            sourcemap: !production ? 'inline' : false,
+            name: 'app'
+        },
+        makeAbsoluteExternalsRelative: false,
+        plugins: []
+    }
+  
+    rollupConfig.plugins.push(alias({
+      entries: {
+        '#ui': resolve(firesteadContext.moduleDir, 'ui'),
+      }
+    }))
+  
+    rollupConfig.plugins.push(replace({
+      'process.env.NODE_ENV': production ? '"production"' : '"development"',
+      preventAssignment: true,
+    }))
+  
+    rollupConfig.plugins.push(svgToVue())
+  
+    rollupConfig.plugins.push(vue({
+      preprocessStyles: true,
+      needMap: false
+    }))
+  
+    rollupConfig.plugins.push(postcss())
+  
+    rollupConfig.plugins.push(nodeResolve({
+      jsnext: true,
+      main: true,
+      browser: true,
+      moduleDirectories: [
+        resolve(firesteadContext._nuxt.rootDir, 'node_modules'),
+        'node_modules'
+      ]
+    }))
+  
+    rollupConfig.plugins.push(commonjs({
+      requireReturnsDefault: 'auto'
+    }))
+  
+    rollupConfig.plugins.push(esbuild({
+      target: 'es2019',
+      sourceMap: !production ? true : false,
+    }))
+  
+    return rollupConfig
+  }

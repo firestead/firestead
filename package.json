@@ -7,7 +7,7 @@
         "firestead",
         "firebase"
     ],
-    "version": "0.0.25",
+    "version": "0.0.26",
     "type": "module",
     "license": "MIT",
     "author": {
@@ -16,7 +16,7 @@
     },
     "files": ["dist"],
     "scripts": {
-        "dev": "unbuild --stub && ./node_modules/windicss/cli/index.js './module/ui/**/*.vue' -to ./module/ui/assets/style.css --dev",
+        "dev": "unbuild --stub && ./node_modules/windicss/cli/index.js './module/ui/**/*.vue' -to ./module/ui/assets/style.css --config './module/ui/windi.config.cjs' --dev --style",
         "prepack": "NODE_OPTIONS='--max-old-space-size=4096' unbuild"
     },
     "exports": {
@@ -29,6 +29,7 @@
         "rollup-plugin-postcss": "^4.0.1",
         "@vue/compiler-sfc": "^3.2.22",
         "rollup-plugin-vue": "^6.0.0",
+        "ufo": "^0.7.9",
         "@nuxt/kit-edge": "latest",
         "firebase": "^9.4.1",
         "firebase-admin": "^10.0.0",

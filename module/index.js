@@ -4,7 +4,7 @@ import chalk from 'chalk'
 import { addPluginTemplate, addServerMiddleware, addTemplate, defineNuxtModule, isNuxt2, requireModulePkg } from '@nuxt/kit-edge'
 import {runEmulator} from './emulator'
 import { getFiresteadContext } from './build/context'
-import { prepare, writeEntryFile, watch, buildUi } from './build'
+import { prepare, bundleUI, bundleFirebase } from './build'
 import { writePackageJson, writeFirebaseDefaults } from './build/config'
 import fsApi from './middleware/fsApi'
 import fsUi from './middleware/fsUi'
@@ -29,13 +29,12 @@ const firestead = defineNuxtModule({
           process.env.FIREBASE_AUTH_EMULATOR_HOST = 'localhost:9099'
           process.env.GCLOUD_PROJECT = 'default'
           //prepare build for firestead
-          await prepare(firesteadContext)
-          await writeEntryFile(firesteadContext)          
+          await prepare(firesteadContext)       
           // create firebase configuration
           writeFirebaseDefaults(firesteadContext)
           await writePackageJson(firesteadContext)
           // run rollup watch function to build firestead index.mjs
-          await watch(firesteadContext)
+          await bundleFirebase(firesteadContext)
           //start firebase emulator and watch
           if(!options.disableEmulator){
             firebaseEmulator = await runEmulator(nuxt)
@@ -65,7 +64,7 @@ const firestead = defineNuxtModule({
           mode: 'server'
         })
         //build fs ui
-        await buildUi(firesteadContext)
+        await bundleUI(firesteadContext)
         // firestead ui server middleware
         addServerMiddleware({
           route: '/fs',
