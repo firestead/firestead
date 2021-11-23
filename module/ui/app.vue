@@ -10,25 +10,15 @@
               <topnav></topnav>
             </div>
         </header>
-        <aside><!--TODO--></aside>
-        <main>
-            <router-view />
+        <sidebar-desktop class="hidden md:flex md:w-64 md:flex-col md:absolute h-100"></sidebar-desktop>
+        <main class="md:pl-64 md:pt-6 flex flex-col flex-1 h-100">
+          <router-view />
         </main>
     </div>
 </template>
 <script setup>
   import SVGFiresteadLogo from './assets/FiresteadLogo.svg'
   import topnav from './components/topnav.vue'
+  import sidebarDesktop from './components/sidebar-desktop.vue'
 
 </script>
-<style scoped>
-  .navbar {
-    box-shadow: inset 0 -1px #e3e8ee;
-    box-sizing: border-box;
-    display: flex;
-    height: 40px;
-  }
-  main{
-    padding: 0 25px 0 25px;
-  }
-</style>
