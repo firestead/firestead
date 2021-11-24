@@ -7,7 +7,7 @@
         "firestead",
         "firebase"
     ],
-    "version": "0.0.27-dev",
+    "version": "0.0.27",
     "type": "module",
     "license": "MIT",
     "author": {
@@ -16,12 +16,12 @@
     },
     "files": ["dist"],
     "scripts": {
-        "dev": "unbuild --stub && ./node_modules/windicss/cli/index.js './module/ui/**/*.vue' -to ./module/ui/assets/style.css --config './module/ui/windi.config.cjs' --dev --style",
+        "dev": "unbuild --stub && ./node_modules/windicss/cli/index.js './module/ui/**/*.vue' -to ./module/ui/assets/style.css --config './module/ui/windi.config.cjs' --dev",
         "prepack": "NODE_OPTIONS='--max-old-space-size=4096' unbuild"
     },
     "exports": {
         ".": "./dist/module.mjs",
-        "./composables": "./dist/composables/index.mjs",
+        "./composables": "./dist/composables.mjs",
         "./nitro": "./dist/nitro/preset.mjs",
         "./package.json": "./package.json"
     },

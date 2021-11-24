@@ -83,19 +83,10 @@ const firestead = defineNuxtModule({
         //})
     
 
-        //add firestead composables
+        //add firestead composables -> TODO: Plugins can also add composables
         const composables = [{
-          functions: ['useFirestore'],
-          file: 'composables/firestore.mjs'
-        },{
-          functions: ['useStorage'],
-          file: 'composables/storage.mjs'
-        },{
-          functions: ['useAsyncFunction'],
-          file: 'composables/functions.mjs'
-        },{
-          functions: ['useAuth'],
-          file: 'composables/auth.mjs'
+          functions: ['useAuth', 'useFirestore', 'useStorage','useAsyncFunction'],
+          file: 'composables.mjs'
         }]
         nuxt.hook('autoImports:extend', (autoImports)=>{
           for(const composable of composables){
@@ -107,21 +98,6 @@ const firestead = defineNuxtModule({
               })
             }
           }
-        })
-
-        //add libs that have deps that are not esm compatible to transpiler
-        const firebaseDeps = [
-          'firebase-admin/app',
-          'firebase-admin/firestore',
-          '@firebase/app',
-          '@firebase/functions',
-          '@firebase/firestore',
-          '@firebase/auth',
-          '@firebase/storage',
-          'tslib'
-        ]
-        firebaseDeps.forEach((dep) => {
-          nuxt.options.build.transpile.push(dep)
         })
     },
   })

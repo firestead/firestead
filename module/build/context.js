@@ -15,7 +15,7 @@ export function getFiresteadContext({options, hooks, hook}){
         buildPath: undefined,
         moduleDir: dirname(resolveModule('firestead')),
         contextDir: dirname(fileURLToPath(import.meta.url)),
-        extensions: ['.js','.jsx','.mjs','.ts','.tsx','.vue'],
+        extensions: ['.vue'],
         functionsDir: options?.firestead?.functionsDir || 'server/firebase',
         functionsWatchDirs: ['functions', 'http', 'schedule', 'firestore', 'database', 'remoteConfig', 'storage', 'auth', 'analytics', 'pubsub', 'testLab'],
         watchFiles: [],
