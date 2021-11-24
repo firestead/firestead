@@ -83,10 +83,10 @@ const firestead = defineNuxtModule({
         //})
     
 
-        //add firestead composables -> TODO: Plugins can also add composables
+        //add firestead composables -> Todo: fs plugins can add composables
         const composables = [{
-          functions: ['useAuth', 'useFirestore', 'useStorage','useAsyncFunction'],
-          file: 'composables.mjs'
+          functions: ['useAuth','useFirestore','useStorage','useAsyncFunction'],
+          file: resolve(dirname(fileURLToPath(import.meta.url)),'composables/index.mjs')
         }]
         nuxt.hook('autoImports:extend', (autoImports)=>{
           for(const composable of composables){
@@ -94,7 +94,7 @@ const firestead = defineNuxtModule({
               autoImports.push({
                 name: func,
                 as: func,
-                from: resolve(dirname(fileURLToPath(import.meta.url)),composable.file)
+                from: composable.file
               })
             }
           }
