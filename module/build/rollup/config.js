@@ -111,7 +111,7 @@ export function getUIRollupConfig(firesteadContext){
     }))
   
     rollupConfig.plugins.push(postcss())
-  
+
     rollupConfig.plugins.push(nodeResolve({
       jsnext: true,
       main: true,
