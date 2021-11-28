@@ -1,6 +1,8 @@
 import { useNuxtApp, useState } from '#app'
-import { onUnmounted, onBeforeMount, getCurrentInstance } from 'vue'
+import { onUnmounted, onBeforeMount, getCurrentInstance, toRefs, reactive, isReactive, set as setReactive } from '@vue/composition-api'
 import { klona } from 'klona'
+
+let firestoreGlobalState = {}
 
 export const useFirestore = (key, options={}) => {
     if (typeof key !== 'string') {
@@ -8,15 +10,50 @@ export const useFirestore = (key, options={}) => {
     }
     const { $fs, callHook, isHydrating, _asyncDataPromises } = useNuxtApp()
     const result = useState(`${key}FirestoreResult`)
-    const fetchDetails = useState(`${key}FirestoreFetchDetails`,()=>{return {}})
-    const state = useState(`${key}FirestoreState`)
     const error = useState(`FiresteadError`)
+    //init state that needs to be reactive and not hydrated
+    if (!isReactive(firestoreGlobalState)) {
+        firestoreGlobalState = reactive(firestoreGlobalState)
+    }
+    if (!(`${key}FirestoreState` in firestoreGlobalState)) {
+        setReactive(firestoreGlobalState, `${key}FirestoreState`, {
+            pending: false,
+            fetching: false,
+            creating: false,
+            updating: false,
+            deleting: false,
+            error: false
+        })
+    }
+    const state = firestoreGlobalState[`${key}FirestoreState`]
+    if (!(`${key}FirestoreFetchDetails` in firestoreGlobalState)){
+        setReactive(firestoreGlobalState, `${key}FirestoreFetchDetails`, {})
+    }
+    const fetchDetails = firestoreGlobalState[`${key}FirestoreFetchDetails`]
+
     const reFetch = {}
+
+    const setState = (changedState, val) => {
+        if(changedState==='error'){
+            state.error = val
+            state.pending = false
+            state.fetching = false
+            state.creating = false
+            state.updating = false
+            state.deleting = false
+        }
+        else{
+            state[changedState] = val
+            state.pending = val
+            state.error = false
+        }
+    }
+
     
     const fsSetDoc = async (refPath, newData, options={timestamps:true}) => {
         try {
             const { doc, collection, setDoc, serverTimestamp } = await $fs.firestore.lib()
-            state.value = 'create'
+            setState('creating', true)
             const docRef = doc(collection($fs.firestore.connection,refPath))
             if(options.timestamps){
                 newData = {
@@ -27,10 +64,9 @@ export const useFirestore = (key, options={}) => {
             }
             await callHook('fs:firestore:data', 'set' , refPath, newData)
             await setDoc(docRef, newData)
-            state.value = 'created'
+            setState('creating', false)
         } catch (error) {
-            state.value = 'error'
-            error.value = error
+            setState('error', error)
             console.log(error)
         }
     }
@@ -41,7 +77,7 @@ export const useFirestore = (key, options={}) => {
     const fsUpdateDoc = async (index=null, options = {timestamps:true}) => {
         try {
             const { updateDoc, serverTimestamp } = await $fs.firestore.lib()
-            state.value = 'update'
+            setState('updating', true)
             const refDoc = result.value[index].ref
             let dataUpdate = klona(result.value[index].data)
             if(options.timestamps){
@@ -52,10 +88,9 @@ export const useFirestore = (key, options={}) => {
             }
             await callHook('fs:firestore:data', 'update', refDoc.path ,dataUpdate)
             await updateDoc(refDoc, dataUpdate)
-            state.value = 'updated'
+            setState('updating', false)
         } catch (error) {
-            state.value = 'error'
-            error.value = error
+            setState('error', error)
             console.log(error)
         }
     }
@@ -63,13 +98,12 @@ export const useFirestore = (key, options={}) => {
     const fsDeleteDoc = async (index=null, options = {}) => {
         try {
             const { deleteDoc } = await $fs.firestore.lib()
-            state.value = 'delete'
+            setState('deleting', true)
             const refDoc = result.value[index].ref
             await deleteDoc(refDoc)
-            state.value = 'deleted'
+            setState('deleting', false)
         } catch (error) {
-            state.value = 'error'
-            error.value = error
+            setState('error', error)
             console.log(error)
         }
     }
@@ -99,9 +133,11 @@ export const useFirestore = (key, options={}) => {
             }
         }
         result.value = retValue
-        fetchDetails.value.query = isQuerySnapshot
-        fetchDetails.value.lastUpdate = process.client ? new Date().getTime() : false
-        if(process.client) state.value = 'fetched'
+        fetchDetails.query = isQuerySnapshot
+        fetchDetails.lastUpdate = process.client ? new Date().getTime() : false
+        if(process.client) {
+            setState('fetching', false)
+        }
     }
 
     const fsSubscribe = async (subFunc) => {
@@ -109,20 +145,19 @@ export const useFirestore = (key, options={}) => {
             let unsubscribeFunction = null
             onUnmounted(() => {
                 if(unsubscribeFunction) {
-                    fetchDetails.value.subscription = false
+                    fetchDetails.subscription = false
                     unsubscribeFunction()
                 }
             })
             try{
-                state.value = 'fetch'
+                setState('fetching', true)
                 //only allow one subscription at a time
-                if(!fetchDetails.value.subscription){
-                    fetchDetails.value.subscription = true
+                if(!fetchDetails.subscription){
+                    fetchDetails.subscription = true
                     unsubscribeFunction = await subFunc($fs.firestore.connection, await $fs.firestore.lib())
                 }
             } catch (error) {
-                state.value = 'error'
-                error.value = error
+                setState('error', error)
                 console.log(error)
             }
         }
@@ -157,7 +192,7 @@ export const useFirestore = (key, options={}) => {
                 if (_asyncDataPromises[key] && !force) {
                   return _asyncDataPromises[key]
                 }
-                state.value = 'fetch'
+                setState('fetching', true)
                 // TODO: Cancel previus promise
                 // TODO: Handle immediate errors
                 _asyncDataPromises[key] = Promise.resolve(fetchFunc($fs.firestore.connection, await $fs.firestore.lib()))
@@ -167,12 +202,11 @@ export const useFirestore = (key, options={}) => {
                     }
                   })
                   .catch((fetchError) => {
-                    state.value = 'error'
-                    error.value = fetchError
+                    setState('error', fetchError)
                     console.log(fetchError)
                   })
                   .finally(() => {
-                    state.value = 'fetched'
+                    setState('fetching', false)
                     delete _asyncDataPromises[key]
                   })
                 return _asyncDataPromises[key]
@@ -183,8 +217,7 @@ export const useFirestore = (key, options={}) => {
                 try{
                     instance._nuxtOnBeforeMountCbs.push(reFetch.call)
                 } catch (error) {
-                    state.value = 'error'
-                    error.value = error
+                    setState('error', error)
                     console.log(error)
                 }
             }
@@ -206,8 +239,7 @@ export const useFirestore = (key, options={}) => {
                 const fetchResult = await fetchFunc({...$fs.firestore})
                 updateResult(fetchResult)
             } catch (error) {
-                state.value = 'error'
-                error.value = error
+                setState('error', error)
                 console.log(error)
             }   
         }
@@ -232,8 +264,8 @@ export const useFirestore = (key, options={}) => {
         fetch: fsFetch,
         serverFetch: fsServerFetch,
         result: result,
-        state: state,
-        fetchDetails: fetchDetails,
+        state: toRefs(state),
+        fetchDetails: toRefs(fetchDetails),
         error: error
     }
 }
