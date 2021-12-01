@@ -1,22 +1,20 @@
-import { useNuxtApp, useState } from '#app'
-import { onUnmounted, onBeforeMount, getCurrentInstance, toRefs, reactive, isReactive, set as setReactive } from '@vue/composition-api'
+import { useNuxtApp } from '#app'
+import { onUnmounted, onBeforeMount, getCurrentInstance, toRefs, toRef, set } from '@vue/composition-api'
 import { klona } from 'klona'
-
-let firestoreGlobalState = {}
 
 export const useFirestore = (key, options={}) => {
     if (typeof key !== 'string') {
         throw new TypeError('useFirestore key must be a string')
     }
-    const { $fs, callHook, isHydrating, _asyncDataPromises } = useNuxtApp()
-    const result = useState(`${key}FirestoreResult`)
-    const error = useState(`FiresteadError`)
-    //init state that needs to be reactive and not hydrated
-    if (!isReactive(firestoreGlobalState)) {
-        firestoreGlobalState = reactive(firestoreGlobalState)
+    const { $fs, callHook, isHydrating, _asyncDataPromises, payload } = useNuxtApp()
+
+    //add states
+    if (!(`${key}FirestoreResult` in payload.state)) {
+        set(payload.state, `${key}FirestoreResult`, payload.state[`${key}FirestoreResult`])
     }
-    if (!(`${key}FirestoreState` in firestoreGlobalState)) {
-        setReactive(firestoreGlobalState, `${key}FirestoreState`, {
+    const result = toRef(payload.state, `${key}FirestoreResult`)
+    if (!(`${key}FirestoreState` in payload.state)) {
+        set(payload.state, `${key}FirestoreState`, {
             pending: false,
             fetching: false,
             creating: false,
@@ -25,11 +23,19 @@ export const useFirestore = (key, options={}) => {
             error: false
         })
     }
-    const state = firestoreGlobalState[`${key}FirestoreState`]
-    if (!(`${key}FirestoreFetchDetails` in firestoreGlobalState)){
-        setReactive(firestoreGlobalState, `${key}FirestoreFetchDetails`, {})
+    const state = payload.state[`${key}FirestoreState`]
+    if (!(`${key}FirestoreFetchDetails` in payload.state)){
+        if(payload.state[`${key}FirestoreFetchDetails`]){
+            set(payload.state, `${key}FirestoreFetchDetails`, payload.state[`${key}FirestoreFetchDetails`])
+        }else{
+            set(payload.state, `${key}FirestoreFetchDetails`, {
+                query: null,
+                lastUpdate: null,
+                subscription: null
+            })
+        }
     }
-    const fetchDetails = firestoreGlobalState[`${key}FirestoreFetchDetails`]
+    const fetchDetails = payload.state[`${key}FirestoreFetchDetails`]
 
     const reFetch = {}
 
@@ -206,7 +212,6 @@ export const useFirestore = (key, options={}) => {
                     console.log(fetchError)
                   })
                   .finally(() => {
-                    setState('fetching', false)
                     delete _asyncDataPromises[key]
                   })
                 return _asyncDataPromises[key]
@@ -239,7 +244,6 @@ export const useFirestore = (key, options={}) => {
                 const fetchResult = await fetchFunc({...$fs.firestore})
                 updateResult(fetchResult)
             } catch (error) {
-                setState('error', error)
                 console.log(error)
             }   
         }
@@ -265,7 +269,6 @@ export const useFirestore = (key, options={}) => {
         serverFetch: fsServerFetch,
         result: result,
         state: toRefs(state),
-        fetchDetails: toRefs(fetchDetails),
-        error: error
+        fetchDetails: toRefs(fetchDetails)
     }
 }

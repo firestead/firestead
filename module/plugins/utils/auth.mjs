@@ -1,4 +1,4 @@
-import { useState } from '#app'
+import { set } from '@vue/composition-api'
 
 let unsubscribeAuthStateListener = null
 let unsubscribeIdTokenListener = null
@@ -31,17 +31,10 @@ const getUserData = (authUser) => {
   }
 }
 
-export const clientAuth = async (connection, options = {}) =>{
-    const authState = useState('FiresteadAuth')
-    if(!authState.value){
-      authState.value =  {
-        authenticated: false,
-        user: null,
-        claims: null
-      }
-    }
-    const isAuthenticated = useState('FiresteadIsAuthenticated')
-    if(!isAuthenticated.value) isAuthenticated.value = false
+export const clientAuth = async (nuxtApp, connection, options = {}) =>{
+    //init and hydrate auth state
+    set(nuxtApp.payload.state, 'FiresteadAuth', nuxtApp.payload.state['FiresteadAuth'])
+    const { FiresteadAuth } = nuxtApp.payload.state
     const onAuthStateChanged = (await import('@firebase/auth')).onAuthStateChanged
     const onIdTokenChanged = (await import('@firebase/auth')).onIdTokenChanged
     const promises = []
@@ -49,11 +42,10 @@ export const clientAuth = async (connection, options = {}) =>{
       promises.push(new Promise(resolve => {
         unsubscribeAuthStateListener = onAuthStateChanged(connection, async authUser => {
             const claims = authUser ? (await authUser.getIdTokenResult(true)).claims : null
-            authState.value.authenticated = authUser ? true : false
-            isAuthenticated.value = authUser ? true : false
+            FiresteadAuth.isAuthenticated = authUser ? true : false
             if(authUser){
-                authState.value.user = getUserData(authUser)
-                authState.value.claims = claims
+              FiresteadAuth.user = getUserData(authUser)
+              FiresteadAuth.claims = claims
             }
             resolve()
         })
@@ -64,11 +56,10 @@ export const clientAuth = async (connection, options = {}) =>{
       promises.push(new Promise(resolve => {
         unsubscribeIdTokenListener = onIdTokenChanged(connection, async authUser => {
             const claims = authUser ? (await authUser.getIdTokenResult(true)).claims : null
-            authState.value.authenticated = authUser ? true : false
-            isAuthenticated.value = authUser ? true : false
+            FiresteadAuth.isAuthenticated = authUser ? true : false
             if(authUser){
-                authState.value.user = getUserData(authUser)
-                authState.value.claims = claims
+              FiresteadAuth.user = getUserData(authUser)
+              FiresteadAuth.claims = claims
             }
             resolve()
         })
@@ -77,16 +68,15 @@ export const clientAuth = async (connection, options = {}) =>{
     return Promise.all(promises)
   }
 
-  export const serverAuth = async (req, res, options = {}) =>{
-    const authState = useState('FiresteadAuth')
-    if(!authState.value){
-      authState.value =  {
-        authenticated: false,
-        user: null,
-        claims: null
-      }
-    }
-    const isAuthenticated = useState('FiresteadIsAuthenticated', () => false)
+  export const serverAuth = async (nuxtApp, options = {}) =>{
+    const { req, res } = nuxtApp.ssrContext
+    //set initial auth state
+    set(nuxtApp.payload.state, 'FiresteadAuth', {
+      isAuthenticated: false,
+      user: null,
+      claims: null
+    })
+    const { FiresteadAuth } = nuxtApp.payload.state
     const { useCookie, setCookie } = await import('h3')
     const session = useCookie(req, 'session')
     if(session){
@@ -95,10 +85,9 @@ export const clientAuth = async (connection, options = {}) =>{
         const auth = getAuth()
         const decodedClaims = await auth.verifySessionCookie(session)
         const authUser = await auth.getUser(decodedClaims.sub)
-        authState.value.user = getUserData(authUser)
-        authState.value.claims = decodedClaims
-        authState.value.authenticated = true
-        isAuthenticated.value = true
+        FiresteadAuth.user = getUserData(authUser)
+        FiresteadAuth.claims = decodedClaims
+        FiresteadAuth.isAuthenticated = true
       } catch (error) {
         //TODO: better error management, check the reason of the error
         //remove session cookie

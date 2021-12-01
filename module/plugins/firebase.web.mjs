@@ -50,7 +50,7 @@ export default defineNuxtPlugin(async (nuxtApp) => {
     }
 
     //auth user
-    await clientAuth(authConnection)
+    await clientAuth(nuxtApp, authConnection)
 
 
     nuxtApp.provide('fs', {

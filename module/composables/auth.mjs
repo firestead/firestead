@@ -1,4 +1,5 @@
-import { useNuxtApp, useState } from '#app'
+import { useNuxtApp } from '#app'
+import { toRefs } from '@vue/composition-api'
 
 const postSessionCookie = async (authResp) => {
     const idToken = await authResp.user.getIdToken()
@@ -10,9 +11,7 @@ const postSessionCookie = async (authResp) => {
 }
 
 export const useAuth = () => {
-    const { $fs } = useNuxtApp()
-    const isAuthenticated = useState('FiresteadIsAuthenticated')
-    const authState = useState('FiresteadAuth')
+    const { $fs, payload } = useNuxtApp()
 
     const fsSignInWithEmailAndPassword = async (email, password) => {
         const { signInWithEmailAndPassword } = await $fs.auth.lib()
@@ -39,7 +38,6 @@ export const useAuth = () => {
         signInWithEmailAndPassword: fsSignInWithEmailAndPassword,
         createUserWithEmailAndPassword: fsCreateUserWithEmailAndPassword,
         signOut: fsSignOut,
-        isAuthenticated,
-        authState
+        ...toRefs(payload.state['FiresteadAuth'])
     }
 }

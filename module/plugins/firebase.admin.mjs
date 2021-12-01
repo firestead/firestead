@@ -18,8 +18,8 @@ export default defineNuxtPlugin(async (nuxtApp) => {
             ssl: false
         })
     }
-    const { req, res } = nuxtApp.ssrContext
-    await serverAuth(req, res)
+
+    await serverAuth(nuxtApp)
 
     // firestore admin sdk can not be async loaded in composable, so it must be provided in the context
     // TODO: check if this is a bug in nuxt 3
