@@ -7,7 +7,7 @@
         "firestead",
         "firebase"
     ],
-    "version": "0.0.31",
+    "version": "0.0.32-dev",
     "type": "module",
     "license": "MIT",
     "author": {

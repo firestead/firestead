@@ -57,6 +57,10 @@ export default defineNuxtPlugin(async (nuxtApp) => {
         auth: {
             unsubscribe: authUnsubscribe,
             connection: authConnection,
+            options: {
+                sessionUrl: '/fsApi/auth/session',
+                signOutUrl: '/fsApi/auth/signout'
+            },
             lib: async () => await import('@firebase/auth')
         },
         firestore: {

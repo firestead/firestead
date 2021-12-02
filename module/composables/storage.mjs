@@ -1,26 +1,40 @@
-import { useNuxtApp, useState } from '#app'
+import { useNuxtApp } from '#app'
+import { toRefs, set } from '@vue/composition-api'
 
 export const useStorage = (key='default', options= {}) => {
-    const { $fs } = useNuxtApp()
-    // init states
-    const url = useState(`${key}StorageUploadUrl`,() => null)
-    const state = useState(`${key}StorageUploadState`)
-    const uploadDetails = useState(`${key}StorageUploadDetails`)
-    const progress = useState(`${key}StorageUploadProgress`)
-    const error = useState(`FiresteadError`)
-    //reset state defaults
+    const { $fs, payload } = useNuxtApp()
+    // init state
+    if (!(`${key}FiresteadStorage` in payload.state)) {
+        set(payload.state, `${key}FiresteadStorage`, {
+            url: null,
+            state: false,
+            progress: 0,
+            bytesTransferred: 0,
+            totalBytes: 0,
+            error: false
+        })
+    }
+    const storageData = payload.state[`${key}FiresteadStorage`]
+
     let fsStorageRef = null
-    state.value = false
-    uploadDetails.value = {}
-    progress.value = 0
+
+    const resetStorageData = (error=false) => {
+        storageData.url = null
+        storageData.state = false
+        storageData.progress = 0
+        storageData.bytesTransferred = 0
+        storageData.totalBytes = 0
+        storageData.error = error
+        if(error) console.log(error)
+    }
 
     const createRef = async (path, bucket = null) => {
         const { ref } = await $fs.storage.lib()
         try {
             fsStorageRef = ref($fs.storage.connection, path)
+            resetStorageData()
         } catch (refError) {
-            error.value = refError
-            console.log(refError)
+            resetStorageData(refError)
         }
         return true
     }
@@ -34,15 +48,15 @@ export const useStorage = (key='default', options= {}) => {
             task.on('state_changed',
             (snapshot) => {
                 // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
-                progress.value = (snapshot.bytesTransferred / snapshot.totalBytes) * 100
-                uploadDetails.value.bytesTransferred = snapshot.bytesTransferred
-                uploadDetails.value.totalBytes = snapshot.totalBytes
+                storageData.progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100
+                storageData.bytesTransferred = snapshot.bytesTransferred
+                storageData.totalBytes = snapshot.totalBytes
                 switch (snapshot.state) {
                     case 'paused':
-                        state.value = 'paused'
+                        storageData.state = 'paused'
                         break
                     case 'running':
-                        state.value = 'running'
+                        storageData.state = 'running'
                         break
                     default:
                         console.log('Unknown state', snapshot.state)
@@ -52,17 +66,15 @@ export const useStorage = (key='default', options= {}) => {
             (storageError) => {
                 // A full list of error codes is available at
                 // https://firebase.google.com/docs/storage/web/handle-errors
-                error.value = storageError
-                console.log(storageError)
+                resetStorageData(storageError)
             }, 
             async () => {
                 // Upload completed successfully, now we can get the download URL
-                state.value = 'complete'
+                storageData.state = 'complete'
                 try {
-                    url.value = await getDownloadURL(task.snapshot.ref)
+                    storageData.url = await getDownloadURL(task.snapshot.ref)
                 } catch (storageError) {
-                    error.value = storageError
-                    console.log(storageError)
+                    resetStorageData(storageError)
                 }
             })
         }
@@ -71,11 +83,7 @@ export const useStorage = (key='default', options= {}) => {
     }
 
     return {
-        url,
-        state,
-        uploadDetails,
-        progress,
-        error,
+        ...toRefs(storageData),
         createRef,
         upload
     }
