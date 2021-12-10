@@ -23,10 +23,10 @@ export function createFiresteadContext({options, hooks, hook}){
         firebase: {
             config: options?.firestead?.config || {},
             rollupConfig: undefined,
-            runtimeDir: getFullPath('build/runtime/functions')
+            runtimeDir: getFullPath('runtime/functions')
         },
         ui:{
-            runtimeDir: getFullPath('build/runtime/ui'),
+            runtimeDir: getFullPath('runtime/ui'),
             rollupConfig: undefined,
             buildRuntimeDir: undefined,
             pagesDir: undefined,

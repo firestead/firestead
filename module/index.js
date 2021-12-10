@@ -42,7 +42,7 @@ const firestead = defineNuxtModule({
         }
         //add plugin utils
         addTemplate({
-            src: resolve(dirname(fileURLToPath(import.meta.url)), 'plugins/utils/auth.mjs'),
+            src: resolve(dirname(fileURLToPath(import.meta.url)), 'plugins/utils/auth.js'),
             filename: 'utils.auth.js',
             mode: 'client'
         })
@@ -52,14 +52,14 @@ const firestead = defineNuxtModule({
         }
         //Firebase server client sdk for web
         addPluginTemplate({
-          src: resolve(dirname(fileURLToPath(import.meta.url)), 'plugins/firebase.web.mjs'),
+          src: resolve(dirname(fileURLToPath(import.meta.url)), 'plugins/firebase.web.js'),
           filename: 'firebase.web.js',
           mode: 'client',
           options: {...firebaseConfig}
         })
         //Firebase server admin sdk for web
         addPluginTemplate({
-          src: resolve(dirname(fileURLToPath(import.meta.url)), 'plugins/firebase.admin.mjs'),
+          src: resolve(dirname(fileURLToPath(import.meta.url)), 'plugins/firebase.admin.js'),
           filename: 'firebase.admin.js',
           mode: 'server'
         })
@@ -86,7 +86,7 @@ const firestead = defineNuxtModule({
         //add firestead composables -> Todo: fs plugins can add composables
         const composables = [{
           functions: ['useAuth','useFirestore','useStorage','useAsyncFunction'],
-          file: resolve(dirname(fileURLToPath(import.meta.url)),'composables/index.mjs')
+          file: resolve(dirname(fileURLToPath(import.meta.url)),'composables/index.js')
         }]
         nuxt.hook('autoImports:extend', (autoImports)=>{
           for(const composable of composables){

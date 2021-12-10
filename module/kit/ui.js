@@ -1,19 +1,3 @@
-/*
-Add JS API for UI topnav and sidebar nav
-- const navigation = initNavigation(firesteadContext)
-- const navMenu = navigation.createMenu('home', '/', 'Home')
-- const sidebar = navMenu.createSidebar()
-- sidebar.createMenu('overview','/','Overview')
-
-navigation.getNavbar()
-navigation.getMenu('home)
-navigation.isSidebar('home')
-navigation.getSidebar('home')
-navMenu.getSidebar()
-navMenu.isSidebar()
-navMenu.disableSidebar()
-*/
-
 import { useFiresteadContext } from './context'
 
 export function getUINavigation(){
