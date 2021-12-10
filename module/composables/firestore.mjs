@@ -241,7 +241,7 @@ export const useFirestore = (key, options={}) => {
         }
         if(process.server){
             try{
-                const fetchResult = await fetchFunc({...$fs.firestore})
+                const fetchResult = await fetchFunc($fs.firestore.db)
                 updateResult(fetchResult)
             } catch (error) {
                 console.log(error)

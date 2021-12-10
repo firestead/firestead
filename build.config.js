@@ -32,6 +32,7 @@ export default defineBuildConfig({
     '@vercel/nft',
     'ufo',
     'hash-sum',
+    'unctx',
     'esbuild',
     '#app',
     '#build'

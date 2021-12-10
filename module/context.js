@@ -1,13 +1,14 @@
 import { resolveModule } from '@nuxt/kit-edge'
 import { dirname, resolve } from 'pathe'
 import { fileURLToPath } from 'url'
-import { getFirebaseRollupConfig, getUIRollupConfig } from './rollup/config'
+import { getFirebaseRollupConfig, getUIRollupConfig } from './build/rollup/config'
+import { firesteadCtx } from './kit/context'
 
 function getFullPath(dir){
     return resolve(dirname(fileURLToPath(import.meta.url)),dir)
 }
 
-export function getFiresteadContext({options, hooks, hook}){
+export function createFiresteadContext({options, hooks, hook}){
     const firesteadContext = {
         hooks: hooks,
         hook: hook,
@@ -22,14 +23,16 @@ export function getFiresteadContext({options, hooks, hook}){
         firebase: {
             config: options?.firestead?.config || {},
             rollupConfig: undefined,
-            runtimeDir: getFullPath('runtime/functions')
+            runtimeDir: getFullPath('build/runtime/functions')
         },
         ui:{
-            runtimeDir: getFullPath('runtime/ui'),
+            runtimeDir: getFullPath('build/runtime/ui'),
             rollupConfig: undefined,
             buildRuntimeDir: undefined,
             pagesDir: undefined,
-            routes: []
+            routes: [],
+            navbar: [],
+            sidebar: []
         },
         _nuxt: {
             dev: options.dev,
@@ -46,6 +49,9 @@ export function getFiresteadContext({options, hooks, hook}){
 
     //add firebase context
     firesteadContext.firebase.rollupConfig = getFirebaseRollupConfig(firesteadContext)
+
+    //create global firestead context
+    firesteadCtx.set(firesteadContext)
 
     return firesteadContext
 }

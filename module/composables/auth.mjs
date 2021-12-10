@@ -37,9 +37,11 @@ const fsSignOut = async () => {
 }
 
 //First testing of an auth middleware
+/*
 const secureMiddleware = async(guest = false) => {
     const { payload, ssrContext } = useNuxtApp()
     const { FiresteadAuth } = payload.state
+    const router = useRouter()
 
     const redirect = async(path) => {
         if (!!ssrContext) {
@@ -53,12 +55,14 @@ const secureMiddleware = async(guest = false) => {
         return await useRouter().push(path)
     }
 
-    if (guest && !!FiresteadAuth.isAuthenticated) {
-        return redirect('/')
-    } else if (!guest && !FiresteadAuth.isAuthenticated) {
-        return redirect('/auth')
-    }
-}
+    router.beforeEach((to, from) => {
+        if (guest && !!FiresteadAuth.isAuthenticated) {
+            return redirect('/')
+        } else if (!guest && !FiresteadAuth.isAuthenticated) {
+            return redirect('/auth')
+        }
+    })
+}*/
 
 export const useAuth = () => {
     const { payload } = useNuxtApp()
@@ -68,7 +72,6 @@ export const useAuth = () => {
         signInWithEmailAndPassword: fsSignInWithEmailAndPassword,
         createUserWithEmailAndPassword: fsCreateUserWithEmailAndPassword,
         signOut: fsSignOut,
-        secureMiddleware,
         ...toRefs(FiresteadAuth)
     }
 }

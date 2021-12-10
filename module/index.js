@@ -3,7 +3,7 @@ import { fileURLToPath } from 'url'
 import chalk from 'chalk'
 import { addPluginTemplate, addServerMiddleware, addTemplate, defineNuxtModule, isNuxt2, requireModulePkg } from '@nuxt/kit-edge'
 import {runEmulator} from './emulator'
-import { getFiresteadContext } from './build/context'
+import { createFiresteadContext } from './context'
 import { prepare, bundleUI, bundleFirebase } from './build'
 import { writePackageJson, writeFirebaseDefaults } from './build/config'
 import fsApi from './middleware/fsApi'
@@ -21,7 +21,7 @@ const firestead = defineNuxtModule({
         }
         const { version } = requireModulePkg('firestead')
         console.log(`${chalk.bold.green('!')} ${chalk.bold.yellow('Firestead:')} ${chalk.bold.green('Running Firestead v' + version)}`)
-        const firesteadContext = getFiresteadContext(nuxt)
+        const firesteadContext = createFiresteadContext(nuxt)
         //add firestead build dir to node env -> TODO: find better way to add build dir to middleware
         process.env.FIRESTEAD_BUILD_DIR = `${nuxt.options.rootDir}/${firesteadContext.buildDir}`
         if(!firebaseEmulator && nuxt.options.dev){
