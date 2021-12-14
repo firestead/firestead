@@ -1,0 +1,14 @@
+{
+  "private": true,
+  "scripts": {
+    "dev": "nuxi dev",
+    "build": "nuxi build",
+    "start": "node .output/server/index.mjs"
+  },
+  "devDependencies": {
+    "faker": "^5.5.3",
+    "firestead": "0.0.34",
+    "nuxt-windicss": "latest",
+    "nuxt3": "latest"
+  }
+}

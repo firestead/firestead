@@ -1,48 +1,30 @@
 {
-    "name": "firestead",
-    "description": "firestead - build webapps with nuxt and firebase",
-    "keywords": [
-        "nuxt",
-        "nuxt-module",
-        "firestead",
-        "firebase"
-    ],
-    "version": "0.0.33",
+    "name": "firestead-monorepo",
     "type": "module",
     "license": "MIT",
-    "author": {
-        "name": "Johannes Hof",
-        "email": "johannes@disedia.com"
-    },
-    "files": ["dist"],
+    "workspaces": [
+        "packages/*",
+        "demo"
+    ],
     "scripts": {
-        "dev": "unbuild --stub && ./node_modules/windicss/cli/index.js './module/ui/**/*.vue' -to ./module/ui/assets/style.css --config './module/ui/windi.config.cjs' --dev",
-        "prepack": "NODE_OPTIONS='--max-old-space-size=4096' unbuild"
+        "build": "FORCE_COLOR=1 lerna run prepack --stream --no-prefix",
+        "stub": "lerna run prepack -- --stub",
+        "nuxi": "./node_modules/.bin/nuxi",
+        "demo": "yarn run nuxi dev demo",
+        "watch:ui": "./node_modules/windicss/cli/index.js './packages/ui/src/**/*.vue' -to ./packages/ui/src/assets/style.css --config './packages/ui/windi.config.cjs' --dev"
     },
-    "exports": {
-        ".": "./dist/module.mjs",
-        "./composables": "./dist/composables/index.js",
-        "./nitro": "./dist/nitro/preset.js",
-        "./package.json": "./package.json"
-    },
-    "dependencies": {
-        "rollup-plugin-postcss": "^4.0.1",
-        "@vue/compiler-sfc": "^3.2.22",
-        "rollup-plugin-vue": "^6.0.0",
-        "ufo": "^0.7.9",
-        "@nuxt/kit-edge": "latest",
-        "firebase": "^9.6.1",
-        "firebase-admin": "^10.0.0",
-        "firebase-functions": "^3.16.0",
-        "h3": "^0.3.3",
-        "chalk": "^4.1.1",
-        "@vercel/nft": "^0.17.0",
-        "unctx": "^1.0.2",
-        "klona": "^2.0.5",
-        "pathe": "^0.2.0"
+    "resolutions": {
+        "firestead": "workspace:./packages/module",
+        "unbuild": "^0.5.13",
+        "jiti": "^1.12.9"
     },
     "devDependencies": {
-        "unbuild": "latest",
-        "windicss": "latest"
+        "jiti": "^1.12.9",
+        "lerna": "^4.0.0",
+        "unbuild": "^0.5.13"
+    },
+    "packageManager": "yarn@3.1.1",
+    "engines": {
+        "node": "^14.16.0 || ^16.11.0 || ^17.0.0"
     }
-  }
+}

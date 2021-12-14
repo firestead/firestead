@@ -1,0 +1,27 @@
+{
+    "name": "@firestead/ui",
+    "description": "firestead UI - UI for firestead",
+    "repository": "firestead/firestead",
+    "keywords": [
+        "nuxt",
+        "nuxt-module",
+        "firestead",
+        "firebase"
+    ],
+    "version": "0.0.0",
+    "type": "module",
+    "license": "MIT",
+    "files": [
+        "dist"
+    ],
+    "scripts": {
+        "prepack": "unbuild"
+    },
+    "devDependencies": {
+        "unbuild": "^0.5.13",
+        "windicss": "3.2.1"
+    },
+    "engines": {
+        "node": "^14.16.0 || ^16.11.0 || ^17.0.0"
+    }
+}

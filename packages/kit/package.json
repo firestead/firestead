@@ -1,0 +1,31 @@
+{
+    "name": "@firestead/kit",
+    "description": "firestead kit - build add-ons for firestead",
+    "repository": "firestead/firestead",
+    "keywords": [
+        "nuxt",
+        "nuxt-module",
+        "firestead",
+        "firebase"
+    ],
+    "version": "0.0.0",
+    "type": "module",
+    "license": "MIT",
+    "files": [
+        "dist"
+    ],
+    "scripts": {
+        "prepack": "unbuild"
+    },
+    "exports": {
+        ".": "./dist/index.mjs",
+        "./package.json": "./package.json"
+    },
+    "dependencies": {
+        "jiti": "^1.12.9",
+        "unctx": "^1.0.2"
+    },
+    "devDependencies": {
+        "unbuild": "^0.5.13"
+    }
+}
