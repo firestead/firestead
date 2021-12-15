@@ -22,10 +22,6 @@
         "./package.json": "./package.json"
     },
     "dependencies": {
-        "jiti": "^1.12.9",
         "unctx": "^1.0.2"
-    },
-    "devDependencies": {
-        "unbuild": "^0.5.13"
     }
 }

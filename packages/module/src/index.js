@@ -21,6 +21,7 @@ const firestead = defineNuxtModule({
         }
         const { version } = requireModulePkg('firestead')
         console.log(`${chalk.bold.green('!')} ${chalk.bold.yellow('Firestead:')} ${chalk.bold.green('Running Firestead v' + version)}`)
+
         const firesteadContext = createFiresteadContext(nuxt)
         //add firestead build dir to node env -> TODO: find better way to add build dir to middleware
         process.env.FIRESTEAD_BUILD_DIR = `${nuxt.options.rootDir}/${firesteadContext.buildDir}`
@@ -40,12 +41,14 @@ const firestead = defineNuxtModule({
             firebaseEmulator = await runEmulator(firesteadContext)
           } 
         }
+
         //add plugin utils
         addTemplate({
             src: resolve(dirname(fileURLToPath(import.meta.url)), 'plugins/utils/auth.js'),
             filename: 'utils.auth.js',
             mode: 'client'
         })
+
         const firebaseConfig = {
           dev: nuxt.options.dev,
           config: options?.config || {}
@@ -57,14 +60,17 @@ const firestead = defineNuxtModule({
           mode: 'client',
           options: {...firebaseConfig}
         })
+        
         //Firebase server admin sdk for web
         addPluginTemplate({
           src: resolve(dirname(fileURLToPath(import.meta.url)), 'plugins/firebase.admin.js'),
           filename: 'firebase.admin.js',
           mode: 'server'
         })
+    
         //build fs ui
         await bundleUI(firesteadContext)
+
         // firestead ui server middleware
         addServerMiddleware({
           route: '/fs',
@@ -75,6 +81,7 @@ const firestead = defineNuxtModule({
           route: '/fsApi',
           handle: fsApi
         })
+      
         //TODO: find a way to add init firebase-admin sdk to api server
         //currently plugins are not loaded on api server and middleware does not work
         //addServerMiddleware({

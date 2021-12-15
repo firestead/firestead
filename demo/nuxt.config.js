@@ -1,7 +1,7 @@
 import { defineNuxtConfig } from 'nuxt3'
 
 export default defineNuxtConfig({
-    ssr: true,
+    ssr: false, //needs to be false until ssr fix in workspaces context
     buildModules: [
         'nuxt-windicss',
         'firestead'
@@ -10,7 +10,7 @@ export default defineNuxtConfig({
         apiKey: 'TestKey'
     },
     firestead: {
-        disableEmulator: true, 
+        disableEmulator: false, 
         buildDir: '_firestead',
         functionsDir: 'server/firebase',
         config: {

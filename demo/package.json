@@ -7,7 +7,7 @@
   },
   "devDependencies": {
     "faker": "^5.5.3",
-    "firestead": "0.0.34",
+    "firestead": "latest",
     "nuxt-windicss": "latest",
     "nuxt3": "latest"
   }

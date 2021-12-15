@@ -3,6 +3,7 @@ import runtimeConfig from '#config'
 
 export default async (req, res) => {
     console.log(runtimeConfig)
+    /*
     //const db = getFirestore()
     const snapshot = await req.firestore.collection('Todos').get()
     const retValue = []
@@ -13,6 +14,6 @@ export default async (req, res) => {
                 ...doc.data()
             }
         })
-    })
-    return retValue
+    })*/
+    return runtimeConfig
 }

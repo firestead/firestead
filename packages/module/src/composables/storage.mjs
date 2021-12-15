@@ -4,8 +4,8 @@ import { toRefs, set } from '@vue/composition-api'
 export const useStorage = (key='default', options= {}) => {
     const { $fs, payload } = useNuxtApp()
     // init state
-    if (!(`${key}FiresteadStorage` in payload.state)) {
-        set(payload.state, `${key}FiresteadStorage`, {
+    if (!(`${key}FirebaseStorage` in payload.state)) {
+        set(payload.state, `${key}FirebaseStorage`, {
             url: null,
             state: false,
             progress: 0,
@@ -14,7 +14,7 @@ export const useStorage = (key='default', options= {}) => {
             error: false
         })
     }
-    const storageData = payload.state[`${key}FiresteadStorage`]
+    const storageData = payload.state[`${key}FirebaseStorage`]
 
     let fsStorageRef = null
 

@@ -38,12 +38,12 @@ const fsSignOut = async () => {
 
 export const useAuth = () => {
     const { payload } = useNuxtApp()
-    const { FiresteadAuth } = payload.state
+    const { FirebaseAuth } = payload.state
 
     return {
         signInWithEmailAndPassword: fsSignInWithEmailAndPassword,
         createUserWithEmailAndPassword: fsCreateUserWithEmailAndPassword,
         signOut: fsSignOut,
-        ...toRefs(FiresteadAuth)
+        ...toRefs(FirebaseAuth)
     }
 }

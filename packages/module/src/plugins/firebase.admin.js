@@ -1,9 +1,10 @@
 import { defineNuxtPlugin  } from '#app'
+import { serverAuth } from '#build/utils.auth.js'
 import { initializeApp, getApps } from 'firebase-admin/app'
 import { getFirestore } from 'firebase-admin/firestore'
-import { serverAuth } from '#build/utils.auth.js'
 
 export default defineNuxtPlugin(async (nuxtApp) => {
+
     const apps = getApps()
     if (!apps.length) {
         initializeApp({ 

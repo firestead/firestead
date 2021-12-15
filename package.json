@@ -15,13 +15,13 @@
     },
     "resolutions": {
         "firestead": "workspace:./packages/module",
-        "unbuild": "^0.5.13",
-        "jiti": "^1.12.9"
+        "@firestead/kit": "workspace:./packages/kit",
+        "@firestead/ui": "workspace:./packages/ui"
     },
     "devDependencies": {
         "jiti": "^1.12.9",
         "lerna": "^4.0.0",
-        "unbuild": "^0.5.13"
+        "unbuild": "^0.5.9"
     },
     "packageManager": "yarn@3.1.1",
     "engines": {

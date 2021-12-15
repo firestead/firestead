@@ -33,8 +33,16 @@ const getUserData = (authUser) => {
 
 export const clientAuth = async (nuxtApp, connection, options = {}) =>{
     //init and hydrate auth state
-    set(nuxtApp.payload.state, 'FiresteadAuth', nuxtApp.payload.state['FiresteadAuth'])
-    const { FiresteadAuth } = nuxtApp.payload.state
+    if(nuxtApp.payload.state['FirebaseAuth']){
+      set(nuxtApp.payload.state, 'FirebaseAuth', nuxtApp.payload.state['FirebaseAuth'])
+    }else{
+      set(nuxtApp.payload.state, 'FirebaseAuth', {
+        isAuthenticated: false,
+        user: null,
+        claims: null
+      })
+    }
+    const { FirebaseAuth } = nuxtApp.payload.state
     const onAuthStateChanged = (await import('@firebase/auth')).onAuthStateChanged
     const onIdTokenChanged = (await import('@firebase/auth')).onIdTokenChanged
     const promises = []
@@ -42,10 +50,10 @@ export const clientAuth = async (nuxtApp, connection, options = {}) =>{
       promises.push(new Promise(resolve => {
         unsubscribeAuthStateListener = onAuthStateChanged(connection, async authUser => {
             const claims = authUser ? (await authUser.getIdTokenResult(true)).claims : null
-            FiresteadAuth.isAuthenticated = authUser ? true : false
+            FirebaseAuth.isAuthenticated = authUser ? true : false
             if(authUser){
-              FiresteadAuth.user = getUserData(authUser)
-              FiresteadAuth.claims = claims
+              FirebaseAuth.user = getUserData(authUser)
+              FirebaseAuth.claims = claims
             }
             resolve()
         })
@@ -56,10 +64,10 @@ export const clientAuth = async (nuxtApp, connection, options = {}) =>{
       promises.push(new Promise(resolve => {
         unsubscribeIdTokenListener = onIdTokenChanged(connection, async authUser => {
             const claims = authUser ? (await authUser.getIdTokenResult(true)).claims : null
-            FiresteadAuth.isAuthenticated = authUser ? true : false
+            FirebaseAuth.isAuthenticated = authUser ? true : false
             if(authUser){
-              FiresteadAuth.user = getUserData(authUser)
-              FiresteadAuth.claims = claims
+              FirebaseAuth.user = getUserData(authUser)
+              FirebaseAuth.claims = claims
             }
             resolve()
         })
@@ -71,12 +79,12 @@ export const clientAuth = async (nuxtApp, connection, options = {}) =>{
   export const serverAuth = async (nuxtApp, options = {}) =>{
     const { req, res } = nuxtApp.ssrContext
     //set initial auth state
-    set(nuxtApp.payload.state, 'FiresteadAuth', {
+    set(nuxtApp.payload.state, 'FirebaseAuth', {
       isAuthenticated: false,
       user: null,
       claims: null
     })
-    const { FiresteadAuth } = nuxtApp.payload.state
+    const { FirebaseAuth } = nuxtApp.payload.state
     const { useCookie, setCookie } = await import('h3')
     const session = useCookie(req, 'session')
     if(session){
@@ -85,9 +93,9 @@ export const clientAuth = async (nuxtApp, connection, options = {}) =>{
         const auth = getAuth()
         const decodedClaims = await auth.verifySessionCookie(session)
         const authUser = await auth.getUser(decodedClaims.sub)
-        FiresteadAuth.user = getUserData(authUser)
-        FiresteadAuth.claims = decodedClaims
-        FiresteadAuth.isAuthenticated = true
+        FirebaseAuth.user = getUserData(authUser)
+        FirebaseAuth.claims = decodedClaims
+        FirebaseAuth.isAuthenticated = true
       } catch (error) {
         //TODO: better error management, check the reason of the error
         //remove session cookie

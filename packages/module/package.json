@@ -24,8 +24,7 @@
         "./package.json": "./package.json"
     },
     "dependencies": {
-        "@firestead/kit": "^0.0.0",
-        "@firestead/ui": "^0.0.0",
+        "@firestead/kit": "latest",
         "@nuxt/kit-edge": "latest",
         "@vercel/nft": "^0.17.0",
         "@vue/compiler-sfc": "^3.2.22",
@@ -39,8 +38,5 @@
         "rollup-plugin-postcss": "^4.0.1",
         "rollup-plugin-vue": "^6.0.0",
         "ufo": "^0.7.9"
-    },
-    "devDependencies": {
-        "unbuild": "^0.5.13"
     }
 }
