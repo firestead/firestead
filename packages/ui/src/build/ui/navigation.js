@@ -31,5 +31,5 @@ export async function writeNavigationFile (firesteadContext) {
         }
         sidebarIndex++
     }
-    await fse.writeFile(`${firesteadContext.ui.buildRuntimeDir}/navigation.js`, navigationContent, 'utf-8')
+    await fse.writeFile(`${firesteadContext.ui.buildRuntimePath}/navigation.js`, navigationContent, 'utf-8')
 }

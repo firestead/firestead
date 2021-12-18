@@ -4,10 +4,11 @@ import chalk from 'chalk'
 import { addPluginTemplate, addServerMiddleware, addTemplate, defineNuxtModule, isNuxt2, requireModulePkg } from '@nuxt/kit-edge'
 import { runEmulator } from './emulator'
 import { createFiresteadContext } from './context'
-import { prepare, bundleUI, bundleFirebase } from './build'
+import { prepare as prepareFirebase, bundle as bundleFirebase } from './build'
 import { writePackageJson, writeFirebaseDefaults } from './build/config'
 import fsApi from './middleware/fsApi'
 import fsUi from './middleware/fsUi'
+import { initApp } from '@firestead/ui'
 
 let firebaseEmulator = false
 
@@ -30,7 +31,7 @@ const firestead = defineNuxtModule({
           process.env.FIREBASE_AUTH_EMULATOR_HOST = 'localhost:9099'
           process.env.GCLOUD_PROJECT = 'default'
           //prepare build for firestead
-          await prepare(firesteadContext)       
+          await prepareFirebase(firesteadContext)       
           // create firebase configuration
           writeFirebaseDefaults(firesteadContext)
           await writePackageJson(firesteadContext)
@@ -67,9 +68,8 @@ const firestead = defineNuxtModule({
           filename: 'firebase.admin.js',
           mode: 'server'
         })
-    
-        //build fs ui
-        await bundleUI(firesteadContext)
+  
+        await initApp()
 
         // firestead ui server middleware
         addServerMiddleware({
@@ -81,6 +81,8 @@ const firestead = defineNuxtModule({
           route: '/fsApi',
           handle: fsApi
         })
+
+
       
         //TODO: find a way to add init firebase-admin sdk to api server
         //currently plugins are not loaded on api server and middleware does not work

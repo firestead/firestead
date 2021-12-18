@@ -14,8 +14,21 @@
     "files": [
         "dist"
     ],
+    "exports": {
+        ".": "./dist/index.mjs",
+        "./package.json": "./package.json"
+    },
     "scripts": {
         "prepack": "unbuild"
+    },
+    "dependencies": {
+        "@firestead/kit": "latest",
+        "@vue/compiler-sfc": "^3.2.22",
+        "chalk": "^4.1.1",
+        "pathe": "^0.2.0",
+        "rollup-plugin-postcss": "^4.0.1",
+        "rollup-plugin-vue": "^6.0.0",
+        "ufo": "^0.7.9"
     },
     "devDependencies": {
         "windicss": "3.2.1"

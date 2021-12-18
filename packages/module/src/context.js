@@ -2,11 +2,7 @@ import { resolveModule } from '@nuxt/kit-edge'
 import { firesteadCtx } from '@firestead/kit'
 import { dirname, resolve } from 'pathe'
 import { fileURLToPath } from 'url'
-import { getFirebaseRollupConfig, getUIRollupConfig } from './build/rollup/config'
-
-function getFullPath(dir){
-    return resolve(dirname(fileURLToPath(import.meta.url)),dir)
-}
+import { getRollupConfig } from './build/rollup/config'
 
 export function createFiresteadContext({options, hooks, hook}){
     const firesteadContext = {
@@ -14,25 +10,31 @@ export function createFiresteadContext({options, hooks, hook}){
         hook: hook,
         buildDir: options?.firestead?.buildDir || '_firestead',
         buildPath: undefined,
-        moduleDir: dirname(resolveModule('firestead')),
-        contextDir: dirname(fileURLToPath(import.meta.url)),
-        extensions: ['.js','.vue'],
+        modulePath: dirname(resolveModule('firestead')),
+        contextPath: dirname(fileURLToPath(import.meta.url)),
         functionsDir: options?.firestead?.functionsDir || 'server/firebase',
         functionsWatchDirs: ['functions', 'http', 'schedule', 'firestore', 'database', 'remoteConfig', 'storage', 'auth', 'analytics', 'pubsub', 'testLab'],
         watchFiles: [],
         firebase: {
             config: options?.firestead?.config || {},
             rollupConfig: undefined,
-            runtimeDir: getFullPath('runtime/functions')
+            runtimePath: resolve(dirname(fileURLToPath(import.meta.url)),'runtime')
         },
         ui:{
-            runtimeDir: getFullPath('runtime/ui'),
+            contextPath: undefined,
+            runtimeDir: undefined,
             rollupConfig: undefined,
-            buildRuntimeDir: undefined,
+            buildRuntimePath: undefined,
+            buildAppPath: undefined,
             pagesDir: undefined,
+            extensions: ['.js','.vue'],
             routes: [],
             navbar: [],
-            sidebar: []
+            sidebar: [],
+            navigation: {
+                order: [],
+                menu: []
+            }
         },
         _nuxt: {
             dev: options.dev,
@@ -42,13 +44,8 @@ export function createFiresteadContext({options, hooks, hook}){
     }
     firesteadContext.buildPath = resolve(firesteadContext._nuxt.rootDir, firesteadContext.buildDir)
 
-    //add UI context
-    firesteadContext.ui.rollupConfig = getUIRollupConfig(firesteadContext)
-    firesteadContext.ui.pagesDir = resolve(firesteadContext.moduleDir, 'ui/pages')
-    firesteadContext.ui.buildRuntimeDir = `${firesteadContext._nuxt.rootDir}/${firesteadContext.buildDir}/ui/runtime`
-
     //add firebase context
-    firesteadContext.firebase.rollupConfig = getFirebaseRollupConfig(firesteadContext)
+    firesteadContext.firebase.rollupConfig = getRollupConfig(firesteadContext)
 
     //create global firestead context
     firesteadCtx.set(firesteadContext)

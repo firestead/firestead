@@ -28,5 +28,5 @@ export async function writeRoutesFile (firesteadContext) {
         routesIndex++
     }
     routesContent = routesContent.concat('export default routes;')
-    await fse.writeFile(`${firesteadContext.ui.buildRuntimeDir}/routes.js`, routesContent, 'utf-8')
+    await fse.writeFile(`${firesteadContext.ui.buildRuntimePath}/routes.js`, routesContent, 'utf-8')
 }

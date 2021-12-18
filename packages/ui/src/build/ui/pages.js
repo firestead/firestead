@@ -5,7 +5,7 @@ import { resolveFiles } from '@nuxt/kit-edge'
 
 export async function resolvePagesRoutes (firesteadContext) {
   //TODO: add possibility to extend pages dir
-  const files = await resolveFiles(firesteadContext.ui.pagesDir, `**/*{${firesteadContext.extensions.join(',')}}`)
+  const files = await resolveFiles(firesteadContext.ui.pagesDir, `**/*{${firesteadContext.ui.extensions.join(',')}}`)
 
   // Sort to make sure parent are listed first
   files.sort()

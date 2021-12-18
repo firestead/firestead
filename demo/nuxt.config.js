@@ -6,6 +6,9 @@ export default defineNuxtConfig({
         'nuxt-windicss',
         'firestead'
     ],
+    vite: {
+        logLevel: 'info' 
+    },
     privateRuntimeConfig: {
         apiKey: 'TestKey'
     },
