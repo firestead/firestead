@@ -1,5 +1,13 @@
 import { useFiresteadContext } from './context'
 
+
+export function getNavigation(){
+    const firesteadContext = useFiresteadContext()
+    return firesteadContext.ui.navigation
+}
+
+export function addNavigationMenu(){}
+
 export function getUINavigation(){
     const firesteadContext = useFiresteadContext()
     return {

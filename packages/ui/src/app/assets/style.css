@@ -204,6 +204,9 @@ h1 {
 .pl-8 {
   padding-left: 2rem;
 }
+.pt-10 {
+  padding-top: 2.5rem;
+}
 .text-gray-800 {
   --tw-text-opacity: 1;
   color: rgba(31, 41, 55, var(--tw-text-opacity));
@@ -258,6 +261,13 @@ h1 {
   -webkit-transition-duration: 150ms;
   -o-transition-duration: 150ms;
   transition-duration: 150ms;
+}
+.mytext {
+  font-size: 1.125rem;
+  line-height: 1.75rem;
+  padding-top: 2.5rem;
+  font-size: 1.25rem;
+  padding-top: 0.5rem;
 }
 @media (min-width: 768px) {
   .md\:flex {

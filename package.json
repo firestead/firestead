@@ -11,7 +11,7 @@
         "stub": "lerna run prepack -- --stub",
         "nuxi": "./node_modules/.bin/nuxi",
         "demo": "yarn run nuxi dev demo",
-        "watch:ui": "./node_modules/windicss/cli/index.js './packages/ui/src/**/*.vue' -to ./packages/ui/src/assets/style.css --config './packages/ui/windi.config.cjs' --dev"
+        "watch:ui": "./node_modules/windicss/cli/index.js './packages/ui/src/**/*.vue'  -to ./packages/ui/src/app/assets/style.css --config './packages/ui/windi.config.cjs' --style --dev"
     },
     "resolutions": {
         "firestead": "workspace:./packages/module",
@@ -21,7 +21,7 @@
     "devDependencies": {
         "jiti": "^1.12.9",
         "lerna": "^4.0.0",
-        "unbuild": "^0.5.9"
+        "unbuild": "^0.6.7"
     },
     "packageManager": "yarn@3.1.1",
     "engines": {

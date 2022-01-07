@@ -2,7 +2,7 @@ import { resolveModule } from '@nuxt/kit-edge'
 import { firesteadCtx } from '@firestead/kit'
 import { dirname, resolve } from 'pathe'
 import { fileURLToPath } from 'url'
-import { getRollupConfig } from './build/rollup/config'
+import { getRollupConfig } from './builder/rollup/config'
 
 export function createFiresteadContext({options, hooks, hook}){
     const firesteadContext = {

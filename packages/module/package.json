@@ -30,7 +30,7 @@
         "@vercel/nft": "^0.17.0",
         "chalk": "^4.1.1",
         "firebase": "^9.6.1",
-        "firebase-admin": "^10.0.0",
+        "firebase-admin": "^10.0.1",
         "firebase-functions": "^3.16.0",
         "h3": "^0.3.3",
         "klona": "^2.0.5",

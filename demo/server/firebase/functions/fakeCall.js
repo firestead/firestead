@@ -1,4 +1,4 @@
-import faker from 'faker'
+import Chance from 'chance'
 
 export const config = {
     auth: true
@@ -6,7 +6,8 @@ export const config = {
 
 export default (data, context) => {
     console.log(data)
+    const chance = new Chance()
     return {
-        name: faker.name.findName()
+        name: chance.name()
     }
 }

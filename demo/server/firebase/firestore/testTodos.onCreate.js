@@ -1,4 +1,4 @@
-import faker from 'faker'
+import Chance from 'chance'
 
 export const config = {
     document: 'Todos/{itemId}'
@@ -6,7 +6,8 @@ export const config = {
 
 export default (snapshot, context) => {
     const data = snapshot.data()
+    const chance = new Chance()
     return snapshot.ref.set({
-        content: faker.lorem.words(5)
+        content: chance.sentence({ words: 5 })
       }, {merge: true})
 }
