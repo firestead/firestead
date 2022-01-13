@@ -1,4 +1,4 @@
-import { resolveModule } from '@nuxt/kit-edge'
+import { resolveModule } from '@nuxt/kit'
 import { firesteadCtx } from '@firestead/kit'
 import { dirname, resolve } from 'pathe'
 import { fileURLToPath } from 'url'

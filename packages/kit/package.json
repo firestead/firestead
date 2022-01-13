@@ -8,7 +8,7 @@
         "firestead",
         "firebase"
     ],
-    "version": "0.0.0",
+    "version": "0.0.1",
     "type": "module",
     "license": "MIT",
     "files": [
@@ -23,5 +23,8 @@
     },
     "dependencies": {
         "unctx": "^1.0.2"
+    },
+    "devDependencies": {
+        "unbuild": "latest"
     }
 }

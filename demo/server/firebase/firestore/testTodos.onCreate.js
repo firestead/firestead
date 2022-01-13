@@ -1,4 +1,4 @@
-import Chance from 'chance'
+import faker from '@faker-js/faker'
 
 export const config = {
     document: 'Todos/{itemId}'
@@ -6,8 +6,8 @@ export const config = {
 
 export default (snapshot, context) => {
     const data = snapshot.data()
-    const chance = new Chance()
+    faker.locale = "de"
     return snapshot.ref.set({
-        content: chance.sentence({ words: 5 })
+        content: faker.lorem.sentence()
       }, {merge: true})
 }

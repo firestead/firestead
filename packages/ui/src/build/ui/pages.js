@@ -1,7 +1,15 @@
 // cc https://github.com/nuxt/framework/blob/main/packages/nuxt3/src/pages/utils.ts
-import { extname, relative } from 'pathe'
+import { extname, relative, resolve } from 'pathe'
 import { encodePath } from 'ufo'
-import { resolveFiles } from '@nuxt/kit-edge'
+import globby from 'globby'
+
+async function resolveFiles (path, pattern) {
+  const files = await globby(pattern, {
+    cwd: path,
+    followSymbolicLinks: true
+  })
+  return files.map(p => resolve(path, p))
+}
 
 export async function resolvePagesRoutes (firesteadContext) {
   //TODO: add possibility to extend pages dir

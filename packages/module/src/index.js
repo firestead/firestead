@@ -1,7 +1,7 @@
 import { dirname, resolve } from 'pathe'
 import { fileURLToPath } from 'url'
 import chalk from 'chalk'
-import { addPluginTemplate, addServerMiddleware, addTemplate, defineNuxtModule, isNuxt2, requireModulePkg } from '@nuxt/kit-edge'
+import { addPluginTemplate, addServerMiddleware, addTemplate, defineNuxtModule, isNuxt2, requireModulePkg } from '@nuxt/kit'
 import { runEmulator } from './emulator'
 import { createFiresteadContext } from './context'
 import { prepare as prepareFirebase, bundle as bundleFirebase } from './builder'
@@ -13,8 +13,17 @@ import { initApp } from '@firestead/ui'
 let firebaseEmulator = false
 
 const firestead = defineNuxtModule({
+    meta: {
+      name: 'firestead',
+      configKey: 'firestead',
+    },
     name: 'firestead',
     configKey: 'firestead',
+    defaults: {
+      disableEmulator: false, 
+      buildDir: '_firestead',
+      functionsDir: 'server/firebase',
+    },
     async setup(options, nuxt) {
         if (isNuxt2()) {
             console.log('Firestead does not supporting nuxt2')

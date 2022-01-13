@@ -1,11 +1,11 @@
-import Chance from 'chance'
+import faker from '@faker-js/faker'
 
 export const config = {}
 
 export default (req, res) => {
-    const chance = new Chance()
+    faker.locale = "de"
     res.status(200).json({
-        city: chance.city(),
-        state: chance.state({ full: true })
+        city: faker.address.city(),
+        state: faker.address.state()
     })
 }

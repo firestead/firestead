@@ -58,7 +58,9 @@ export default {
           else if(ctxRoute.value.path===path) isActive = true
         }
         //add current name
-        if(isActive) current[props.linkType] = props.name
+        if(isActive && props.linkType === 'navbar') {
+          current.value = props.name
+        }
         return isActive
       })
 

@@ -1,7 +1,7 @@
 import { defineBuildConfig } from 'unbuild'
 
 export default defineBuildConfig({
-  declaration: true,
+  declaration: false,
   emitCJS: false,
   entries: [
     { input: 'src/index', outDir: 'dist' }, 
@@ -15,22 +15,5 @@ export default defineBuildConfig({
   dependencies: [
   ],
   externals: [
-    'vue',
-    '@nuxt/kit-edge',
-    'pathe',
-    'fs-extra',
-    'rollup',
-    '@rollup/plugin-commonjs',
-    '@rollup/plugin-node-resolve',
-    '@rollup/plugin-replace',
-    '@rollup/pluginutils',
-    '@rollup/plugin-alias',
-    '@vercel/nft',
-    '@firestead/ui',
-    '@firestead/kit',
-    'hash-sum',
-    'esbuild',
-    '#app',
-    '#build'
   ]
 })

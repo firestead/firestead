@@ -1,7 +1,7 @@
 import { defineBuildConfig } from 'unbuild'
 
 export default defineBuildConfig({
-  declaration: true,
+  declaration: false,
   emitCJS: false,
   entries: [
     'src/index'
@@ -10,6 +10,5 @@ export default defineBuildConfig({
   dependencies: [
   ],
   externals: [
-    'unctx'
   ]
 })

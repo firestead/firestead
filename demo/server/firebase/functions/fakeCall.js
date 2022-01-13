@@ -1,4 +1,4 @@
-import Chance from 'chance'
+import faker from '@faker-js/faker'
 
 export const config = {
     auth: true
@@ -6,8 +6,8 @@ export const config = {
 
 export default (data, context) => {
     console.log(data)
-    const chance = new Chance()
+    faker.locale = "de"
     return {
-        name: chance.name()
+        name: faker.name.findName()
     }
 }
