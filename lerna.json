@@ -4,7 +4,10 @@
     "useWorkspaces": true,
     "conventionalCommits": true,
     "packages": [
-      "packages/*"
+      "packages/kit",
+      "packages/module",
+      "packages/ui",
+      "packages/addons/*"
     ],
     "command": {
       "publish": {

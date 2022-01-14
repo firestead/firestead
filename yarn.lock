@@ -5122,17 +5122,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"demo-26c669@workspace:demo":
-  version: 0.0.0-use.local
-  resolution: "demo-26c669@workspace:demo"
-  dependencies:
-    "@faker-js/faker": 5.5.*
-    firestead: latest
-    nuxt-windicss: latest
-    nuxt3: latest
-  languageName: unknown
-  linkType: soft
-
 "denque@npm:^1.1.0":
   version: 1.5.1
   resolution: "denque@npm:1.5.1"
@@ -9517,6 +9506,17 @@ __metadata:
   checksum: 2824208d740f0be0ac2aea42893a0f4bc47bc5ad199ee5b665d17c185173c79d85157b2c60eab496f324551a3576f26e909b184c58b4ff59098e1e96f298772a
   languageName: node
   linkType: hard
+
+"nuxt-6d426f@workspace:examples/nuxt":
+  version: 0.0.0-use.local
+  resolution: "nuxt-6d426f@workspace:examples/nuxt"
+  dependencies:
+    "@faker-js/faker": 5.5.*
+    firestead: latest
+    nuxt-windicss: latest
+    nuxt3: latest
+  languageName: unknown
+  linkType: soft
 
 "nuxt-windicss@npm:latest":
   version: 2.2.2

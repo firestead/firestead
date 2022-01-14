@@ -3,15 +3,18 @@
     "type": "module",
     "license": "MIT",
     "workspaces": [
-        "packages/*",
-        "demo"
+        "packages/kit",
+        "packages/module",
+        "packages/ui",
+        "packages/addons/*",
+        "examples/*"
     ],
     "scripts": {
         "build": "FORCE_COLOR=1 lerna run prepack --stream --no-prefix",
         "stub": "lerna run prepack -- --stub",
         "release": "FORCE_COLOR=1 lerna run prepack -- --release",
         "nuxi": "./node_modules/.bin/nuxi",
-        "demo": "yarn run nuxi dev demo",
+        "example:nuxt": "yarn run nuxi dev examples/nuxt",
         "watch:ui": "./node_modules/windicss/cli/index.js './packages/ui/src/**/*.vue'  -to ./packages/ui/src/app/assets/style.css --config './packages/ui/windi.config.cjs' --style --dev"
     },
     "resolutions": {
