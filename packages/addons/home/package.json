@@ -1,0 +1,28 @@
+{
+    "name": "@firestead/addon-home",
+    "description": "firestead addon - default home page",
+    "repository": "firestead/firestead",
+    "keywords": [
+        "nuxt",
+        "nuxt-module",
+        "firestead addon",
+        "firestead",
+        "firebase"
+    ],
+    "version": "0.0.1",
+    "type": "module",
+    "license": "MIT",
+    "files": [
+        "dist"
+    ],
+    "scripts": {
+        "prepack": "unbuild"
+    },
+    "exports": {
+        ".": "./dist/index.mjs",
+        "./package.json": "./package.json"
+    },
+    "devDependencies": {
+        "unbuild": "latest"
+    }
+}

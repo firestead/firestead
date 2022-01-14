@@ -9,7 +9,11 @@
  </p>
 
 # Firestead
-Firestead is an open source nuxt 3 module that helps to develop rapidly web apps with Google Firebase und nuxtjs.
+Firestead is an open source toolkit that helps to develop rapidly web apps with Google Firebase and frameworks like nuxt, remix or nextjs etc.
 
 > **⚠ WARNING:   Use with caution** 
 > Firestead is currently under heavy development
+
+## Credits
+Firestead`s code structure is heavily inspired by nuxt3.
+Thanks for the inspiration.

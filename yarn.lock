@@ -877,6 +877,14 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@firestead/addon-home@workspace:packages/addons/home":
+  version: 0.0.0-use.local
+  resolution: "@firestead/addon-home@workspace:packages/addons/home"
+  dependencies:
+    unbuild: latest
+  languageName: unknown
+  linkType: soft
+
 "@firestead/kit@workspace:./packages/kit, @firestead/kit@workspace:packages/kit":
   version: 0.0.0-use.local
   resolution: "@firestead/kit@workspace:packages/kit"
