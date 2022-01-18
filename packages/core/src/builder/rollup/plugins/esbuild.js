@@ -1,3 +1,4 @@
+// cc
 // Based on https://github.com/egoist/rollup-plugin-esbuild (MIT)
 
 import { extname, relative } from 'pathe'

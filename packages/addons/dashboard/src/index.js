@@ -1,7 +1,7 @@
 import { defineFsAddon } from "@firestead/kit"
 
-const homeAddon = defineFsAddon({
-    name: "home",
+const dashboardAddon = defineFsAddon({
+    name: "dashboard",
     ui: {
         pagesDir: "pages",
         navigation: {
@@ -15,4 +15,4 @@ const homeAddon = defineFsAddon({
     setup() {}
 })
 
-export default homeAddon
+export default dashboardAddon

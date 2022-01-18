@@ -5,7 +5,7 @@
     "conventionalCommits": true,
     "packages": [
       "packages/kit",
-      "packages/module",
+      "packages/core",
       "packages/ui",
       "packages/addons/*"
     ],

@@ -1,5 +1,5 @@
-import { useFiresteadContext } from './context'
-import { createUUID } from './utils'
+import { useFiresteadContext } from '../context'
+import { createUUID } from '../utils'
 
 export function getNavigation(){
     const firesteadContext = useFiresteadContext()

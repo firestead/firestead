@@ -24,6 +24,7 @@
         "./package.json": "./package.json"
     },
     "dependencies": {
+        "@firestead/addon-dashboard": "latest",
         "@firestead/kit": "latest",
         "@firestead/ui": "latest",
         "@nuxt/kit": "npm:@nuxt/kit-edge@latest",

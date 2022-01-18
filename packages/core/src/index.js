@@ -9,6 +9,7 @@ import { writePackageJson, writeFirebaseDefaults } from './builder/config'
 import fsApi from './middleware/fsApi'
 import fsUi from './middleware/fsUi'
 import { initApp } from '@firestead/ui'
+import { installAddon } from '@firestead/kit'
 
 let firebaseEmulator = false
 
@@ -77,6 +78,8 @@ const firestead = defineNuxtModule({
           filename: 'firebase.admin.js',
           mode: 'server'
         })
+
+        await installAddon('@firestead/addon-dashboard')
   
         await initApp()
 

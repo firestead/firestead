@@ -1,4 +1,4 @@
-//cc https://github.com/nuxt/framework/blob/main/packages/kit/src/context.ts
+//Based on https://github.com/nuxt/framework/blob/main/packages/kit/src/context.ts (MIT)
 import { getContext } from 'unctx'
 
 /** Direct access to the Nuxt context - see https://github.com/unjs/unctx. */

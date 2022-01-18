@@ -1,3 +1,4 @@
+// Based on https://github.com/nuxt/framework/blob/main/packages/nitro/src/rollup/plugins/externals.ts (MIT)
 import { resolve, dirname } from 'pathe'
 import fse from 'fs-extra'
 import { nodeFileTrace } from '@vercel/nft'

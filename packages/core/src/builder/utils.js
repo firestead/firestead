@@ -49,6 +49,7 @@ export async function writeFile (file, contents, log = false) {
   }
 }
 
+// Based on https://github.com/nuxt/framework/blob/main/packages/nitro/src/utils/index.ts (MIT)
 export function readPackageJson (
   packageName,
   _require= createRequire(import.meta.url)

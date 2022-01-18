@@ -15,5 +15,5 @@ Firestead is an open source toolkit that helps to develop rapidly web apps with 
 > Firestead is currently under heavy development
 
 ## Credits
-Firestead`s code structure is heavily inspired by nuxt3.
-Thanks for the inspiration.
+Firestead`s code structure is heavily inspired by nuxt3 (https://github.com/nuxt/framework) (MIT).
+Quite a few functions are originally created by the creator of nuxt3. You can find a reference inline.

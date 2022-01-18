@@ -1,6 +1,6 @@
 {
-    "name": "@firestead/addon-home",
-    "description": "firestead addon - default home page",
+    "name": "@firestead/addon-dashboard",
+    "description": "firestead addon - dashboard",
     "repository": "firestead/firestead",
     "keywords": [
         "nuxt",
@@ -21,6 +21,9 @@
     "exports": {
         ".": "./dist/index.mjs",
         "./package.json": "./package.json"
+    },
+    "dependencies": {
+        "@firestead/kit": "latest"
     },
     "devDependencies": {
         "unbuild": "latest"

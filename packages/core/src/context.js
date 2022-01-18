@@ -29,8 +29,6 @@ export function createFiresteadContext({options, hooks, hook}){
             pagesDir: undefined,
             extensions: ['.js','.vue'],
             routes: [],
-            navbar: [],
-            sidebar: [],
             navigation: {
                 order: [],
                 menu: []
@@ -44,7 +42,7 @@ export function createFiresteadContext({options, hooks, hook}){
     }
     firesteadContext.buildPath = resolve(firesteadContext._nuxt.rootDir, firesteadContext.buildDir)
 
-    //add firebase context
+    //add firebase rollup configuration
     firesteadContext.firebase.rollupConfig = getRollupConfig(firesteadContext)
 
     //create global firestead context
