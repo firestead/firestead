@@ -1,5 +1,4 @@
-import { resolveModule } from '@nuxt/kit'
-import { firesteadCtx } from '@firestead/kit'
+import { firesteadCtx, resolveModule } from '@firestead/kit'
 import { dirname, resolve } from 'pathe'
 import { fileURLToPath } from 'url'
 import { getRollupConfig } from './builder/rollup/config'
@@ -26,7 +25,7 @@ export function createFiresteadContext({options, hooks, hook}){
             rollupConfig: undefined,
             buildRuntimePath: undefined,
             buildAppPath: undefined,
-            pagesDir: undefined,
+            pages: [],
             extensions: ['.js','.vue'],
             routes: [],
             navigation: {

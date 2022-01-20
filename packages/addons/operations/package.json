@@ -1,6 +1,6 @@
 {
-    "name": "@firestead/addon-dashboard",
-    "description": "firestead addon - dashboard",
+    "name": "@firestead/addon-operations",
+    "description": "firestead addon - operations",
     "repository": "firestead/firestead",
     "keywords": [
         "nuxt",

@@ -8,7 +8,7 @@
         "firestead",
         "firebase"
     ],
-    "version": "0.0.1",
+    "version": "0.0.2",
     "type": "module",
     "license": "MIT",
     "files": [
@@ -22,8 +22,10 @@
         "./package.json": "./package.json"
     },
     "dependencies": {
+        "fs-extra": "^10.0.0",
         "jiti": "^1.12.x",
         "mlly": "^0.3.x",
+        "pathe": "^0.2.0",
         "unctx": "^1.0.2"
     },
     "devDependencies": {

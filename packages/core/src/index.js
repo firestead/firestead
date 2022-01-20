@@ -80,6 +80,7 @@ const firestead = defineNuxtModule({
         })
 
         await installAddon('@firestead/addon-dashboard')
+        await installAddon('@firestead/addon-operations')
   
         await initApp()
 

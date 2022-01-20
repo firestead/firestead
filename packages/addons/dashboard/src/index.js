@@ -1,12 +1,15 @@
 import { defineFsAddon } from "@firestead/kit"
+import { dirname, resolve } from 'pathe'
+import { fileURLToPath } from 'url'
 
 const dashboardAddon = defineFsAddon({
     name: "dashboard",
     ui: {
-        pagesDir: "pages",
+        routePrefix: false,
+        pages: resolve(dirname(fileURLToPath(import.meta.url)), "pages"),
         navigation: {
-            label: "Home",
-            name: "home",
+            label: "Dashboard",
+            name: "dashboard",
             path: "/"
         },
     },

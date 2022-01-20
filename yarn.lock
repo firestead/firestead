@@ -882,6 +882,17 @@ __metadata:
   resolution: "@firestead/addon-dashboard@workspace:packages/addons/dashboard"
   dependencies:
     "@firestead/kit": latest
+    pathe: ^0.2.0
+    unbuild: latest
+  languageName: unknown
+  linkType: soft
+
+"@firestead/addon-operations@workspace:packages/addons/operations":
+  version: 0.0.0-use.local
+  resolution: "@firestead/addon-operations@workspace:packages/addons/operations"
+  dependencies:
+    "@firestead/kit": latest
+    pathe: ^0.2.0
     unbuild: latest
   languageName: unknown
   linkType: soft
@@ -890,8 +901,10 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@firestead/kit@workspace:packages/kit"
   dependencies:
+    fs-extra: ^10.0.0
     jiti: ^1.12.x
     mlly: ^0.3.x
+    pathe: ^0.2.0
     unbuild: latest
     unctx: ^1.0.2
   languageName: unknown

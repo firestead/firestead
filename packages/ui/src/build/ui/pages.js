@@ -12,19 +12,21 @@ async function resolveFiles (path, pattern) {
 }
 
 export async function resolvePagesRoutes (firesteadContext) {
-  //TODO: add possibility to extend pages dir
-  const files = await resolveFiles(firesteadContext.ui.pagesDir, `**/*{${firesteadContext.ui.extensions.join(',')}}`)
-
-  // Sort to make sure parent are listed first
-  files.sort()
-
-  firesteadContext.ui.routes = generateRoutesFromFiles(files, firesteadContext.ui.pagesDir)
-
+  if(firesteadContext.ui.pages.length > 0){
+    for(const page of firesteadContext.ui.pages){
+      const files = await resolveFiles(page.path, `**/*{${firesteadContext.ui.extensions.join(',')}}`)
+      // Sort to make sure parent are listed first
+      files.sort()
+      const routes = generateRoutesFromFiles(files, page)
+      firesteadContext.ui.routes = firesteadContext.ui.routes.concat(routes)
+    }
+  }
   return true
 }
 
-export function generateRoutesFromFiles (files, pagesDir) {
+export function generateRoutesFromFiles (files, page) {
   const routes = []
+  const pagesDir = page.path
 
   for (const file of files) {
     const segments = relative(pagesDir, file)
@@ -72,7 +74,7 @@ export function generateRoutesFromFiles (files, pagesDir) {
     parent.push(route)
   }
 
-  return prepareRoutes(routes)
+  return prepareRoutes(routes, page.prefix)
 }
 
 function getRoutePath (tokens) {
@@ -173,7 +175,7 @@ function parseSegment (segment) {
   return tokens
 }
 
-function prepareRoutes (routes, parent) {
+function prepareRoutes (routes, prefix, parent = null) {
   for (const route of routes) {
     // Remove -index
     if (route.name) {
@@ -193,8 +195,14 @@ function prepareRoutes (routes, parent) {
       route.path = route.path.slice(1)
     }
 
+    //add prefix
+    if(prefix){
+      route.path = `/${prefix}${route.path}`
+      route.name = `${prefix}-${route.name}`
+    }
+
     if (route.children.length) {
-      route.children = prepareRoutes(route.children, route)
+      route.children = prepareRoutes(route.children, prefix, route)
     }
 
     if (route.children.find(childRoute => childRoute.path === '')) {

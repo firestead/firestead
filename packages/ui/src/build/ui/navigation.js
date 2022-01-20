@@ -1,32 +1,4 @@
 import fse from 'fs-extra'
-import { addNavbarEntry } from '@firestead/kit'
-
-export function createNavigation () {
-    addNavbarEntry({
-        name: 'home',
-        path: '/',
-        label: 'Home',
-        sidebar: [{
-            name: 'overview',
-            path: '/',
-            label: 'Overview'
-        }]
-    })
-    addNavbarEntry({
-        name: 'operations',
-        path: '/operations',
-        label: 'Operations',
-        sidebar: [{
-            name: 'overview',
-            path: '/operations',
-            label: 'Overview'
-        },{
-            name: 'logger',
-            path: '/operations/logger',
-            label: 'Logger'
-        }]
-    })
-}
 
 export async function writeNavigationFile (firesteadContext) {
     const { menu } = firesteadContext.ui.navigation

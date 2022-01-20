@@ -12,7 +12,7 @@
     "scripts": {
         "build": "FORCE_COLOR=1 lerna run prepack --stream --no-prefix",
         "stub": "lerna run prepack -- --stub",
-        "release": "FORCE_COLOR=1 lerna run prepack -- --release",
+        "release": "FORCE_COLOR=1 lerna run prepack -- --release && sh ./scripts/release.sh",
         "nuxi": "./node_modules/.bin/nuxi",
         "examples:nuxt": "yarn run nuxi dev examples/nuxt",
         "watch:ui": "./node_modules/windicss/cli/index.js './packages/ui/src/**/*.vue'  -to ./packages/ui/src/app/assets/style.css --config './packages/ui/windi.config.cjs' --style --dev"
@@ -21,7 +21,8 @@
         "firestead": "workspace:./packages/core",
         "@firestead/kit": "workspace:./packages/kit",
         "@firestead/ui": "workspace:./packages/ui",
-        "@firestead/addon-dashboard": "workspace:./packages/addons/dashboard"
+        "@firestead/addon-dashboard": "workspace:./packages/addons/dashboard",
+        "@firestead/addon-operations": "workspace:./packages/addons/operations"
     },
     "devDependencies": {
         "jiti": "^1.12.9",

@@ -6,8 +6,10 @@ export function getNavigation(){
     return firesteadContext.ui.navigation
 }
 
-export function addNavbarEntry(navbarEntry){
-    const firesteadContext = useFiresteadContext()
+export function addNavbarEntry(navbarEntry, firesteadContext = null){
+    if(!firesteadContext){
+        firesteadContext = useFiresteadContext()
+    }
     const newNavbarEntry = {}
     if(typeof navbarEntry.path === 'undefined'){
         throw new Error('Navbar entry must have a path')

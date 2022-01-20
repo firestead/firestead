@@ -15,8 +15,6 @@ export async function bundle(firesteadContext){
     await resolvePagesRoutes(firesteadContext)
     // write routes to file
     await writeRoutesFile(firesteadContext)
-    //create ui navigation
-    createNavigation()
     // write navigation to file
     await writeNavigationFile(firesteadContext)
     // watch and bundle ui files
