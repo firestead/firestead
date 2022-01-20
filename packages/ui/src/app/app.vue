@@ -10,8 +10,10 @@
               <navbar></navbar>
             </div>
         </header>
-        <sidebar-desktop class="hidden md:flex md:w-64 md:flex-col md:absolute h-100"></sidebar-desktop>
-        <main class="md:pl-64 md:pt-6 flex flex-col flex-1 h-100">
+        <sidebar-desktop v-if="current?.sidebar" class="hidden md:flex md:w-64 md:flex-col md:absolute h-100"></sidebar-desktop>
+        <main
+          :class=" current?.sidebar ? 'md:pl-64 md:pt-6 flex flex-col flex-1 h-100' : 'flex flex-col flex-1 h-100 p-4'"
+          >
           <router-view />
         </main>
     </div>
@@ -20,5 +22,7 @@
   import SVGFiresteadLogo from './assets/FiresteadLogo.svg'
   import navbar from './components/navbar.vue'
   import sidebarDesktop from './components/sidebar-desktop.vue'
+  import { inject } from 'vue'
 
+  const { current  } = inject('navigation')
 </script>

@@ -2,7 +2,7 @@ import fse from 'fs-extra'
 import { watch } from './rollup/bundler'
 import { resolvePagesRoutes } from './ui/pages'
 import { writeRoutesFile } from './ui/routes'
-import { createNavigation, writeNavigationFile } from './ui/navigation'
+import { writeNavigationFile } from './ui/navigation'
 
 export async function prepare(firesteadContext){
   await fse.mkdirp(firesteadContext.ui.buildAppPath)

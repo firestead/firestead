@@ -1,6 +1,7 @@
 import { resolve } from 'pathe'
 import commonjs from '@rollup/plugin-commonjs'
 import { nodeResolve } from '@rollup/plugin-node-resolve'
+//No longer supported - check https://github.com/sxzz/unplugin-vue?s=03
 import vue from 'rollup-plugin-vue'
 import postcss from 'rollup-plugin-postcss'
 import alias from '@rollup/plugin-alias'

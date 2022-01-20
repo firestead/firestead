@@ -1,5 +1,5 @@
 <template>
-    <div v-if="menuEntry" class="flex flex-col flex-grow pt-6 pl-8 overflow-y-auto">
+    <div class="flex flex-col flex-grow pt-6 pl-8 overflow-y-auto">
         <h1 class="font-sans font-medium text-md mb-4">{{menuEntry.label}}</h1>
         <sidebar-link v-for="entry in menuEntry.sidebar" :to="entry.path" :name="entry.name">{{entry.label}}</sidebar-link>
     </div>
@@ -12,7 +12,7 @@
 
     const menuEntry = computed(
         () => {
-            return menu.filter(entry => entry.name === current.value)[0]
+            return menu.filter(entry => entry.name === current.value.name)[0]
         }
     )
 </script>

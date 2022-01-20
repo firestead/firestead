@@ -8,7 +8,7 @@
         "firestead",
         "firebase"
     ],
-    "version": "0.0.35",
+    "version": "0.0.37",
     "type": "module",
     "license": "MIT",
     "files": [
@@ -24,9 +24,10 @@
         "./package.json": "./package.json"
     },
     "dependencies": {
-        "@firestead/addon-dashboard": "latest",
         "@firestead/kit": "latest",
         "@firestead/ui": "latest",
+        "@firestead/addon-dashboard": "latest",
+        "@firestead/addon-operations": "latest",
         "@nuxt/kit": "npm:@nuxt/kit-edge@latest",
         "@rollup/plugin-alias": "^3.1.9",
         "@rollup/plugin-commonjs": "^21.0.1",
@@ -37,7 +38,7 @@
         "chalk": "^4.1.1",
         "consola": "^2.15.3",
         "esbuild": "^0.14.11",
-        "firebase": "^9.6.1",
+        "firebase": "^9.6.3",
         "firebase-admin": "^10.0.1",
         "firebase-functions": "^3.16.0",
         "fs-extra": "^10.0.0",

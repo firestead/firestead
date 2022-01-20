@@ -30,7 +30,8 @@ export default {
     ...RouterLink.props,
     inactiveClass: String,
     linkType: String,
-    name: String
+    name: String,
+    sidebar: Boolean
   },
 
   setup(props) {
@@ -59,7 +60,10 @@ export default {
         }
         //add current name
         if(isActive && props.linkType === 'navbar') {
-          current.value = props.name
+          current.value = {
+            name: props.name,
+            sidebar: props.sidebar
+          }
         }
         return isActive
       })
