@@ -20,11 +20,18 @@
     "exports": {
         ".": "./dist/index.mjs",
         "./module": "./dist/module/index.js",
+        "./composables": "./dist/module/composables/index.js",
+        "./nitro": "./dist/module/nitro/preset.js",
         "./package.json": "./package.json"
     },
     "dependencies": {
+        "nuxt3": "latest",
         "@nuxt/kit": "npm:@nuxt/kit-edge@latest",
-        "nuxt3": "latest"
+        "@nuxt/design": "latest",
+        "rimraf": "^3.0.2",
+        "pathe": "^0.2.0",
+        "listhen": "^0.2.6",
+        "defu": "^5.0.1"
     },
     "devDependencies": {
         "unbuild": "latest"

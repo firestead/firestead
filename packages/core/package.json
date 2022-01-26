@@ -8,7 +8,7 @@
         "firestead",
         "firebase"
     ],
-    "version": "0.0.37",
+    "version": "0.0.38",
     "type": "module",
     "license": "MIT",
     "files": [
@@ -22,8 +22,6 @@
     "exports": {
         ".": "./dist/index.mjs",
         "./cli": "./bin/firestead.mjs",
-        "./composables": "./dist/composables/index.js",
-        "./nitro": "./dist/nitro/preset.js",
         "./package.json": "./package.json"
     },
     "dependencies": {
@@ -49,7 +47,6 @@
         "mri": "^1.2.0",
         "pathe": "^0.2.0",
         "requireg": "^0.2.2",
-        "rimraf": "^3.0.2",
         "rollup": "^2.63.0"
     },
     "devDependencies": {
