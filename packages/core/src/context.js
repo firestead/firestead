@@ -1,23 +1,29 @@
-import { firesteadCtx, resolveModule } from '@firestead/kit'
 import { dirname, resolve } from 'pathe'
 import { fileURLToPath } from 'url'
+import { firesteadCtx, resolveModule } from '@firestead/kit'
 import { getRollupConfig } from './builder/rollup/config'
 
-export function createFiresteadContext({options, hooks, hook}){
+export function createFiresteadContext({rootPath, dev = false}){
     const firesteadContext = {
-        hooks: hooks,
-        hook: hook,
-        buildDir: options?.firestead?.buildDir || '_firestead',
+        dev: dev,
+        rootPath: rootPath,
+        buildDir: '_firestead',
         buildPath: undefined,
         modulePath: dirname(resolveModule('firestead')),
         contextPath: dirname(fileURLToPath(import.meta.url)),
-        functionsDir: options?.firestead?.functionsDir || 'server/firebase',
+        functionsDir: 'server/firebase',
+        functionsPath: undefined,
         functionsWatchDirs: ['functions', 'http', 'schedule', 'firestore', 'database', 'remoteConfig', 'storage', 'auth', 'analytics', 'pubsub', 'testLab'],
         watchFiles: [],
+        logger : undefined,
+        framework: {
+            name: undefined,
+            server: undefined
+        },
         firebase: {
-            config: options?.firestead?.config || {},
+            config: {},
             rollupConfig: undefined,
-            runtimePath: resolve(dirname(fileURLToPath(import.meta.url)),'runtime')
+            runtimePath: undefined
         },
         ui:{
             contextPath: undefined,
@@ -32,16 +38,13 @@ export function createFiresteadContext({options, hooks, hook}){
                 order: [],
                 menu: []
             }
-        },
-        _nuxt: {
-            dev: options.dev,
-            rootDir: options.rootDir,
-            srcDir: options.srcDir,
         }
     }
-    firesteadContext.buildPath = resolve(firesteadContext._nuxt.rootDir, firesteadContext.buildDir)
+    firesteadContext.buildPath = resolve(firesteadContext.rootPath, firesteadContext.buildDir)
+    firesteadContext.functionsPath = resolve(firesteadContext.rootPath, firesteadContext.functionsDir)
 
     //add firebase rollup configuration
+    firesteadContext.firebase.runtimePath = resolve(firesteadContext.contextPath,'runtime')
     firesteadContext.firebase.rollupConfig = getRollupConfig(firesteadContext)
 
     //create global firestead context

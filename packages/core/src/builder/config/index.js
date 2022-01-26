@@ -10,7 +10,7 @@ import {
 
 export function writeFirebaseDefaults(firesteadContext){
     console.log(`${chalk.bold.green('✔')} ${chalk.bold.yellow('Firestead:')} Create default configuration`)
-    const rootFBDir = `${firesteadContext._nuxt.rootDir}/${firesteadContext.buildDir}/firebase`
+    const rootFBDir = `${firesteadContext.buildPath}/firebase`
     const firebaseConf = getDefaultFirebaseConfig()
     writeFile(`${rootFBDir}/firebase.json`, JSON.stringify(firebaseConf))
     const firestoreIndexes = getDefaultFirestoreIndexes()
@@ -20,12 +20,12 @@ export function writeFirebaseDefaults(firesteadContext){
 }
 
 export async function writePackageJson(firesteadContext){
-    const serverDir = `${firesteadContext._nuxt.rootDir}/${firesteadContext.buildDir}/firebase/functions`
+    const serverDir = `${firesteadContext.buildPath}/firebase/functions`
     const _require = createRequire(import.meta.url)
   
     let nodeVersion = '14'
     try {
-      const currentNodeVersion = fse.readJSONSync(join(firesteadContext._nuxt.rootDir, 'package.json')).engines.node
+      const currentNodeVersion = fse.readJSONSync(join(firesteadContext.rootPath, 'package.json')).engines.node
       if (['16', '14'].includes(currentNodeVersion)) {
         nodeVersion = currentNodeVersion
       }

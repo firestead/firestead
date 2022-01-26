@@ -9,7 +9,7 @@ import replace from '@rollup/plugin-replace'
 import svgToVue from './plugins/svgToVue'
 
 export function getRollupConfig(firesteadContext){
-    const production = !firesteadContext._nuxt.dev
+    const production = !firesteadContext.dev
   
     const rollupConfig = {
         input: `${firesteadContext.ui.buildRuntimePath}/index.js`,
@@ -48,7 +48,7 @@ export function getRollupConfig(firesteadContext){
       main: true,
       browser: true,
       moduleDirectories: [
-        resolve(firesteadContext._nuxt.rootDir, 'node_modules'),
+        resolve(firesteadContext.rootPath, 'node_modules'),
         'node_modules'
       ]
     }))

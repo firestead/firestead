@@ -13,7 +13,7 @@ export async function isDirectory (path) {
 export async function scanDirs (firesteadContext) {
     firesteadContext.watchFiles = []
     for (const dir of firesteadContext.functionsWatchDirs){
-        const dirPath = `${firesteadContext._nuxt.srcDir}/${firesteadContext.functionsDir}/${dir}`
+        const dirPath = `${firesteadContext.functionsPath}/${dir}`
         if(await isDirectory(dirPath)){
             const watchFiles = await getAllFiles(dirPath, [], dir)
             if(watchFiles.length>0){

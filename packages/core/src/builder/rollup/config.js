@@ -5,13 +5,12 @@ import { nodeResolve } from '@rollup/plugin-node-resolve'
 import {externals} from './plugins/externals'
 
 export function getRollupConfig(firesteadContext, type){
-    const firesteadDirPath = `${firesteadContext._nuxt.rootDir}/${firesteadContext.buildDir}`
     const extensions = ['.ts', '.mjs', '.js', '.json', '.node']
 
     const rollupConfig = {
-        input: `${firesteadDirPath}/firebase/entry.js`,
+        input: `${firesteadContext.buildPath}/firebase/entry.js`,
         output: {
-            file: `${firesteadDirPath}/firebase/functions/index.mjs`,
+            file: `${firesteadContext.buildPath}/firebase/functions/index.mjs`,
             format: 'esm',
             exports: 'auto',
             intro: '',
@@ -28,23 +27,23 @@ export function getRollupConfig(firesteadContext, type){
       }))
 
     const moduleDirectories = [
-        resolve(firesteadContext._nuxt.rootDir, 'node_modules'),
+        resolve(firesteadContext.rootPath, 'node_modules'),
         'node_modules'
       ]
     // Externals
     rollupConfig.plugins.push(externals({
-        outDir: `${firesteadDirPath}/firebase/functions`,
+        outDir: `${firesteadContext.buildPath}/firebase/functions`,
         moduleDirectories,
         external: [
         ],
         inline: [
-            `${firesteadDirPath}/firebase`,
-            `${firesteadContext._nuxt.srcDir}/${firesteadContext.functionsDir}`
+            `${firesteadContext.buildPath}/firebase`,
+            firesteadContext.functionsPath
         ],
         trace: (type==='build')? true: false,
         traceOptions: {
             base: '/',
-            processCwd: firesteadContext._nuxt.rootDir,
+            processCwd: firesteadContext.rootPath,
             exportsOnly: true
         }
     }))
@@ -52,7 +51,7 @@ export function getRollupConfig(firesteadContext, type){
     rollupConfig.plugins.push(nodeResolve({
         extensions,
         preferBuiltins: true,
-        rootDir: firesteadContext._nuxt.rootDir,
+        rootDir: firesteadContext.rootPath,
         moduleDirectories,
         // 'module' is intentionally not supported because of externals
         mainFields: ['main'],

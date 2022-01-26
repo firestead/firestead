@@ -3,7 +3,8 @@
 packages=( 
   "packages/core" 
   "packages/kit" 
-  "packages/ui" 
+  "packages/ui"
+  "packages/frameworks/nuxt"
   "packages/addons/dashboard" 
   "packages/addons/operations"
   )

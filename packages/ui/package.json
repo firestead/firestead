@@ -30,7 +30,6 @@
         "@rollup/plugin-replace": "^3.0.1",
         "@rollup/pluginutils": "^4.1.2",
         "@vue/compiler-sfc": "^3.2.22",
-        "vue-router": "next",
         "chalk": "^4.1.1",
         "consola": "^2.15.3",
         "fs-extra": "^10.0.0",
@@ -39,7 +38,8 @@
         "rollup": "^2.63.0",
         "rollup-plugin-postcss": "^4.0.1",
         "rollup-plugin-vue": "^6.0.0",
-        "ufo": "^0.7.9"
+        "ufo": "^0.7.9",
+        "vue-router": "next"
     },
     "devDependencies": {
         "unbuild": "latest",

@@ -32,5 +32,5 @@ export async function writeEntryFile(firesteadContext){
         entryContent = entryContent.concat(`export const ${watchFile.name} = functions.firestore.document(getDocument(${watchFile.name}_config)).${watchFile.event?watchFile.event:'onWrite'}(${watchFile.name}_import)`, '\n')
       }
     }
-    await fse.writeFile(`${firesteadContext._nuxt.rootDir}/${firesteadContext.buildDir}/firebase/entry.js`, entryContent, 'utf-8')
+    await fse.writeFile(`${firesteadContext.buildPath}/firebase/entry.js`, entryContent, 'utf-8')
   }

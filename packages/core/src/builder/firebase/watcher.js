@@ -6,6 +6,7 @@ let isScanRunning = false
 const scanQueue = []
 
 export async function watchFirebaseFiles(firesteadContext){
+  /*
     firesteadContext.hook('builder:watch',async (event,path)=>{
         if(['add', 'unlink'].indexOf(event) !== -1){
           for( const dir of firesteadContext.functionsWatchDirs){
@@ -16,6 +17,7 @@ export async function watchFirebaseFiles(firesteadContext){
           }
         }
     })
+    */
 }
 
 async function addToScanQueue(firesteadContext, path, event){

@@ -7,20 +7,22 @@
         "packages/core",
         "packages/ui",
         "packages/addons/*",
+        "packages/frameworks/*",
         "examples/*"
     ],
     "scripts": {
         "build": "FORCE_COLOR=1 lerna run prepack --stream --no-prefix",
         "stub": "lerna run prepack -- --stub",
         "release": "FORCE_COLOR=1 lerna run prepack -- --release && sh ./scripts/release.sh",
-        "nuxi": "./node_modules/.bin/nuxi",
-        "examples:nuxt": "yarn run nuxi dev examples/nuxt",
+        "firestead": "./node_modules/.bin/firestead",
+        "examples:nuxt": "yarn run firestead dev examples/nuxt",
         "watch:ui": "./node_modules/windicss/cli/index.js './packages/**/*.vue'  -to ./packages/ui/src/app/assets/style.css --config './packages/ui/windi.config.cjs' --style --dev"
     },
     "resolutions": {
         "firestead": "workspace:./packages/core",
         "@firestead/kit": "workspace:./packages/kit",
         "@firestead/ui": "workspace:./packages/ui",
+        "@firestead/nuxt": "workspace:./packages/frameworks/nuxt",
         "@firestead/addon-dashboard": "workspace:./packages/addons/dashboard",
         "@firestead/addon-operations": "workspace:./packages/addons/operations"
     },
