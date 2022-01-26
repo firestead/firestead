@@ -1,4 +1,4 @@
-import { dirname, resolve } from 'pathe'
+import { resolve } from 'pathe'
 import { fileURLToPath } from 'url'
 import { addPluginTemplate, addTemplate, defineNuxtModule, isNuxt2 } from '@nuxt/kit'
 
@@ -18,9 +18,13 @@ const firesteadModule = defineNuxtModule({
             return
         }
 
+        // Transpile runtime
+        const runtimeDir = fileURLToPath(new URL('./runtime', import.meta.url))
+        nuxt.options.build.transpile.push(runtimeDir)
+
         //add plugin utils
         addTemplate({
-            src: resolve(dirname(fileURLToPath(import.meta.url)), 'plugins/utils/auth.js'),
+            src: resolve(runtimeDir, 'plugins/utils/auth.js'),
             filename: 'utils.auth.js',
             mode: 'client'
         })
@@ -31,7 +35,7 @@ const firesteadModule = defineNuxtModule({
         }
         //Firebase server client sdk for web
         addPluginTemplate({
-          src: resolve(dirname(fileURLToPath(import.meta.url)), 'plugins/firebase.web.js'),
+          src: resolve(runtimeDir, 'plugins/firebase.web.js'),
           filename: 'firebase.web.js',
           mode: 'client',
           options: {...firebaseConfig}
@@ -39,29 +43,17 @@ const firesteadModule = defineNuxtModule({
         
         //Firebase server admin sdk for web
         addPluginTemplate({
-          src: resolve(dirname(fileURLToPath(import.meta.url)), 'plugins/firebase.admin.js'),
+          src: resolve(runtimeDir, 'plugins/firebase.admin.js'),
           filename: 'firebase.admin.js',
           mode: 'server'
         })
     
 
         //add firestead composables -> Todo: fs plugins can add composables
-        const composables = [{
-          functions: ['useAuth','useFirestore','useStorage','useAsyncFunction'],
-          file: resolve(dirname(fileURLToPath(import.meta.url)),'composables/index.js')
-        }]
-        nuxt.hook('autoImports:extend', (autoImports)=>{
-          for(const composable of composables){
-            for(const func of composable.functions){
-              autoImports.push({
-                name: func,
-                as: func,
-                from: composable.file
-              })
-            }
-          }
+        nuxt.hook('autoImports:dirs', (dirs) => {
+            dirs.push(resolve(runtimeDir, 'composables'))
         })
     },
-  })
+})
 
 export default firesteadModule

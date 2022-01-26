@@ -2,8 +2,9 @@ import { dirname, resolve } from 'pathe'
 import { fileURLToPath } from 'url'
 import { firesteadCtx, resolveModule } from '@firestead/kit'
 import { getRollupConfig } from './builder/rollup/config'
+import { resolveLinkedPath } from './builder/utils'
 
-export function createFiresteadContext({rootPath, dev = false}){
+export async function createFiresteadContext({rootPath, dev = false}){
     const firesteadContext = {
         dev: dev,
         rootPath: rootPath,
@@ -44,7 +45,7 @@ export function createFiresteadContext({rootPath, dev = false}){
     firesteadContext.functionsPath = resolve(firesteadContext.rootPath, firesteadContext.functionsDir)
 
     //add firebase rollup configuration
-    firesteadContext.firebase.runtimePath = resolve(firesteadContext.contextPath,'runtime')
+    firesteadContext.firebase.runtimePath = await resolveLinkedPath(firesteadContext.modulePath,'runtime')
     firesteadContext.firebase.rollupConfig = getRollupConfig(firesteadContext)
 
     //create global firestead context

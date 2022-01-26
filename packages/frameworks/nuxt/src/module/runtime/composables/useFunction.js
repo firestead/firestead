@@ -1,6 +1,6 @@
 import { useNuxtApp } from '#app'
 
-export const useAsyncFunction = async(key,name,params={},options = {server: false, defer:true}) => {
+export const useFunction = async(key,name,params={},options = {server: false, defer:true}) => {
     const { $fs } = useNuxtApp()
 
     return useAsyncData(key, async () => {

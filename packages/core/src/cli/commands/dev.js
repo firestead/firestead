@@ -28,7 +28,7 @@ export default defineFiresteadCommand({
       const rootPath = resolve(args._[0] || '.')
 
       //Init Firestead
-      const firesteadContext = createFiresteadContext({ rootPath , dev: true })
+      const firesteadContext = await createFiresteadContext({ rootPath , dev: true })
       //add firestead build dir to node env -> TODO: find better way to add build dir to middleware
       process.env.FIRESTEAD_BUILD_DIR = firesteadContext.buildPath
       //set process envs for dev

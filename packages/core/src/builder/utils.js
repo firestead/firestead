@@ -49,6 +49,21 @@ export async function writeFile (file, contents, log = false) {
   }
 }
 
+export async function resolveLinkedPath(path, dir) {
+  path = resolve(path,dir)
+  let isLink = false
+  try {
+      await fse.readlink(path)
+      isLink = true
+  } catch (error) {
+      // nothing to do
+  }
+  if(isLink){
+    path = await fse.realpath(path)
+  }
+  return path
+}
+
 // Based on https://github.com/nuxt/framework/blob/main/packages/nitro/src/utils/index.ts (MIT)
 export function readPackageJson (
   packageName,
