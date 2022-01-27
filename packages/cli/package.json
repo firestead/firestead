@@ -1,0 +1,43 @@
+{
+    "name": "@firestead/cli",
+    "description": "firestead cli - run firestead commands",
+    "repository": "firestead/firestead",
+    "keywords": [
+        "firestead",
+        "firestead cli",
+        "firebase"
+    ],
+    "version": "0.0.1",
+    "type": "module",
+    "license": "MIT",
+    "files": [
+        "dist",
+        "bin"
+    ],
+    "bin": {
+        "firestead": "./bin/firestead.mjs"
+    },
+    "scripts": {
+        "prepack": "unbuild"
+    },
+    "exports": {
+        ".": "./dist/index.mjs",
+        "./cli": "./bin/firestead.mjs",
+        "./package.json": "./package.json"
+    },
+    "dependencies": {
+        "@firestead/addon-dashboard": "latest",
+        "@firestead/addon-operations": "latest",
+        "@firestead/kit": "latest",
+        "@firestead/ui": "latest",
+        "chalk": "^4.1.1",
+        "consola": "^2.15.3",
+        "firestead": "latest",
+        "mri": "^1.2.0",
+        "pathe": "^0.2.0",
+        "requireg": "^0.2.2"
+    },
+    "devDependencies": {
+        "unbuild": "latest"
+    }
+}

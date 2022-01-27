@@ -3,13 +3,11 @@ import requireg from "requireg"
 import { resolve } from 'pathe'
 import chalk from 'chalk'
 import util from 'util'
-import { createFiresteadContext } from "../../context"
-import { initFramework } from "../framwork"
+import { initFramework } from '../utils/framwork'
 import { waitUntilEmulatorReady } from '../utils/wait'
 import { initApp } from '@firestead/ui'
 import { installAddon } from '@firestead/kit'
-import { prepare as prepareFirebase, bundle as bundleFirebase } from '../../builder'
-import { writePackageJson, writeFirebaseDefaults } from '../../builder/config'
+import { prepare as prepareFirebase, bundle as bundleFirebase, buildConfig, createFiresteadContext } from 'firestead'
 
 export default defineFiresteadCommand({
     meta: {
@@ -28,7 +26,7 @@ export default defineFiresteadCommand({
       const rootPath = resolve(args._[0] || '.')
 
       //Init Firestead
-      const firesteadContext = await createFiresteadContext({ rootPath , dev: true })
+      const firesteadContext = createFiresteadContext({ rootPath , dev: true })
       //add firestead build dir to node env -> TODO: find better way to add build dir to middleware
       process.env.FIRESTEAD_BUILD_DIR = firesteadContext.buildPath
       //set process envs for dev
@@ -37,8 +35,7 @@ export default defineFiresteadCommand({
       //prepare build for firestead
       await prepareFirebase(firesteadContext)       
       // create firebase configuration
-      writeFirebaseDefaults(firesteadContext)
-      await writePackageJson(firesteadContext)
+      await buildConfig(firesteadContext)
       // run rollup watch function to build firestead index.mjs
       await bundleFirebase(firesteadContext)
       await installAddon('@firestead/addon-dashboard')

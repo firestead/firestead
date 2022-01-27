@@ -3,6 +3,7 @@ import { isDirectory, scanDirs } from './utils'
 import { watchFirebaseFiles } from './firebase/watcher'
 import { writeEntryFile } from './firebase/entry'
 import { watch } from './rollup/bundler'
+import {writeFirebaseDefaults, writePackageJson} from './config'
 
 export async function prepare(firesteadContext){
   const firesteadDir = await isDirectory(firesteadContext.buildPath)
@@ -22,4 +23,9 @@ export async function bundle(firesteadContext){
   await writeEntryFile(firesteadContext)
   // watch and bundle firebase files
   watch(firesteadContext)
+}
+
+export async function buildConfig(firesteadContext){
+  writeFirebaseDefaults(firesteadContext)
+  await writePackageJson(firesteadContext)
 }

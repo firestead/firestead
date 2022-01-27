@@ -4,6 +4,7 @@ packages=(
   "packages/core" 
   "packages/kit" 
   "packages/ui"
+  "packages/cli"
   "packages/frameworks/nuxt"
   "packages/addons/dashboard" 
   "packages/addons/operations"

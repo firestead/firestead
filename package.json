@@ -6,6 +6,7 @@
         "packages/kit",
         "packages/core",
         "packages/ui",
+        "packages/cli",
         "packages/addons/*",
         "packages/frameworks/*",
         "examples/*"
@@ -22,14 +23,15 @@
         "firestead": "workspace:./packages/core",
         "@firestead/kit": "workspace:./packages/kit",
         "@firestead/ui": "workspace:./packages/ui",
+        "@firestead/cli": "workspace:./packages/cli",
         "@firestead/nuxt": "workspace:./packages/frameworks/nuxt",
         "@firestead/addon-dashboard": "workspace:./packages/addons/dashboard",
         "@firestead/addon-operations": "workspace:./packages/addons/operations"
     },
     "devDependencies": {
-        "jiti": "^1.12.9",
+        "jiti": "^1.12.14",
         "lerna": "^4.0.0",
-        "unbuild": "^0.6.7"
+        "unbuild": "^0.6.8"
     },
     "packageManager": "yarn@3.1.1",
     "engines": {
