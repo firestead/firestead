@@ -1,9 +1,10 @@
 import { clearDir } from './utils/fs'
 import { writeTypes } from './utils/prepare'
+import debounce from 'p-debounce'
 import { createServer as nuxtServer, createLoadingHandler } from './utils/server'
 import { loadNuxt, buildNuxt } from '@nuxt/kit'
 
-export async function createServer(args, { rootPath }){
+export const createServer =  async function(args, { rootPath }){
 
     //create server
     const server = nuxtServer()
@@ -58,11 +59,37 @@ export async function createServer(args, { rootPath }){
       await currentNuxt.hooks.callHook('listen', listener.server, listener)
     }
 
-    const reload = () => {
+    const dLoad = debounce(load, 250)
 
+    const reload = () => {
+      dLoad(true, 'Manual triggered reload')
+    }
+
+    const watch = (event, file) => {
+      if (!currentNuxt) { return }
+      if (file.startsWith(currentNuxt.options.buildDir)) { return }
+      if (file.match(/nuxt\.config\.(js|ts|mjs|cjs)$/)) {
+        dLoad(true, `${relative(rootDir, file)} updated`)
+      }
+
+      const isDirChange = ['addDir', 'unlinkDir'].includes(event)
+      const isFileChange = ['add', 'unlink'].includes(event)
+      const reloadDirs = [currentNuxt.options.dir.pages, 'components', 'composables']
+
+      if (isDirChange) {
+        const dir = reloadDirs.find(dir => file.endsWith(dir))
+        if (dir) {
+          dLoad(true, `Directory \`${dir}/\` ${event === 'addDir' ? 'created' : 'removed'}`)
+        }
+      } else if (isFileChange) {
+        if (file.match(/app\.(js|ts|mjs|jsx|tsx|vue)$/)) {
+          dLoad(true, `\`${relative(rootDir, file)}\` ${event === 'add' ? 'created' : 'removed'}`)
+        }
+      }
     }
     
     return {
-      reload
+      reload,
+      watch
     }
 }

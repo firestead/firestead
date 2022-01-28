@@ -26,7 +26,11 @@
         "@firestead/cli": "workspace:./packages/cli",
         "@firestead/nuxt": "workspace:./packages/frameworks/nuxt",
         "@firestead/addon-dashboard": "workspace:./packages/addons/dashboard",
-        "@firestead/addon-operations": "workspace:./packages/addons/operations"
+        "@firestead/addon-operations": "workspace:./packages/addons/operations",
+        "unbuild": "^0.6.8",
+        "jiti": "^1.12.14",
+        "rollup": "^2.63.0",
+        "firebase-admin": "^10.0.1"
     },
     "devDependencies": {
         "jiti": "^1.12.14",

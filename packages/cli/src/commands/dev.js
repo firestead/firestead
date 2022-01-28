@@ -3,6 +3,7 @@ import requireg from "requireg"
 import { resolve } from 'pathe'
 import chalk from 'chalk'
 import util from 'util'
+import chokidar from 'chokidar'
 import { initFramework } from '../utils/framwork'
 import { waitUntilEmulatorReady } from '../utils/wait'
 import { initApp } from '@firestead/ui'
@@ -28,7 +29,7 @@ export default defineFiresteadCommand({
       //Init Firestead
       const firesteadContext = createFiresteadContext({ rootPath , dev: true })
       //add firestead build dir to node env -> TODO: find better way to add build dir to middleware
-      process.env.FIRESTEAD_BUILD_DIR = firesteadContext.buildPath
+      //process.env.FIRESTEAD_BUILD_DIR = firesteadContext.buildPath
       //set process envs for dev
       process.env.FIREBASE_AUTH_EMULATOR_HOST = 'localhost:9099'
       process.env.GCLOUD_PROJECT = 'default'
@@ -63,12 +64,21 @@ export default defineFiresteadCommand({
       //start firebase emulator
       const activeEmulators = ['functions', 'storage', 'auth', 'firestore', 'pubsub']
       client.emulators.start({project: 'default', only: activeEmulators.join(',')})
+      //change dir back to cli command path
+      process.chdir(`${process.env.INIT_CWD}`)
       //await emulator ready
       await waitUntilEmulatorReady(firesteadContext)
       // start framework server and watch file changes if needed
       firesteadContext.logger.log('info', `${chalk.yellow('i Firestead')} Starting dev server for framework '${firesteadContext.framework.name}'`)
-      firesteadContext.framework.server = await frameworkInstance.createServer.call(null, args, firesteadContext)
-      //change dir back to cli command path
-      process.chdir(`${process.env.INIT_CWD}`)
+      try {
+        firesteadContext.framework.server = await frameworkInstance.createServer.call(null, args, firesteadContext)
+        // watch for changes in firestead files -> needed for nuxt framework, check others
+        const watcher = chokidar.watch([rootPath], { ignoreInitial: true, depth: 1 })
+        watcher.on('all', async (event, path) => {
+          firesteadContext.framework.server.watch(event, path)
+        }) 
+      } catch (error) {
+        throw new Error(`Failed to start framework dev server: ${error.message}`)
+      }
     }
 })

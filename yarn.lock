@@ -890,6 +890,7 @@ __metadata:
     "@firestead/kit": latest
     "@firestead/ui": latest
     chalk: ^4.1.1
+    chokidar: ^3.3.1
     consola: ^2.15.3
     firestead: latest
     mri: ^1.2.0
@@ -921,8 +922,10 @@ __metadata:
     "@nuxt/design": latest
     "@nuxt/kit": "npm:@nuxt/kit-edge@latest"
     defu: ^5.0.1
+    firebase-admin: ^10.0.1
     listhen: ^0.2.6
     nuxt3: latest
+    p-debounce: ^4.0.0
     pathe: ^0.2.0
     rimraf: ^3.0.2
     unbuild: latest
@@ -4191,7 +4194,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"chokidar@npm:^3.5.2, chokidar@npm:^3.5.3":
+"chokidar@npm:^3.3.1, chokidar@npm:^3.5.2, chokidar@npm:^3.5.3":
   version: 3.5.3
   resolution: "chokidar@npm:3.5.3"
   dependencies:
@@ -7888,15 +7891,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jiti@npm:^1.12.9, jiti@npm:^1.12.x":
-  version: 1.12.13
-  resolution: "jiti@npm:1.12.13"
-  bin:
-    jiti: bin/jiti.js
-  checksum: c4eb3b67389869d0c62c2957f90b736a776f6257b554c3c8badb263c29f238983ad7a13915add441d4b5add474b93ff2addbea5d0e001f29c1ee1f1d8e88fef5
-  languageName: node
-  linkType: hard
-
 "jose@npm:^2.0.5":
   version: 2.0.5
   resolution: "jose@npm:2.0.5"
@@ -11432,7 +11426,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"rollup@npm:^2.59.0, rollup@npm:^2.63.0, rollup@npm:^2.65.0, rollup@npm:^2.66.1":
+"rollup@npm:^2.63.0":
   version: 2.66.1
   resolution: "rollup@npm:2.66.1"
   dependencies:
@@ -12742,7 +12736,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"unbuild@npm:^0.6.8, unbuild@npm:latest":
+"unbuild@npm:^0.6.8":
   version: 0.6.8
   resolution: "unbuild@npm:0.6.8"
   dependencies:
