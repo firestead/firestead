@@ -86,7 +86,7 @@ export const clientAuth = async (nuxtApp, connection, options = {}) =>{
     })
     const { FirebaseAuth } = nuxtApp.payload.state
     const { useCookie, setCookie } = await import('h3')
-    const session = useCookie(req, 'session')
+    const session = useCookie(req, '__session')
     if(session){
       try {
         const { getAuth } = await import('firebase-admin/auth')
@@ -100,7 +100,7 @@ export const clientAuth = async (nuxtApp, connection, options = {}) =>{
         //TODO: better error management, check the reason of the error
         //remove session cookie
         const options = { maxAge: 0 }
-        setCookie(res, 'session', null, options)
+        setCookie(res, '__session', null, options)
       }
     }else{
       //TODO: handle auth security

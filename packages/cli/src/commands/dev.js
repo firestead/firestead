@@ -29,7 +29,7 @@ export default defineFiresteadCommand({
       //Init Firestead
       const firesteadContext = createFiresteadContext({ rootPath , dev: true })
       //add firestead build dir to node env -> TODO: find better way to add build dir to middleware
-      //process.env.FIRESTEAD_BUILD_DIR = firesteadContext.buildPath
+      process.env.FIRESTEAD_BUILD_DIR = firesteadContext.buildPath
       //set process envs for dev
       process.env.FIREBASE_AUTH_EMULATOR_HOST = 'localhost:9099'
       process.env.GCLOUD_PROJECT = 'default'

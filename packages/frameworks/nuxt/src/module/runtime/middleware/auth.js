@@ -1,30 +1,20 @@
-import { createError, setCookie , useBody, useCookie} from "h3"
+import { createApp, createError, setCookie , useBody, useCookie} from "h3"
 import { initializeApp, getApps } from 'firebase-admin/app'
-import { getFirestore } from 'firebase-admin/firestore'
 import { getAuth } from 'firebase-admin/auth'
 
-export const initFirebaseAdmin = (req, res, next) => {
+const app = createApp()
+
+app.use((req, res, next) => {
     const apps = getApps()
-    let adminApp = null
     if (!apps.length) {
-        adminApp = initializeApp({ 
+        initializeApp({ 
             projectId: 'default'
-        })
-    } else {
-        adminApp = apps[0]
-    }
-    const firestore = getFirestore(adminApp)
-    //sesttings can only be called once
-    if(!apps.length){
-        firestore.settings({
-            host: "localhost:8080",
-            ssl: false
         })
     }
     next()
-}
+})
 
-export const sessionHandler = async (req, res) => {
+app.use('/session', async (req, res) => {
     if(req.method==='POST'){
         const {idToken } = await useBody(req)
         //TODO: add csrf token
@@ -37,7 +27,7 @@ export const sessionHandler = async (req, res) => {
         try {
             const sessionCookie = await getAuth().createSessionCookie(idToken, { expiresIn })
             const options = { maxAge: expiresIn, httpOnly: true, secure: true, path: '/' }
-            setCookie(res, 'session', sessionCookie, options)
+            setCookie(res, '__session', sessionCookie, options)
             return {
                 statusCode: 200
             }
@@ -48,16 +38,16 @@ export const sessionHandler = async (req, res) => {
     }else{
         return createError({statusCode: 405, statusMessage: 'Method Not Allowed'})
     }
-}
+})
 
-export const signOut = async (req, res) => {
+app.use('/signout', async (req, res) => {
     if(req.method==='POST'){
-        const session = useCookie(req, 'session')
+        const session = useCookie(req, '__session')
         try {
             const decodedClaims = await getAuth().verifySessionCookie(session)
             await getAuth().revokeRefreshTokens(decodedClaims.sub)
             const options = { maxAge: 0 }
-            setCookie(res, 'session', null, options)
+            setCookie(res, '__session', null, options)
         } catch (error) {
             return createError({statusCode: 500, statusMessage: 'INTERNAL SERVER ERROR', error: error})
         }
@@ -67,4 +57,6 @@ export const signOut = async (req, res) => {
     }else{
         return createError({statusCode: 405, statusMessage: 'Method Not Allowed'})
     }
-}
+})
+
+export default app

@@ -14,7 +14,7 @@ const dashboardAddon = defineFsAddon({
         },
     },
     functions: [],
-    api: [],
+    middleware: [],
     setup() {}
 })
 
