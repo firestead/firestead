@@ -8,7 +8,8 @@ import {writeFirebaseDefaults, writePackageJson} from './config'
 export async function prepare(firesteadContext){
   const firesteadDir = await isDirectory(firesteadContext.buildPath)
   if(firesteadDir){
-      await fse.emptyDir(firesteadContext.buildPath)
+      await fse.emptyDir(`${firesteadContext.buildPath}/firebase`)
+      await fse.emptyDir(`${firesteadContext.buildPath}/ui`)
   }
   await fse.mkdirp(`${firesteadContext.buildPath}/firebase/functions`)
   await fse.mkdirp(`${firesteadContext.buildPath}/firebase/runtime`)

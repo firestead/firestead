@@ -68,7 +68,8 @@ export const useFirestore = (key, options={}) => {
                     updatedAt: serverTimestamp()
                 }
             }
-            await callHook('fs:firestore:data', 'set' , refPath, newData)
+            //Todo: use functions set with options to change data
+            //await callHook('fs:firestore:data', 'set' , refPath, newData)
             await setDoc(docRef, newData)
             setState('creating', false)
         } catch (error) {

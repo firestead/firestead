@@ -23,7 +23,13 @@ export function createFiresteadContext({rootPath, dev = false}){
         firebase: {
             config: {},
             rollupConfig: undefined,
-            runtimePath: undefined
+            runtimePath: undefined,
+        },
+        emulator: {
+            active: true,
+            services: ['functions', 'storage', 'auth', 'firestore', 'pubsub'],
+            exportDir: 'export',
+            exportPath: undefined,
         },
         ui:{
             contextPath: undefined,
@@ -41,6 +47,7 @@ export function createFiresteadContext({rootPath, dev = false}){
         }
     }
     firesteadContext.buildPath = resolve(firesteadContext.rootPath, firesteadContext.buildDir)
+    firesteadContext.emulator.exportPath = resolve(firesteadContext.buildPath, firesteadContext.emulator.exportDir)
     firesteadContext.functionsPath = resolve(firesteadContext.rootPath, firesteadContext.functionsDir)
 
     //add firebase rollup configuration

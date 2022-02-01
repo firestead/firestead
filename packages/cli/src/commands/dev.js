@@ -7,7 +7,7 @@ import chokidar from 'chokidar'
 import { initFramework } from '../utils/framwork'
 import { waitUntilEmulatorReady } from '../utils/wait'
 import { initApp } from '@firestead/ui'
-import { installAddon } from '@firestead/kit'
+import { installAddon, isDir } from '@firestead/kit'
 import { prepare as prepareFirebase, bundle as bundleFirebase, buildConfig, createFiresteadContext } from 'firestead'
 
 export default defineFiresteadCommand({
@@ -62,8 +62,16 @@ export default defineFiresteadCommand({
       firesteadContext.logger = client.logger.logger
       firesteadContext.logger.log('info', `${chalk.yellow('i Firestead')} Starting Firebase emulator \n`)
       //start firebase emulator
-      const activeEmulators = ['functions', 'storage', 'auth', 'firestore', 'pubsub']
-      client.emulators.start({project: 'default', only: activeEmulators.join(',')})
+      const emulatorOptions = {
+        project: 'default', 
+        only: firesteadContext.emulator.services.join(','),
+        exportOnExit: firesteadContext.emulator.exportPath
+      }
+      //if export exists add import to emulator options
+      if(isDir(firesteadContext.emulator.exportPath)){
+        emulatorOptions.import = firesteadContext.emulator.exportPath
+      }
+      client.emulators.start(emulatorOptions)
       //change dir back to cli command path
       process.chdir(`${process.env.INIT_CWD}`)
       //await emulator ready

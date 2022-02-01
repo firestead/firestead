@@ -36,7 +36,7 @@ export const useStorage = (key='default', options= {}) => {
         } catch (refError) {
             resetStorageData(refError)
         }
-        return true
+        return fsStorageRef
     }
 
     const upload = async (file = null, metadata = {}) => {

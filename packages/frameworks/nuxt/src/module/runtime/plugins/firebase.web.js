@@ -6,23 +6,13 @@ import { getFunctions, connectFunctionsEmulator } from '@firebase/functions'
 import { getStorage, connectStorageEmulator } from "@firebase/storage"
 import { clientAuth, authUnsubscribe } from '#build/utils.auth.js'
 
-/*
-    //Auth client side security firewall
-	const router = nuxtApp.$router
-
-	router.beforeEach((to: object, from: object, next: Function) => {
-		console.log('beforeEach')
-		next()
-	})
-*/
-
 export default defineNuxtPlugin(async (nuxtApp) => {
     const firesteadOptions = JSON.parse('<%= JSON.stringify(options) %>')
     const firebaseConfig = {
         apiKey: firesteadOptions?.config?.apiKey || '123456789',    
         authDomain: firesteadOptions?.config?.authDomain || '',
         databaseURL: firesteadOptions?.config?.databaseURL || '',
-        projectId: firesteadOptions?.config?.projectId || '',
+        projectId: firesteadOptions?.config?.projectId || 'default',
         storageBucket: firesteadOptions?.config?.storageBucket || 'default',
         messagingSenderId: firesteadOptions?.config?.messagingSenderId || '',
         appId: firesteadOptions?.config?.appId || ''
