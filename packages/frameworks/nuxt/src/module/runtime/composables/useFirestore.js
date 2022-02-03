@@ -1,18 +1,20 @@
 import { useNuxtApp } from '#app'
-import { onUnmounted, onBeforeMount, getCurrentInstance, toRefs, toRef, set } from '@vue/composition-api'
+import { onUnmounted, onBeforeMount, getCurrentInstance, toRefs, toRef, set, computed } from '@vue/composition-api'
 import { klona } from 'klona'
 
-export const useFirestore = (key, options={}) => {
+export const useFirestore = (key, firestoreOptions={}) => {
     if (typeof key !== 'string') {
         throw new TypeError('useFirestore key must be a string')
     }
-    const { $fs, callHook, isHydrating, _asyncDataPromises, payload } = useNuxtApp()
+    const { $fs, isHydrating, _asyncDataPromises, payload } = useNuxtApp()
 
-    //add states
+    //hydrate and get store from global payload -> firestoreData
     if (!(`${key}FirestoreResult` in payload.state)) {
         set(payload.state, `${key}FirestoreResult`, payload.state[`${key}FirestoreResult`])
     }
-    const result = toRef(payload.state, `${key}FirestoreResult`)
+    const firestoreData = toRef(payload.state, `${key}FirestoreResult`)
+
+    //hydrate and get store from global payload -> fetchState
     if (!(`${key}FirestoreState` in payload.state)) {
         set(payload.state, `${key}FirestoreState`, {
             pending: false,
@@ -24,6 +26,8 @@ export const useFirestore = (key, options={}) => {
         })
     }
     const state = payload.state[`${key}FirestoreState`]
+
+    //hydrate and get store from global payload -> fetchDetails
     if (!(`${key}FirestoreFetchDetails` in payload.state)){
         if(payload.state[`${key}FirestoreFetchDetails`]){
             set(payload.state, `${key}FirestoreFetchDetails`, payload.state[`${key}FirestoreFetchDetails`])
@@ -38,6 +42,7 @@ export const useFirestore = (key, options={}) => {
     const fetchDetails = payload.state[`${key}FirestoreFetchDetails`]
 
     const reFetch = {}
+    let filterActive = false
 
     const setState = (changedState, val) => {
         if(changedState==='error'){
@@ -85,15 +90,15 @@ export const useFirestore = (key, options={}) => {
         try {
             const { updateDoc, serverTimestamp } = await $fs.firestore.lib()
             setState('updating', true)
-            const refDoc = result.value[index].ref
-            let dataUpdate = klona(result.value[index].data)
+            const refDoc = firestoreData.value[index].ref
+            let dataUpdate = klona(firestoreData.value[index].data)
             if(options.timestamps){
                 dataUpdate = {
                     ...dataUpdate,
                     updatedAt: serverTimestamp()
                 }
             }
-            await callHook('fs:firestore:data', 'update', refDoc.path ,dataUpdate)
+            //TODO: add callback function to change data before update
             await updateDoc(refDoc, dataUpdate)
             setState('updating', false)
         } catch (error) {
@@ -106,7 +111,7 @@ export const useFirestore = (key, options={}) => {
         try {
             const { deleteDoc } = await $fs.firestore.lib()
             setState('deleting', true)
-            const refDoc = result.value[index].ref
+            const refDoc = firestoreData.value[index].ref
             await deleteDoc(refDoc)
             setState('deleting', false)
         } catch (error) {
@@ -139,7 +144,7 @@ export const useFirestore = (key, options={}) => {
                 ref: snapshot.ref
             }
         }
-        result.value = retValue
+        firestoreData.value = retValue
         fetchDetails.query = isQuerySnapshot
         fetchDetails.lastUpdate = process.client ? new Date().getTime() : false
         if(process.client) {
@@ -169,7 +174,9 @@ export const useFirestore = (key, options={}) => {
             }
         }
     }
-    const fsFetch = async (fetchFunc) => {
+    const fsFetch = async (fetchFunc, options = {}) => {
+        console.log('filter active',filterActive)
+        //refetch
         if (typeof fetchFunc !== 'function') {
             if(typeof reFetch.call === 'function') {
                 await reFetch.call()
@@ -218,8 +225,21 @@ export const useFirestore = (key, options={}) => {
                 return _asyncDataPromises[key]
               }
 
-            //only fetch if data are not hydrated yet 
-            if(process.client && (!isHydrating || !result.value)){
+            //only fetch if fetch criteria are met
+            const callFetchCriteria = () => {
+                // fetch always if foreceFetch is set
+                if(options.forceFetch ? true: false) return true
+                // fetch if data are not hydrated and no data available
+                if(!isHydrating && !firestoreData.value) return true
+                // fetch if data are hydrated but no data available
+                if(isHydrating && !firestoreData.value) return true
+                // fetch if filter not set but data available and no hydration
+                if(!filterActive && (firestoreData.value ? true: false && !isHydrating)) return true
+                // if criteria not met don't fetch
+                return false
+            }
+
+            if(callFetchCriteria()){
                 try{
                     instance._nuxtOnBeforeMountCbs.push(reFetch.call)
                 } catch (error) {
@@ -260,6 +280,17 @@ export const useFirestore = (key, options={}) => {
             */
         }
     }
+
+    const filter = (fn, returnFirst) => {
+        filterActive = true
+        return computed(()=>{
+            if(typeof fn === 'function' && firestoreData.value){
+                if(returnFirst) return firestoreData.value.filter(fn)[0]
+                else return firestoreData.value.filter(fn)
+            }
+        })
+    }
+
     return {
         setDoc: fsSetDoc,
         updateDoc: fsUpdateDoc,
@@ -268,7 +299,8 @@ export const useFirestore = (key, options={}) => {
         subscribe: fsSubscribe,
         fetch: fsFetch,
         serverFetch: fsServerFetch,
-        result: result,
+        filter: filter,
+        result: firestoreData,
         state: toRefs(state),
         fetchDetails: toRefs(fetchDetails)
     }

@@ -65,7 +65,7 @@ export const createServer =  async function(args, { rootPath }){
       dLoad(true, 'Manual triggered reload')
     }
 
-    const watch = (event, file) => {
+    const watchEffect = (event, file) => {
       if (!currentNuxt) { return }
       if (file.startsWith(currentNuxt.options.buildDir)) { return }
       if (file.match(/nuxt\.config\.(js|ts|mjs|cjs)$/)) {
@@ -90,6 +90,6 @@ export const createServer =  async function(args, { rootPath }){
     
     return {
       reload,
-      watch
+      watchEffect
     }
 }

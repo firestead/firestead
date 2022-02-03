@@ -8,7 +8,7 @@
         "firestead",
         "firebase"
     ],
-    "version": "0.0.41",
+    "version": "0.0.42",
     "type": "module",
     "license": "MIT",
     "files": [
@@ -38,6 +38,7 @@
         "firebase-functions": "^3.16.0",
         "fs-extra": "^10.0.0",
         "h3": "^0.3.3",
+        "hookable": "^5.1.1",
         "klona": "^2.0.5",
         "pathe": "^0.2.0",
         "rollup": "^2.63.0"

@@ -74,11 +74,12 @@
                 </div>
             </div>
           </fieldset>
-          
+          <TestFilter></TestFilter>
         </div>
       </div>
 </template>
 <script setup>
+    import TestFilter from '../../components/test-filter.vue'
     const {
         state, 
         result: todos, 

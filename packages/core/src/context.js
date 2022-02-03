@@ -2,6 +2,7 @@ import { dirname, resolve } from 'pathe'
 import { fileURLToPath } from 'url'
 import { firesteadCtx, resolveModule } from '@firestead/kit'
 import { getRollupConfig } from './builder/rollup/config'
+import { createHooks } from 'hookable'
 
 export function createFiresteadContext({rootPath, dev = false}){
     const firesteadContext = {
@@ -9,6 +10,7 @@ export function createFiresteadContext({rootPath, dev = false}){
         rootPath: rootPath,
         buildDir: '_firestead',
         buildPath: undefined,
+        hooks: createHooks(),
         modulePath: dirname(resolveModule('firestead')),
         contextPath: dirname(fileURLToPath(import.meta.url)),
         functionsDir: 'server/firebase',

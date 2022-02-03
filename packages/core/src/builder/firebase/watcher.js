@@ -6,18 +6,16 @@ let isScanRunning = false
 const scanQueue = []
 
 export async function watchFirebaseFiles(firesteadContext){
-  /*
-    firesteadContext.hook('builder:watch',async (event,path)=>{
-        if(['add', 'unlink'].indexOf(event) !== -1){
-          for( const dir of firesteadContext.functionsWatchDirs){
-            if(path.includes(`${firesteadContext.functionsDir}/${dir}`)){
-              await addToScanQueue(firesteadContext, path, event)
-              break
-            }
+  firesteadContext.hooks.hook('watch:event',async (event,path)=>{
+      if(['add', 'unlink'].indexOf(event) !== -1){
+        for( const dir of firesteadContext.functionsWatchDirs){
+          if(path.includes(`${firesteadContext.functionsDir}/${dir}`)){
+            await addToScanQueue(firesteadContext, path, event)
+            break
           }
         }
-    })
-    */
+      }
+  })
 }
 
 async function addToScanQueue(firesteadContext, path, event){

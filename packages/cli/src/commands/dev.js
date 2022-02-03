@@ -28,6 +28,8 @@ export default defineFiresteadCommand({
 
       //Init Firestead
       const firesteadContext = createFiresteadContext({ rootPath , dev: true })
+      // add firebase emulator logger to firestead context
+      firesteadContext.logger = client.logger.logger
       //add firestead build dir to node env -> TODO: find better way to add build dir to middleware
       process.env.FIRESTEAD_BUILD_DIR = firesteadContext.buildPath
       //set process envs for dev
@@ -50,7 +52,7 @@ export default defineFiresteadCommand({
       const firebaseRuntimePath = `${firesteadContext.buildPath}/firebase`
       process.chdir(firebaseRuntimePath)
       // set logger for firebase emulator
-      client.logger.logger.on("data",(log)=>{
+      firesteadContext.logger.on("data",(log)=>{
         if(['info', 'warn', 'data', 'http'].indexOf(log.level) !== -1){
           const logArgs = log[Symbol.for('splat')]
           if (logArgs) {
@@ -59,7 +61,6 @@ export default defineFiresteadCommand({
           console.log(log.message)
         }
       })
-      firesteadContext.logger = client.logger.logger
       firesteadContext.logger.log('info', `${chalk.yellow('i Firestead')} Starting Firebase emulator \n`)
       //start firebase emulator
       const emulatorOptions = {
@@ -83,7 +84,10 @@ export default defineFiresteadCommand({
         // watch for changes in firestead files -> needed for nuxt framework, check others
         const watcher = chokidar.watch([rootPath], { ignoreInitial: true, depth: 1 })
         watcher.on('all', async (event, path) => {
-          firesteadContext.framework.server.watch(event, path)
+          // framework watch effect
+          firesteadContext.framework.server.watchEffect(event, path)
+          // firestead build watch effect
+          firesteadContext.hooks.callHook('watch:event', {event, path})
         }) 
       } catch (error) {
         throw new Error(`Failed to start framework dev server: ${error.message}`)
