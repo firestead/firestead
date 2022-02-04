@@ -7,7 +7,7 @@
         "firestead cli",
         "firebase"
     ],
-    "version": "0.0.5",
+    "version": "0.0.6",
     "type": "module",
     "license": "MIT",
     "files": [
@@ -26,10 +26,7 @@
         "./package.json": "./package.json"
     },
     "dependencies": {
-        "@firestead/addon-dashboard": "latest",
-        "@firestead/addon-operations": "latest",
         "@firestead/kit": "latest",
-        "@firestead/ui": "latest",
         "chalk": "^4.1.1",
         "chokidar": "^3.3.1",
         "consola": "^2.15.3",

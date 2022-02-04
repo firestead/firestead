@@ -1,7 +1,7 @@
 import { defineNuxtConfig } from 'nuxt3'
 
 export default defineNuxtConfig({
-    ssr: false, //needs to be false until ssr fix in workspaces context
+    ssr: true,
     buildModules: [
         'nuxt-windicss'
     ],

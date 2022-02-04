@@ -22,9 +22,11 @@
       console.log(lastUpdate)
   })
 
-  fetch(async (db, {collection, getDocs})=>{
-    const todos = collection(db, 'Todos')
-    return await getDocs(todos)
+  fetch(async (db, {collection, getDocs, query, orderBy})=>{
+    console.log('fetch function')
+    const todoRef = collection(db, 'Todos')
+    const q = query(todoRef, orderBy("createdAt", "desc"))
+    return await getDocs(q)
   })
   
   await serverFetch(async ( db )=>{

@@ -6,7 +6,6 @@ import util from 'util'
 import chokidar from 'chokidar'
 import { initFramework } from '../utils/framwork'
 import { waitUntilEmulatorReady } from '../utils/wait'
-import { initApp } from '@firestead/ui'
 import { installAddon, isDir } from '@firestead/kit'
 import { prepare as prepareFirebase, bundle as bundleFirebase, buildConfig, createFiresteadContext } from 'firestead'
 
@@ -41,9 +40,6 @@ export default defineFiresteadCommand({
       await buildConfig(firesteadContext)
       // run rollup watch function to build firestead index.mjs
       await bundleFirebase(firesteadContext)
-      await installAddon('@firestead/addon-dashboard')
-      await installAddon('@firestead/addon-operations')
-      await initApp()
 
 
       // init framework

@@ -3,6 +3,7 @@ import { writeTypes } from './utils/prepare'
 import debounce from 'p-debounce'
 import { createServer as nuxtServer, createLoadingHandler } from './utils/server'
 import { loadNuxt, buildNuxt } from '@nuxt/kit'
+import { relative } from 'pathe'
 
 export const createServer =  async function(args, { rootPath }){
 
@@ -69,7 +70,7 @@ export const createServer =  async function(args, { rootPath }){
       if (!currentNuxt) { return }
       if (file.startsWith(currentNuxt.options.buildDir)) { return }
       if (file.match(/nuxt\.config\.(js|ts|mjs|cjs)$/)) {
-        dLoad(true, `${relative(rootDir, file)} updated`)
+        dLoad(true, `${relative(rootPath, file)} updated`)
       }
 
       const isDirChange = ['addDir', 'unlinkDir'].includes(event)
@@ -83,7 +84,7 @@ export const createServer =  async function(args, { rootPath }){
         }
       } else if (isFileChange) {
         if (file.match(/app\.(js|ts|mjs|jsx|tsx|vue)$/)) {
-          dLoad(true, `\`${relative(rootDir, file)}\` ${event === 'add' ? 'created' : 'removed'}`)
+          dLoad(true, `\`${relative(rootPath, file)}\` ${event === 'add' ? 'created' : 'removed'}`)
         }
       }
     }

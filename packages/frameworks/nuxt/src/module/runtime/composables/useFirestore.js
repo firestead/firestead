@@ -6,7 +6,7 @@ export const useFirestore = (key, firestoreOptions={}) => {
     if (typeof key !== 'string') {
         throw new TypeError('useFirestore key must be a string')
     }
-    const { $fs, isHydrating, _asyncDataPromises, payload } = useNuxtApp()
+    const { $fs, _asyncDataPromises, payload } = useNuxtApp()
 
     //hydrate and get store from global payload -> firestoreData
     if (!(`${key}FirestoreResult` in payload.state)) {
@@ -35,15 +35,17 @@ export const useFirestore = (key, firestoreOptions={}) => {
             set(payload.state, `${key}FirestoreFetchDetails`, {
                 query: null,
                 lastUpdate: null,
-                subscription: null
+                subscription: null,
+                filter: false,
+                isHydrating: process.server
             })
         }
     }
     const fetchDetails = payload.state[`${key}FirestoreFetchDetails`]
 
     const reFetch = {}
-    let filterActive = false
 
+    //handle correct fetching state
     const setState = (changedState, val) => {
         if(changedState==='error'){
             state.error = val
@@ -58,6 +60,33 @@ export const useFirestore = (key, firestoreOptions={}) => {
             state.pending = val
             state.error = false
         }
+    }
+    /*
+    * get the correct ref of the refIdentifier
+    * allowed identifiers: index as number, id as string, object as firestoreData object
+    */
+    const getDocRef = (refIdentifier) => {
+        let docRef = null
+        if(fetchDetails.query){
+            if((typeof refIdentifier === Number)){
+                docRef = firestoreData.value[refIdentifier].ref
+            }
+            if(typeof refIdentifier === String){
+                const selDoc = firestoreData.value.find(doc => doc.id === refIdentifier)[0]
+                if(typeof selDoc !== 'undefined'){
+                    docRef = selDoc.ref
+                }
+            }
+            if(typeof refIdentifier === Object){
+                const selDoc = firestoreData.value.find(doc => doc.id === refIdentifier.id)[0]
+                if(typeof selDoc !== 'undefined'){
+                    docRef = selDoc.ref
+                }
+            }
+        }else{
+            docRef = firestoreData.value.ref
+        }
+        return docRef
     }
 
     
@@ -86,11 +115,11 @@ export const useFirestore = (key, firestoreOptions={}) => {
     //    TODO: add options pick api to update only a few values of a document
     //    check merge strategie of firebase api
     //
-    const fsUpdateDoc = async (index=null, options = {timestamps:true}) => {
+    const fsUpdateDoc = async (refIdentifier=null, options = {timestamps:true}) => {
         try {
             const { updateDoc, serverTimestamp } = await $fs.firestore.lib()
             setState('updating', true)
-            const refDoc = firestoreData.value[index].ref
+            const docRef = getDocRef(refIdentifier)
             let dataUpdate = klona(firestoreData.value[index].data)
             if(options.timestamps){
                 dataUpdate = {
@@ -99,7 +128,7 @@ export const useFirestore = (key, firestoreOptions={}) => {
                 }
             }
             //TODO: add callback function to change data before update
-            await updateDoc(refDoc, dataUpdate)
+            await updateDoc(docRef, dataUpdate)
             setState('updating', false)
         } catch (error) {
             setState('error', error)
@@ -107,12 +136,12 @@ export const useFirestore = (key, firestoreOptions={}) => {
         }
     }
 
-    const fsDeleteDoc = async (index=null, options = {}) => {
+    const fsDeleteDoc = async (refIdentifier=null, options = {}) => {
         try {
             const { deleteDoc } = await $fs.firestore.lib()
             setState('deleting', true)
-            const refDoc = firestoreData.value[index].ref
-            await deleteDoc(refDoc)
+            const docRef = getDocRef(refIdentifier)
+            await deleteDoc(docRef)
             setState('deleting', false)
         } catch (error) {
             setState('error', error)
@@ -175,7 +204,6 @@ export const useFirestore = (key, firestoreOptions={}) => {
         }
     }
     const fsFetch = async (fetchFunc, options = {}) => {
-        console.log('filter active',filterActive)
         //refetch
         if (typeof fetchFunc !== 'function') {
             if(typeof reFetch.call === 'function') {
@@ -224,35 +252,46 @@ export const useFirestore = (key, firestoreOptions={}) => {
                   })
                 return _asyncDataPromises[key]
               }
-
-            //only fetch if fetch criteria are met
-            const callFetchCriteria = () => {
+              /* Keep for debugging
+              console.log('hydration',fetchDetails.isHydrating)
+              console.log('Fetch - fetch always if foreceFetch is set',options.forceFetch ? true: false)
+              console.log('Fetch - prevent fetch if preventFetch is set and data are available',((options.preventFetch ? true: false) && (firestoreData.value ? true: false)))
+              console.log('Fetch - fetch if data are not hydrated and no data available',(!fetchDetails.isHydrating && !firestoreData.value))
+              console.log('Fetch - fetch if data are hydrated but no data available',(fetchDetails.isHydrating && !firestoreData.value))
+              console.log('Fetch - fetch if filter not set but data available and no hydration',(!fetchDetails.filter && ((firestoreData.value ? true: false) && !fetchDetails.isHydrating)))
+              */
+              //only fetch if fetch criteria are met
+            const checkFetchCriteria = () => {
                 // fetch always if foreceFetch is set
                 if(options.forceFetch ? true: false) return true
+                // prevent fetch if preventFetch is set and data are available
+                if((options.preventFetch ? true: false) && (firestoreData.value ? true: false)) return false
                 // fetch if data are not hydrated and no data available
-                if(!isHydrating && !firestoreData.value) return true
+                if(!fetchDetails.isHydrating && !firestoreData.value) return true
                 // fetch if data are hydrated but no data available
-                if(isHydrating && !firestoreData.value) return true
+                if(fetchDetails.isHydrating && !firestoreData.value) return true
                 // fetch if filter not set but data available and no hydration
-                if(!filterActive && (firestoreData.value ? true: false && !isHydrating)) return true
+                if(!fetchDetails.filter && ((firestoreData.value ? true: false) && !fetchDetails.isHydrating)) return true
                 // if criteria not met don't fetch
                 return false
             }
 
-            if(callFetchCriteria()){
+            if(checkFetchCriteria()){
                 try{
-                    instance._nuxtOnBeforeMountCbs.push(reFetch.call)
+                    fetchDetails.isHydrating = false
+                    //add debounce  or fetch immediately
+                    if((options.debounce ? true: false)&&(typeof options.debounce === Number)){
+                        window.setInterval(() => {
+                            instance._nuxtOnBeforeMountCbs.push(reFetch.call)
+                        },options.debounce)
+                    }else{
+                        instance._nuxtOnBeforeMountCbs.push(reFetch.call)
+                    }
                 } catch (error) {
                     setState('error', error)
                     console.log(error)
                 }
             }
-            /*
-            //TODO: implement long polling
-            window.setInterval(() => {
-                refresh()
-            },2000)
-            */
         }
     }
 
@@ -270,7 +309,8 @@ export const useFirestore = (key, firestoreOptions={}) => {
         }
         //TODO: add function that hydrates 
         //serialize data if they are server side rendered and not serialized
-        if(process.client && isHydrating){
+        if(process.client && fetchDetails.isHydrating){
+            fetchDetails.isHydrating = false
             console.log('TODO: Serialize data')
             /*
                 if(typeof data === 'object'){
@@ -282,7 +322,7 @@ export const useFirestore = (key, firestoreOptions={}) => {
     }
 
     const filter = (fn, returnFirst) => {
-        filterActive = true
+        fetchDetails.filter = true
         return computed(()=>{
             if(typeof fn === 'function' && firestoreData.value){
                 if(returnFirst) return firestoreData.value.filter(fn)[0]
