@@ -82,9 +82,23 @@ export const useStorage = (key='default', options= {}) => {
         return task
     }
 
+    /*
+    * TODO: define file object format
+    */
+    const fsDeleteObject = async (fileObject) => {
+        const { ref, deleteObject } = await $fs.storage.lib()
+        const objectRef = ref($fs.storage.connection,fileObject.path)
+        try {
+            await deleteObject(objectRef)
+        } catch (storageError) {
+            resetStorageData(storageError)
+        }
+    }
+
     return {
         ...toRefs(storageData),
         createRef,
+        deleteObject: fsDeleteObject,
         upload
     }
 }

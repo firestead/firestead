@@ -13,7 +13,7 @@ export default defineNuxtPlugin(async (nuxtApp) => {
         authDomain: firesteadOptions?.config?.authDomain || '',
         databaseURL: firesteadOptions?.config?.databaseURL || '',
         projectId: firesteadOptions?.config?.projectId || 'default',
-        storageBucket: firesteadOptions?.config?.storageBucket || 'default',
+        storageBucket: firesteadOptions?.config?.storageBucket || 'default-bucket',
         messagingSenderId: firesteadOptions?.config?.messagingSenderId || '',
         appId: firesteadOptions?.config?.appId || ''
     }
