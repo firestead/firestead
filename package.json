@@ -17,6 +17,7 @@
         "release": "FORCE_COLOR=1 lerna run prepack -- --release && sh ./scripts/release.sh",
         "firestead": "./node_modules/.bin/firestead",
         "examples:nuxt": "yarn run firestead dev examples/nuxt",
+        "examples:build:nuxt": "yarn run firestead build examples/nuxt",
         "watch:ui": "./node_modules/windicss/cli/index.js './packages/**/*.vue'  -to ./packages/ui/src/app/assets/style.css --config './packages/ui/windi.config.cjs' --style --dev"
     },
     "resolutions": {

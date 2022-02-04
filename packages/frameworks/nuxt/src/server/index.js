@@ -94,3 +94,22 @@ export const createServer =  async function(args, { rootPath }){
       watchEffect
     }
 }
+
+export const build = async ({ rootPath }) => {
+  process.env.NITRO_PRESET = 'node'
+  const nuxt = await loadNuxt({ rootDir: rootPath })
+  //add firestead nuxt module
+  if(nuxt.options.buildModules.indexOf('@firestead/nuxt/module') === -1){
+    nuxt.options.buildModules.push('@firestead/nuxt/module')
+  }
+  console.log(nuxt.options.buildModules)
+  await clearDir(nuxt.options.buildDir)
+  await writeTypes(nuxt)
+
+  nuxt.hook('build:error', (err) => {
+    consola.error('Nuxt Build Error:', err)
+    process.exit(1)
+  })
+  
+  await buildNuxt(nuxt)
+}

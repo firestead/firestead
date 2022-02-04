@@ -5,9 +5,10 @@ export async function initFramework(firesteadContext){
         //TODO: check which firestead framework module is used(e.g. `@firestead/nuxt`) to detect which framework is used
         firesteadContext.framework.name = 'nuxt'
         if(firesteadContext.framework .name=== 'nuxt'){
-            const { createServer } = await import('@firestead/nuxt')
+            const { createServer, build } = await import('@firestead/nuxt')
             frameworkInstance = {
-              createServer
+              createServer,
+              build
             }
         }
       } catch (e) {

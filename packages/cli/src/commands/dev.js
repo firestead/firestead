@@ -6,7 +6,7 @@ import util from 'util'
 import chokidar from 'chokidar'
 import { initFramework } from '../utils/framwork'
 import { waitUntilEmulatorReady } from '../utils/wait'
-import { installAddon, isDir } from '@firestead/kit'
+import { isDir } from '@firestead/kit'
 import { prepare as prepareFirebase, bundle as bundleFirebase, buildConfig, createFiresteadContext } from 'firestead'
 
 export default defineFiresteadCommand({
