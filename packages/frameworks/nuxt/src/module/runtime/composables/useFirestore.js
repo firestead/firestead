@@ -68,17 +68,17 @@ export const useFirestore = (key, firestoreOptions={}) => {
     const getDocRef = (refIdentifier) => {
         let docRef = null
         if(fetchDetails.query){
-            if((typeof refIdentifier === Number)){
+            if((typeof refIdentifier === 'number')){
                 docRef = firestoreData.value[refIdentifier].ref
             }
-            if(typeof refIdentifier === String){
-                const selDoc = firestoreData.value.find(doc => doc.id === refIdentifier)[0]
+            if(typeof refIdentifier === 'string'){
+                const selDoc = firestoreData.value.find(doc => doc.id === refIdentifier)
                 if(typeof selDoc !== 'undefined'){
                     docRef = selDoc.ref
                 }
             }
-            if(typeof refIdentifier === Object){
-                const selDoc = firestoreData.value.find(doc => doc.id === refIdentifier.id)[0]
+            if(typeof refIdentifier === 'object'){
+                const selDoc = firestoreData.value.find(doc => doc.id === refIdentifier.id)
                 if(typeof selDoc !== 'undefined'){
                     docRef = selDoc.ref
                 }

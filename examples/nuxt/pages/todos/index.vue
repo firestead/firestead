@@ -34,7 +34,7 @@
                         <input 
                         type="checkbox" 
                         v-model="todo.data.checked"
-                        v-on:change="updateDoc(index)" 
+                        v-on:change="updateDoc(todo.id)" 
                         :disabled="todo.edit||todo.disabled" 
                         name="todo"
                         class="h-4 w-4 cursor-pointer text-indigo-600 border-gray-300 focus:ring-indigo-500" aria-labelledby="privacy-setting-0-label" aria-describedby="privacy-setting-0-description">
@@ -65,7 +65,7 @@
                     </div>
                     <button 
                     v-show="!todo.edit"
-                    v-on:click="deleteDoc(index)"
+                    v-on:click="deleteDoc(todo.id)"
                     type="button" class="flex-none inline-flex items-center p-1 border border-transparent rounded-full shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
