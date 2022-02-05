@@ -21,6 +21,8 @@ const firesteadModule = defineNuxtModule({
         // Transpile runtime
         const runtimeDir = fileURLToPath(new URL('./runtime', import.meta.url))
         nuxt.options.build.transpile.push(runtimeDir)
+        //add Alias for firestead libs
+        //nuxt.options.alias['@firestead/nuxt/libs'] = resolve(runtimeDir,'libs/index.js')
         
 
 

@@ -1,10 +1,7 @@
-import { getFirestore } from '@firestead/nuxt'
-import config from '#config'
+import {createFirestore} from '@firestead/nuxt/libs'
 
 export default async (req, res) => {
-    // import firetore not working with jiti
-    /*
-    const db = getFirestore()
+    const db = createFirestore()
     const snapshot = await db.collection('Todos').get()
     const retValue = []
     snapshot.forEach((doc) => {
@@ -16,5 +13,4 @@ export default async (req, res) => {
         })
     })
     return retValue
-    */
 }
