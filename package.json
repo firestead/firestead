@@ -31,7 +31,7 @@
         "unbuild": "^0.6.8",
         "jiti": "^1.12.14",
         "rollup": "^2.63.0",
-        "firebase-admin": "^10.0.1"
+        "firebase-admin": "^10.0.2"
     },
     "devDependencies": {
         "jiti": "^1.12.14",

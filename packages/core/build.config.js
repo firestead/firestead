@@ -8,7 +8,8 @@ export default defineBuildConfig({
   ],
   devDependencies: [],
   dependencies: [
-    '@firestead/cli'
+    '@firestead/cli',
+    'firebase-functions'
   ],
   externals: [
   ]

@@ -8,7 +8,7 @@
         "firestead",
         "firebase"
     ],
-    "version": "0.0.19",
+    "version": "0.0.20",
     "type": "module",
     "license": "MIT",
     "files": [
@@ -20,14 +20,14 @@
     "exports": {
         ".": "./dist/index.mjs",
         "./module": "./dist/module/index.js",
-        "./nitro": "./dist/module/runtime/nitro/preset.js",
         "./package.json": "./package.json"
     },
     "dependencies": {
         "@nuxt/design": "latest",
         "@nuxt/kit": "npm:@nuxt/kit-edge@latest",
         "defu": "^5.0.1",
-        "firebase-admin": "^10.0.1",
+        "firebase": "^9.6.6",
+        "firebase-admin": "^10.0.2",
         "listhen": "^0.2.6",
         "nuxt3": "latest",
         "p-debounce": "^4.0.0",

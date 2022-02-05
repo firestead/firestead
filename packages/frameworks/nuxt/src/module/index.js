@@ -1,6 +1,6 @@
 import { resolve } from 'pathe'
 import { fileURLToPath } from 'url'
-import { addPluginTemplate, addServerMiddleware, addTemplate, defineNuxtModule, isNuxt2 } from '@nuxt/kit'
+import { addAutoImport, addPluginTemplate, addServerMiddleware, addTemplate, defineNuxtModule, isNuxt2 } from '@nuxt/kit'
 
 const firesteadModule = defineNuxtModule({
     meta: {
@@ -21,6 +21,8 @@ const firesteadModule = defineNuxtModule({
         // Transpile runtime
         const runtimeDir = fileURLToPath(new URL('./runtime', import.meta.url))
         nuxt.options.build.transpile.push(runtimeDir)
+        
+
 
         addServerMiddleware({
           route: '/fs',
@@ -57,11 +59,12 @@ const firesteadModule = defineNuxtModule({
           mode: 'server'
         })
     
-
         //add firestead composables -> Todo: fs plugins can add composables
-        nuxt.hook('autoImports:dirs', (dirs) => {
-            dirs.push(resolve(runtimeDir, 'composables'))
-        })
+        addAutoImport({name: 'useFirestore', as: 'useFirestore', from: resolve(runtimeDir, 'composables/useFirestore.js')})
+        addAutoImport({name: 'useAuth', as: 'useAuth', from: resolve(runtimeDir, 'composables/useAuth.js')})
+        addAutoImport({name: 'useStorage', as: 'useStorage', from: resolve(runtimeDir, 'composables/useStorage.js')})
+        addAutoImport({name: 'useFunction', as: 'useFunction', from: resolve(runtimeDir, 'composables/useFunction.js')})
+
     },
 })
 

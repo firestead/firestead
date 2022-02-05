@@ -97,12 +97,17 @@ export const createServer =  async function(args, { rootPath }){
 
 export const build = async ({ rootPath }) => {
   process.env.NITRO_PRESET = 'node'
-  const nuxt = await loadNuxt({ rootDir: rootPath })
+  const nuxt = await loadNuxt({ rootDir: rootPath, ready: false })
+
   //add firestead nuxt module
-  if(nuxt.options.buildModules.indexOf('@firestead/nuxt/module') === -1){
-    nuxt.options.buildModules.push('@firestead/nuxt/module')
-  }
-  console.log(nuxt.options.buildModules)
+  nuxt.hooks.hook('modules:before',()=>{
+    if(nuxt.options.buildModules.indexOf('@firestead/nuxt/module') === -1){
+      nuxt.options.buildModules.push('@firestead/nuxt/module')
+    }
+  })
+  await nuxt.ready()
+  
+
   await clearDir(nuxt.options.buildDir)
   await writeTypes(nuxt)
 
