@@ -1,5 +1,5 @@
 import chalk from 'chalk'
-import { writeEntryFile } from './entry'
+import { writeEntryFile } from './writer'
 import { scanDirs } from '../utils'
 
 let isScanRunning = false

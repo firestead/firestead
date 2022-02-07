@@ -1,8 +1,8 @@
 import * as rollup from 'rollup'
 import chalk from 'chalk'
 
-
-export function watch(firesteadContext){
+//TODO: add wait for first build
+export function watchRollupEntry(firesteadContext){
     const watcher = rollup.watch(firesteadContext.firebase.rollupConfig)
     let start = null
   
@@ -31,6 +31,12 @@ export function watch(firesteadContext){
     })
 }
 
-export function build(firesteadContext){
-    
+export async function buildRollup(firesteadContext){
+  const build = await rollup.rollup(firesteadContext.firebase.rollupConfig).catch((error) => {
+    consola.error('Rollup error: ' + error.message)
+    throw error
+  })
+  consola.start('Writing firebase bundle...')
+  await build.write(firesteadContext.firebase.rollupConfig.output)
+  consola.start('Built firestead successfully')
 }

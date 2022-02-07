@@ -7,7 +7,7 @@ import chokidar from 'chokidar'
 import { initFramework } from '../utils/framwork'
 import { waitUntilEmulatorReady } from '../utils/wait'
 import { isDir } from '@firestead/kit'
-import { prepare as prepareFirebase, bundle as bundleFirebase, buildConfig, createFiresteadContext } from 'firestead'
+import { prepare as prepareFirebase, watch as watchFirebase, createConfig, createFiresteadContext } from 'firestead'
 
 export default defineFiresteadCommand({
     meta: {
@@ -34,12 +34,13 @@ export default defineFiresteadCommand({
       //set process envs for dev
       process.env.FIREBASE_AUTH_EMULATOR_HOST = 'localhost:9099'
       process.env.GCLOUD_PROJECT = 'default'
+      
       //prepare build for firestead
       await prepareFirebase(firesteadContext)       
       // create firebase configuration
-      await buildConfig(firesteadContext)
+      await createConfig(firesteadContext)
       // run rollup watch function to build firestead index.mjs
-      await bundleFirebase(firesteadContext)
+      await watchFirebase(firesteadContext)
 
 
       // init framework
@@ -83,7 +84,7 @@ export default defineFiresteadCommand({
           // framework watch effect
           firesteadContext.framework.server.watchEffect(event, path)
           // firestead build watch effect
-          firesteadContext.hooks.callHook('watch:event', {event, path})
+          await firesteadContext.hooks.callHook('watch:event', {event, path})
         }) 
       } catch (error) {
         throw new Error(`Failed to start framework dev server: ${error.message}`)

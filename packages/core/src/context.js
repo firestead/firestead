@@ -1,7 +1,6 @@
 import { dirname, resolve } from 'pathe'
 import { fileURLToPath } from 'url'
 import { firesteadCtx, resolveModule } from '@firestead/kit'
-import { getRollupConfig } from './builder/rollup/config'
 import { createHooks } from 'hookable'
 
 export function createFiresteadContext({rootPath, dev = false}){
@@ -13,7 +12,7 @@ export function createFiresteadContext({rootPath, dev = false}){
         hooks: createHooks(),
         modulePath: dirname(resolveModule('firestead')),
         contextPath: dirname(fileURLToPath(import.meta.url)),
-        functionsDir: 'server/firebase',
+        functionsDir: 'firebase',
         functionsPath: undefined,
         functionsWatchDirs: ['functions', 'http', 'schedule', 'firestore', 'database', 'remoteConfig', 'storage', 'auth', 'analytics', 'pubsub', 'testLab'],
         watchFiles: [],
@@ -30,7 +29,7 @@ export function createFiresteadContext({rootPath, dev = false}){
         emulator: {
             active: true,
             services: ['functions', 'storage', 'auth', 'firestore', 'pubsub'],
-            exportDir: 'export',
+            exportDir: 'emulator',
             exportPath: undefined,
         },
         ui:{
@@ -52,9 +51,8 @@ export function createFiresteadContext({rootPath, dev = false}){
     firesteadContext.emulator.exportPath = resolve(firesteadContext.buildPath, firesteadContext.emulator.exportDir)
     firesteadContext.functionsPath = resolve(firesteadContext.rootPath, firesteadContext.functionsDir)
 
-    //add firebase rollup configuration
+    //add firebase runtime path
     firesteadContext.firebase.runtimePath =  resolve(firesteadContext.contextPath, 'runtime')
-    firesteadContext.firebase.rollupConfig = getRollupConfig(firesteadContext)
 
     //create global firestead context
     firesteadCtx.set(firesteadContext)

@@ -1,5 +1,5 @@
 import { defineFiresteadCommand } from "./index"
-import { createFiresteadContext } from 'firestead'
+import { createFiresteadContext, prepare as prepareFirebase, build as buildFirebase } from 'firestead'
 import { initFramework } from '../utils/framwork'
 import { resolve } from 'pathe'
 
@@ -14,14 +14,17 @@ export default defineFiresteadCommand({
 
         //Init Firestead
         const firesteadContext = createFiresteadContext({ rootPath , dev: false })
-        // init framework
-        const frameworkInstance = await initFramework(firesteadContext)
-        // build framework
         try {
+          //prepare build for firestead
+          await prepareFirebase(firesteadContext)
+          // init framework
+          const frameworkInstance = await initFramework(firesteadContext)
+          // build framework
           await frameworkInstance.build.call(null, firesteadContext)
+          //build for firestead
+          await buildFirebase(firesteadContext)
         } catch (error) {
           console.error(error)
         }
-        //TODO build firebase functions with firestead and bundle all together
     }
 })

@@ -2,7 +2,7 @@ import { clearDir } from './utils/fs'
 import { writeTypes } from './utils/prepare'
 import debounce from 'p-debounce'
 import { createServer as nuxtServer, createLoadingHandler } from './utils/server'
-import { loadNuxt, buildNuxt } from '@nuxt/kit'
+import { loadNuxt, buildNuxt, extendViteConfig } from '@nuxt/kit'
 import { relative } from 'pathe'
 
 export const createServer =  async function(args, { rootPath }){
@@ -95,16 +95,17 @@ export const createServer =  async function(args, { rootPath }){
     }
 }
 
-export const build = async ({ rootPath }) => {
+export const build = async ({ rootPath, buildDir }) => {
   process.env.NITRO_PRESET = 'node'
   process.env.NODE_ENV = process.env.NODE_ENV || 'production'
   const nuxt = await loadNuxt({ rootDir: rootPath, ready: false })
 
-  //nitro context -> check if needed
-  /*
+  //nitro context -> add firestead output dir
   nuxt.hooks.hook('nitro:context',(nitroContext)=>{
+    nitroContext.output.dir = `${rootPath}/${buildDir}/build/functions/framework`
+    nitroContext.output.serverDir = `${rootPath}/${buildDir}/build/functions/framework/server`
+    nitroContext.output.publicDir = `${rootPath}/${buildDir}/build/functions/framework/public`
   })
-  */
 
   //add firestead nuxt module
   nuxt.hooks.hook('modules:before',()=>{
@@ -113,8 +114,18 @@ export const build = async ({ rootPath }) => {
     }
   })
   await nuxt.ready()
-  
 
+  extendViteConfig((config)=>{
+    if(!config.ssr){
+      config.ssr = {
+        external: []
+      }
+    }
+    if(!config.ssr.external) config.ssr.external = []
+    config.ssr.external.push('firebase-admin')
+  })
+
+  // clean .nuxt build dir
   await clearDir(nuxt.options.buildDir)
   await writeTypes(nuxt)
 

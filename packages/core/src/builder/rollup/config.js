@@ -4,13 +4,19 @@ import { esbuild } from './plugins/esbuild'
 import { nodeResolve } from '@rollup/plugin-node-resolve'
 import {externals} from './plugins/externals'
 
-export function getRollupConfig(firesteadContext, type){
+export async function getRollupConfig(firesteadContext){
+
+    await firesteadContext.hooks.callHook('builder:rollup:config', firesteadContext)
+
     const extensions = ['.ts', '.mjs', '.js', '.json', '.node']
 
+    const entryPath = firesteadContext.dev ? `${firesteadContext.buildPath}/firebase/entry.js` : `${firesteadContext.buildPath}/build/entry.js`
+    const outputPath = firesteadContext.dev ? `${firesteadContext.buildPath}/firebase/functions/index.mjs` : `${firesteadContext.buildPath}/build/functions/index.mjs`
+
     const rollupConfig = {
-        input: `${firesteadContext.buildPath}/firebase/entry.js`,
+        input: entryPath,
         output: {
-            file: `${firesteadContext.buildPath}/firebase/functions/index.mjs`,
+            file: outputPath,
             format: 'esm',
             exports: 'auto',
             intro: '',
@@ -31,16 +37,17 @@ export function getRollupConfig(firesteadContext, type){
         'node_modules'
       ]
     // Externals
+    const externalsPath = firesteadContext.dev ? `${firesteadContext.buildPath}/firebase/functions` : `${firesteadContext.buildPath}/build/functions`
     rollupConfig.plugins.push(externals({
-        outDir: `${firesteadContext.buildPath}/firebase/functions`,
+        outDir: externalsPath,
         moduleDirectories,
         external: [
         ],
         inline: [
-            `${firesteadContext.buildPath}/firebase`,
+            firesteadContext.dev ? `${firesteadContext.buildPath}/firebase` : `${firesteadContext.buildPath}/build`,
             firesteadContext.functionsPath
         ],
-        trace: (type==='build')? true: false,
+        trace: (!firesteadContext.dev)? true: false,
         traceOptions: {
             base: '/',
             processCwd: firesteadContext.rootPath,

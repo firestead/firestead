@@ -7,7 +7,7 @@
     "start": "node .output/server/index.mjs"
   },
   "devDependencies": {
-    "@faker-js/faker": "5.5.*",
+    "@faker-js/faker": "^6.0.*",
     "@firestead/nuxt": "latest",
     "firestead": "latest",
     "nuxt-windicss": "latest"

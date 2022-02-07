@@ -5,13 +5,8 @@ import { getFirestore } from 'firebase-admin/firestore'
 
 export default defineNuxtPlugin(async (nuxtApp) => {
     const firesteadOptions = JSON.parse('<%= JSON.stringify(options) %>')
-    const firebaseProjectId = firesteadOptions?.config?.projectId || 'default'
     const apps = getApps()
-    if (!apps.length) {
-        initializeApp({ 
-            projectId: firebaseProjectId
-        })
-    }
+    if(!apps.length) initializeApp()
     const firestoreDb = getFirestore()
     //it is only allowed to set settings once
     if(firesteadOptions.dev && !apps.length){
