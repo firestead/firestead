@@ -8,7 +8,7 @@
         "firestead",
         "firebase"
     ],
-    "version": "0.0.21",
+    "version": "0.0.30",
     "type": "module",
     "license": "MIT",
     "files": [
@@ -20,7 +20,7 @@
     "exports": {
         ".": "./dist/index.mjs",
         "./module": "./dist/module/index.js",
-        "./libs": "./dist/module/runtime/libs/index.js",
+        "./helper": "./dist/module/runtime/helper/index.js",
         "./package.json": "./package.json"
     },
     "dependencies": {

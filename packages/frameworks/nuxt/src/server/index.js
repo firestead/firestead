@@ -97,7 +97,14 @@ export const createServer =  async function(args, { rootPath }){
 
 export const build = async ({ rootPath }) => {
   process.env.NITRO_PRESET = 'node'
+  process.env.NODE_ENV = process.env.NODE_ENV || 'production'
   const nuxt = await loadNuxt({ rootDir: rootPath, ready: false })
+
+  //nitro context -> check if needed
+  /*
+  nuxt.hooks.hook('nitro:context',(nitroContext)=>{
+  })
+  */
 
   //add firestead nuxt module
   nuxt.hooks.hook('modules:before',()=>{

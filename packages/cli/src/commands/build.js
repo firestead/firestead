@@ -10,11 +10,10 @@ export default defineFiresteadCommand({
       description: 'Build firestead'
     },
     async invoke (args) {
-        process.env.NODE_ENV = process.env.NODE_ENV || 'production'
         const rootPath = resolve(args._[0] || '.')
 
         //Init Firestead
-        const firesteadContext = createFiresteadContext({ rootPath , dev: true })
+        const firesteadContext = createFiresteadContext({ rootPath , dev: false })
         // init framework
         const frameworkInstance = await initFramework(firesteadContext)
         // build framework

@@ -21,15 +21,7 @@ const firesteadModule = defineNuxtModule({
         // Transpile runtime
         const runtimeDir = fileURLToPath(new URL('./runtime', import.meta.url))
         nuxt.options.build.transpile.push(runtimeDir)
-        //add Alias for firestead libs
-        //nuxt.options.alias['@firestead/nuxt/libs'] = resolve(runtimeDir,'libs/index.js')
         
-
-
-        addServerMiddleware({
-          route: '/fs',
-          handle: resolve(runtimeDir, 'middleware/ui.js')
-        })
         addServerMiddleware({
           route: '/api/auth',
           handle: resolve(runtimeDir, 'middleware/auth.js')
@@ -38,8 +30,7 @@ const firesteadModule = defineNuxtModule({
         //add plugin utils
         addTemplate({
             src: resolve(runtimeDir, 'plugins/utils/auth.js'),
-            filename: 'utils.auth.js',
-            mode: 'client'
+            filename: 'utils.auth.js'
         })
 
         const firebaseConfig = {
@@ -48,17 +39,18 @@ const firesteadModule = defineNuxtModule({
         }
         //Firebase server client sdk for web
         addPluginTemplate({
-          src: resolve(runtimeDir, 'plugins/firebase.web.js'),
-          filename: 'firebase.web.js',
+          src: resolve(runtimeDir, 'plugins/firebase.client.js'),
+          filename: 'firebase.client.js',
           mode: 'client',
           options: {...firebaseConfig}
         })
         
         //Firebase server admin sdk for web
         addPluginTemplate({
-          src: resolve(runtimeDir, 'plugins/firebase.admin.js'),
-          filename: 'firebase.admin.js',
-          mode: 'server'
+          src: resolve(runtimeDir, 'plugins/firebase.server.js'),
+          filename: 'firebase.server.js',
+          mode: 'server',
+          options: {...firebaseConfig}
         })
     
         //add firestead composables -> Todo: fs plugins can add composables

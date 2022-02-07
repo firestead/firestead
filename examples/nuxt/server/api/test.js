@@ -1,4 +1,4 @@
-import {createFirestore} from '@firestead/nuxt/libs'
+import {createFirestore} from '@firestead/nuxt/helper'
 
 export default async (req, res) => {
     const db = createFirestore()
