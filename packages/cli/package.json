@@ -27,6 +27,7 @@
     },
     "dependencies": {
         "@firestead/kit": "latest",
+        "c12": "^0.1.1",
         "chalk": "^4.1.1",
         "chokidar": "^3.3.1",
         "consola": "^2.15.3",

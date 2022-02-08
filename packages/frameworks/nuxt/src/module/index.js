@@ -10,7 +10,8 @@ const firesteadModule = defineNuxtModule({
     name: 'firestead',
     configKey: 'firestead',
     defaults: {
-
+      projectId: 'default',
+      config: {}
     },
     async setup(options, nuxt) {
         if (isNuxt2()) {
@@ -35,7 +36,8 @@ const firesteadModule = defineNuxtModule({
 
         const firebaseConfig = {
           dev: nuxt.options.dev,
-          config: options?.config || {}
+          projectId: options.projectId,
+          config: options.config
         }
         //Firebase server client sdk for web
         addPluginTemplate({

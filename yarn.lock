@@ -372,10 +372,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@faker-js/faker@npm:5.5.*":
-  version: 5.5.3
-  resolution: "@faker-js/faker@npm:5.5.3"
-  checksum: d248a042e47ac00613d2d7cc29d4504cc5e5d843162454eede8c35f31c74b19a8fd7cecc0d5ea9e3fbbfc812abc51143c3699e51049fd64300e23e6588e76d39
+"@faker-js/faker@npm:6.0.0-alpha.5":
+  version: 6.0.0-alpha.5
+  resolution: "@faker-js/faker@npm:6.0.0-alpha.5"
+  checksum: aa145eaeba624a65fe3237f2abfe4fa4a87fb7283cda983cafad95fd8b88b9e58eae403a36bdc4108f9625b0c64b81e901e68d11b33c04c8f24dae07c31e314f
   languageName: node
   linkType: hard
 
@@ -896,6 +896,7 @@ __metadata:
   resolution: "@firestead/cli@workspace:packages/cli"
   dependencies:
     "@firestead/kit": latest
+    c12: ^0.1.1
     chalk: ^4.1.1
     chokidar: ^3.3.1
     consola: ^2.15.3
@@ -928,7 +929,6 @@ __metadata:
   dependencies:
     "@nuxt/design": latest
     "@nuxt/kit": "npm:@nuxt/kit-edge@latest"
-    "@nuxt/nitro": latest
     defu: ^5.0.1
     firebase: ^9.6.6
     firebase-admin: ^10.0.2
@@ -2147,13 +2147,6 @@ __metadata:
     vue-bundle-renderer: ^0.3.5
     vue-server-renderer: ^2.6.14
   checksum: c1d3ea6fb606862de5f5d9b4e045ff41c8dfcf55926919b3b91278e6a43d356ada406daedfa57c57a66f30a56df6f6c03fc3d8c7e44fb80532b353388ba327cf
-  languageName: node
-  linkType: hard
-
-"@nuxt/nitro@npm:latest":
-  version: 0.10.0
-  resolution: "@nuxt/nitro@npm:0.10.0"
-  checksum: 545525be74d7cacf5f2e7619518ce2cdd44464eb5d1425c694b339056554aa34fe6c15e217b80672998092a516aa098d26a7449644b94a0056aefc7c84b0ab4e
   languageName: node
   linkType: hard
 
@@ -6420,7 +6413,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "firestead@workspace:packages/core"
   dependencies:
-    "@firestead/cli": ^0.0.9
+    "@firestead/cli": ^0.0.10
     "@firestead/kit": ^0.0.6
     "@rollup/plugin-alias": ^3.1.9
     "@rollup/plugin-commonjs": ^21.0.1
@@ -6430,9 +6423,11 @@ __metadata:
     "@vercel/nft": ^0.17.0
     chalk: ^4.1.1
     consola: ^2.15.3
+    defu: ^5.0.1
     esbuild: ^0.14.11
     firebase-functions: ^3.17.1
     fs-extra: ^10.0.0
+    globby: ^13.1.1
     h3: ^0.3.3
     hookable: ^5.1.1
     klona: ^2.0.5
@@ -9587,7 +9582,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "nuxt-6d426f@workspace:examples/nuxt"
   dependencies:
-    "@faker-js/faker": 5.5.*
+    "@faker-js/faker": 6.0.0-alpha.5
     "@firestead/nuxt": latest
     firestead: latest
     nuxt-windicss: latest

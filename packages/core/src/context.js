@@ -2,11 +2,12 @@ import { dirname, resolve } from 'pathe'
 import { fileURLToPath } from 'url'
 import { firesteadCtx, resolveModule } from '@firestead/kit'
 import { createHooks } from 'hookable'
+import defu from 'defu'
 
-export function createFiresteadContext({rootPath, dev = false}){
-    const firesteadContext = {
-        dev: dev,
-        rootPath: rootPath,
+export function createFiresteadContext(defaultCtxOptions = {}){
+    const firesteadContext = defu(defaultCtxOptions,{
+        dev: true,
+        rootPath: undefined,
         buildDir: '_firestead',
         buildPath: undefined,
         hooks: createHooks(),
@@ -22,6 +23,7 @@ export function createFiresteadContext({rootPath, dev = false}){
             server: undefined
         },
         firebase: {
+            projectId: undefined,
             config: {},
             rollupConfig: undefined,
             runtimePath: undefined,
@@ -46,7 +48,8 @@ export function createFiresteadContext({rootPath, dev = false}){
                 menu: []
             }
         }
-    }
+    })
+
     firesteadContext.buildPath = resolve(firesteadContext.rootPath, firesteadContext.buildDir)
     firesteadContext.emulator.exportPath = resolve(firesteadContext.buildPath, firesteadContext.emulator.exportDir)
     firesteadContext.functionsPath = resolve(firesteadContext.rootPath, firesteadContext.functionsDir)

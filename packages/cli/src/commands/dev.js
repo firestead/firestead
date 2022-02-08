@@ -7,7 +7,7 @@ import chokidar from 'chokidar'
 import { initFramework } from '../utils/framwork'
 import { waitUntilEmulatorReady } from '../utils/wait'
 import { isDir } from '@firestead/kit'
-import { prepare as prepareFirebase, watch as watchFirebase, createConfig, createFiresteadContext } from 'firestead'
+import { prepareFirebase, watchFirebase, createFirebaseConfig, createFiresteadContext } from 'firestead'
 
 export default defineFiresteadCommand({
     meta: {
@@ -38,7 +38,7 @@ export default defineFiresteadCommand({
       //prepare build for firestead
       await prepareFirebase(firesteadContext)       
       // create firebase configuration
-      await createConfig(firesteadContext)
+      await createFirebaseConfig(firesteadContext)
       // run rollup watch function to build firestead index.mjs
       await watchFirebase(firesteadContext)
 

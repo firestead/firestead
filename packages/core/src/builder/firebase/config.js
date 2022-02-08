@@ -39,8 +39,8 @@ export function getFirebaseConfig(firesteadContext){
     }else{
       firebaseConfig.hosting = [
         {
-          site: '<your_project_id>',
-          public: relative(rootDir, publicDir),
+          site: firesteadContext.firebase.projectId,
+          public: 'functions/framework/public',
           cleanUrls: true,
           rewrites: [
             {

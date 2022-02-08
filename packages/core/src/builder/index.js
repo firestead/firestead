@@ -5,7 +5,7 @@ import { writeEntryFile, injectFrameworkHandle, writeFirebaseConfigs, writePacka
 import { watchRollupEntry, buildRollup } from './rollup/bundler'
 import { getRollupConfig } from './rollup/config'
 
-export async function prepare(firesteadContext){
+export async function prepareFirebase(firesteadContext){
   await firesteadContext.hooks.callHook('builder:prepare', firesteadContext)
   const firesteadDir = await isDirectory(firesteadContext.buildPath)
   if(firesteadContext.dev){
@@ -26,7 +26,7 @@ export async function prepare(firesteadContext){
   await scanDirs(firesteadContext)
 }
 
-export async function watch(firesteadContext){
+export async function watchFirebase(firesteadContext){
   await firesteadContext.hooks.callHook('builder:watch', firesteadContext)
   // load rollup config in dev mode
   firesteadContext.firebase.rollupConfig = await getRollupConfig(firesteadContext)
@@ -38,13 +38,13 @@ export async function watch(firesteadContext){
   watchFirebaseFiles(firesteadContext)
 }
 
-export async function createConfig(firesteadContext){
+export async function createFirebaseConfig(firesteadContext){
   await firesteadContext.hooks.callHook('builder:config', firesteadContext)
-  writeFirebaseConfigs(firesteadContext)
+  await writeFirebaseConfigs(firesteadContext)
   await writePackageJson(firesteadContext)
 }
 
-export async function build(firesteadContext){
+export async function buildFirebase(firesteadContext){
   await firesteadContext.hooks.callHook('builder:build:before', firesteadContext)
   // load rollup config in build mode
   firesteadContext.firebase.rollupConfig = await getRollupConfig(firesteadContext)

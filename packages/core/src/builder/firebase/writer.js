@@ -1,8 +1,10 @@
 import chalk from 'chalk'
 import fse from 'fs-extra'
+import { globby } from 'globby'
 import { createRequire } from 'module'
 import { join, resolve } from 'pathe'
-import { writeFile, readPackageJson } from '../utils'
+import { writeFile } from '../utils'
+import { readPackageJSON } from 'pkg-types'
 import {
   getFirebaseConfig, 
   getDefaultFirestoreIndexes,
@@ -57,29 +59,43 @@ export async function injectFrameworkHandle({ buildPath }){
   try {
     await fse.ensureFile(filePath)
     let bundledFile = await fse.readFile(`${buildPath}/build/functions/index.mjs`, 'utf-8')
-    bundledFile = bundledFile.replace (/^/,`import { handle as frameworkHandle } from  './framework/server/index.mjs;'\n`)
-    bundledFile = bundledFile.concat(`export const frameworkApp = functions.https.onRequest(frameworkHandle);`)
+    bundledFile = bundledFile.replace (/^/,`import { handle } from  './framework/server/index.mjs;'\n`)
+    bundledFile = bundledFile.concat(`export const frameworkApp = functions.https.onRequest(handle);`)
     await fse.writeFile(filePath, bundledFile, 'utf-8')
   } catch (err) {
     console.error(err)
   }
 }
 
-
-export function writeFirebaseConfigs(firesteadContext){
-  console.log(`${chalk.bold.green('✔')} ${chalk.bold.yellow('Firestead:')} Create default configuration`)
+export async function writeFirebaseConfigs(firesteadContext){
+  console.log(`${chalk.bold.green('✔')} ${chalk.bold.yellow('Firestead:')} Create firebase configuration files`)
   const rootFBDir = firesteadContext.dev ? `${firesteadContext.buildPath}/firebase` : `${firesteadContext.buildPath}/build`
   const firebaseConf = getFirebaseConfig(firesteadContext)
-  writeFile(`${rootFBDir}/firebase.json`, JSON.stringify(firebaseConf))
+  await writeFile(`${rootFBDir}/firebase.json`, JSON.stringify(firebaseConf))
   const firestoreIndexes = getDefaultFirestoreIndexes()
-  writeFile(`${rootFBDir}/firestore.indexes.json`, JSON.stringify(firestoreIndexes))
-  writeFile(`${rootFBDir}/firestore.rules`, getDefaultFirestoreRules())
-  writeFile(`${rootFBDir}/storage.rules`, getDefaultStorageRules())
+  await writeFile(`${rootFBDir}/firestore.indexes.json`, JSON.stringify(firestoreIndexes))
+  await writeFile(`${rootFBDir}/firestore.rules`, getDefaultFirestoreRules())
+  await writeFile(`${rootFBDir}/storage.rules`, getDefaultStorageRules())
 }
 
 export async function writePackageJson(firesteadContext){
-  const serverDir = `${firesteadContext.buildPath}/firebase/functions`
+  const serverDir = firesteadContext.dev ? `${firesteadContext.buildPath}/firebase/functions` : `${firesteadContext.buildPath}/build/functions`
   const _require = createRequire(import.meta.url)
+
+  // for production build write dependencies to package.json
+  let dependencies = {}
+  if(!firesteadContext.dev){
+    const jsons = await globby(`${serverDir}/node_modules/**/package.json`)
+    const prefixLength = `${serverDir}/node_modules/`.length
+    const suffixLength = '/package.json'.length
+    dependencies = jsons.reduce((obj, packageJson) => {
+      const dirname = packageJson.slice(prefixLength, -suffixLength)
+      if (!dirname.includes('node_modules')) {
+        obj[dirname] = _require(packageJson).version
+      }
+      return obj
+    }, {})
+  }
 
   let nodeVersion = '14'
   try {
@@ -89,6 +105,11 @@ export async function writePackageJson(firesteadContext){
     }
   } catch {}
 
+  const getPackageVersion = async (id) => {
+    const pkg = await readPackageJSON(id, { url: `${firesteadContext.rootPath}/node_modules` })
+    return pkg.version
+  }
+
   await writeFile(
     resolve(serverDir, 'package.json'),
     JSON.stringify(
@@ -96,11 +117,10 @@ export async function writePackageJson(firesteadContext){
         private: true,
         type: 'module',
         main: './index.mjs',
-        dependencies: {},
+        dependencies,
         devDependencies: {
-          'firebase-functions-test': 'latest',
-          'firebase-admin': readPackageJson('firebase-admin', _require).version,
-          'firebase-functions': readPackageJson('firebase-functions', _require).version
+          'firebase-admin': await getPackageVersion('firebase-admin'),
+          'firebase-functions': await getPackageVersion('firebase-functions')
         },
         engines: { node: nodeVersion }
       },

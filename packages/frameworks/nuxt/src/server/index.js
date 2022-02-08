@@ -95,10 +95,15 @@ export const createServer =  async function(args, { rootPath }){
     }
 }
 
-export const build = async ({ rootPath, buildDir }) => {
+export const build = async ({ rootPath, buildDir, firebase }) => {
   process.env.NITRO_PRESET = 'node'
   process.env.NODE_ENV = process.env.NODE_ENV || 'production'
   const nuxt = await loadNuxt({ rootDir: rootPath, ready: false })
+  // set firestead config in nuxt context
+  nuxt.options['firestead'] = {
+    projectId: firebase.projectId,
+    config: firebase.config
+  }
 
   //nitro context -> add firestead output dir
   nuxt.hooks.hook('nitro:context',(nitroContext)=>{
@@ -108,7 +113,7 @@ export const build = async ({ rootPath, buildDir }) => {
   })
 
   //add firestead nuxt module
-  nuxt.hooks.hook('modules:before',()=>{
+  nuxt.hooks.hook('modules:before',({nuxt})=>{
     if(nuxt.options.buildModules.indexOf('@firestead/nuxt/module') === -1){
       nuxt.options.buildModules.push('@firestead/nuxt/module')
     }
