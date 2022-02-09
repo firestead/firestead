@@ -8,6 +8,8 @@ export async function getRollupConfig(firesteadContext){
 
     await firesteadContext.hooks.callHook('builder:rollup:config', firesteadContext)
 
+    if(firesteadContext.buildOptions?.skip) return null 
+
     const extensions = ['.ts', '.mjs', '.js', '.json', '.node']
 
     const entryPath = firesteadContext.dev ? `${firesteadContext.buildPath}/firebase/entry.js` : `${firesteadContext.buildPath}/build/entry.js`

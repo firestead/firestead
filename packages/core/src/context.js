@@ -16,7 +16,8 @@ export function createFiresteadContext(defaultCtxOptions = {}){
         functionsDir: 'firebase',
         functionsPath: undefined,
         functionsWatchDirs: ['functions', 'http', 'schedule', 'firestore', 'database', 'remoteConfig', 'storage', 'auth', 'analytics', 'pubsub', 'testLab'],
-        watchFiles: [],
+        functions: [],
+        buildOptions: {},
         logger : undefined,
         framework: {
             name: undefined,

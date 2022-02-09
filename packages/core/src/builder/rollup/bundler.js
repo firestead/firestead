@@ -1,4 +1,5 @@
 import * as rollup from 'rollup'
+import fse from 'fs-extra'
 import chalk from 'chalk'
 
 //TODO: add wait for first build
@@ -32,6 +33,11 @@ export function watchRollupEntry(firesteadContext){
 }
 
 export async function buildRollup(firesteadContext){
+  // if build is skipped, just copy entry file instead of building
+  if(firesteadContext.buildOptions?.skip){
+    await fse.copy(`${firesteadContext.buildPath}/build/entry.js`, `${firesteadContext.buildPath}/build/functions/index.mjs`, { overwrite: true })
+    return
+  }
   const build = await rollup.rollup(firesteadContext.firebase.rollupConfig).catch((error) => {
     consola.error('Rollup error: ' + error.message)
     throw error

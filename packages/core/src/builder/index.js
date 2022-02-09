@@ -27,7 +27,7 @@ export async function prepareFirebase(firesteadContext){
 }
 
 export async function watchFirebase(firesteadContext){
-  await firesteadContext.hooks.callHook('builder:watch', firesteadContext)
+  await firesteadContext.hooks.callHook('builder:watch:before', firesteadContext)
   // load rollup config in dev mode
   firesteadContext.firebase.rollupConfig = await getRollupConfig(firesteadContext)
   // write firebase build entry file
@@ -46,6 +46,10 @@ export async function createFirebaseConfig(firesteadContext){
 
 export async function buildFirebase(firesteadContext){
   await firesteadContext.hooks.callHook('builder:build:before', firesteadContext)
+  // initialize build options
+  if(firesteadContext.functions.length === 0){
+    firesteadContext.buildOptions.skip = true
+  }
   // load rollup config in build mode
   firesteadContext.firebase.rollupConfig = await getRollupConfig(firesteadContext)
   // write firebase build entry file
