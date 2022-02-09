@@ -1,7 +1,7 @@
 import chalk from 'chalk'
 
 export const config = {
-    schedule: 'every 5 minutes'
+    schedule: 'every 24 hours'
 }
 
 export default (context) => {

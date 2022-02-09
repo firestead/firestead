@@ -3,7 +3,7 @@ import fse from 'fs-extra'
 import { globby } from 'globby'
 import { createRequire } from 'module'
 import { join, resolve } from 'pathe'
-import { writeFile } from '../utils'
+import { mergeDirs, writeFile } from '../utils'
 import { readPackageJSON } from 'pkg-types'
 import {
   getFirebaseConfig, 
@@ -24,7 +24,7 @@ export async function writeEntryFile(firesteadContext){
     import { getDocument, getSchedule, getBucketName } from './runtime/config.js'    
     `, '\n')
     
-  entryContent = entryContent.concat('\n', `const defaultBucketName = "${firesteadContext.firebaseConfig?.storageBucket ? firesteadContext.firebaseConfig?.storageBucket:'default'}"`, '\n')
+  entryContent = entryContent.concat('\n', `const defaultBucketName = "${firesteadContext.firebase?.config?.storageBucket ? firesteadContext.firebase.config.storageBucket:'default'}"`, '\n')
     
   for( const watchFile of firesteadContext.watchFiles){
     if(watchFile.type === 'schedule'){
@@ -59,8 +59,8 @@ export async function injectFrameworkHandle({ buildPath }){
   try {
     await fse.ensureFile(filePath)
     let bundledFile = await fse.readFile(`${buildPath}/build/functions/index.mjs`, 'utf-8')
-    bundledFile = bundledFile.replace (/^/,`import { handle } from  './framework/server/index.mjs;'\n`)
-    bundledFile = bundledFile.concat(`export const frameworkApp = functions.https.onRequest(handle);`)
+    bundledFile = bundledFile.replace (/^/,`import { handle as frameworkHandle } from  './framework/server/index.mjs';\n`)
+    bundledFile = bundledFile.concat(`export const frameworkApp = functions.https.onRequest(frameworkHandle);`)
     await fse.writeFile(filePath, bundledFile, 'utf-8')
   } catch (err) {
     console.error(err)
@@ -85,6 +85,16 @@ export async function writePackageJson(firesteadContext){
   // for production build write dependencies to package.json
   let dependencies = {}
   if(!firesteadContext.dev){
+    // merge node modules from framework into main -> nuxt related build process
+    try {
+      console.log(`${chalk.bold.green('✔')} ${chalk.bold.yellow('Firestead:')} Merge duplicated modules`)
+      await mergeDirs(`${serverDir}/framework/server/node_modules`, `${serverDir}/node_modules`)
+      await fse.rm(`${serverDir}/framework/server/node_modules`, { recursive: true })
+    } catch (e) {
+      throw new Error(e)
+    }
+    // add dependencies to package.json
+    console.log(`${chalk.bold.green('✔')} ${chalk.bold.yellow('Firestead:')} Create package.json`)
     const jsons = await globby(`${serverDir}/node_modules/**/package.json`)
     const prefixLength = `${serverDir}/node_modules/`.length
     const suffixLength = '/package.json'.length

@@ -88,6 +88,24 @@ export function readPackageJson (
   }
 }
 
+export async function mergeDirs (src, dest) {
+
+  const files = await fse.readdir(src)
+
+  files.forEach(async (file) => {
+    const srcFile = '' + src + '/' + file
+    const destFile = '' + dest + '/' + file
+    const stats = fse.lstatSync(srcFile)
+    if (stats.isDirectory()) {
+     await mergeDirs(srcFile, destFile)
+    } else {
+      if (!fse.existsSync(destFile)) {
+        await writeFile(destFile, fse.readFileSync(srcFile))
+      }
+    }
+  })
+}
+
 function splitFile(file){
   let event = false
   let name = file
