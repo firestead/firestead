@@ -20,7 +20,7 @@ export async function writeEntryFile(firesteadContext){
   
   // no firebase functions to build - only import firebase-functions for framework
   if(firesteadContext.buildOptions?.skip && !firesteadContext.dev){
-    let entryContent = `import functions from 'firebase-functions';`
+    let entryContent = `import functions from 'firebase-functions';\n`
     await fse.writeFile(entryFilePath, entryContent, 'utf-8')
     return
   }

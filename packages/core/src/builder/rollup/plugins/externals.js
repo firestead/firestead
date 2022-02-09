@@ -1,6 +1,6 @@
 // Based on https://github.com/nuxt/framework/blob/main/packages/nitro/src/rollup/plugins/externals.ts (MIT)
 import { resolve, dirname } from 'pathe'
-import fse from 'fs-extra'
+import { isFile } from '../../utils'
 import { nodeFileTrace } from '@vercel/nft'
 
 export function externals (opts){
@@ -64,8 +64,7 @@ export function externals (opts){
         // // Find all unique package names
         const pkgs = new Set()
         for (const file of tracedFiles) {
-          // eslint-disable-next-line @typescript-eslint/no-unused-vars
-          const [_, baseDir, pkgName, _importPath] = /(.+\/node_modules\/)([^@/]+|@[^/]+\/[^/]+)\/(.*)/.exec(file)
+          const [, baseDir, pkgName, _importPath] = /^(.+\/node_modules\/)([^@/]+|@[^/]+\/[^/]+)(\/?.*?)?$/.exec(file)
           pkgs.add(resolve(baseDir, pkgName, 'package.json'))
         }
 
@@ -76,10 +75,11 @@ export function externals (opts){
         }
 
         const writeFile = async (file) => {
+          if (!await isFile(file)) { return }
           const src = resolve(opts.traceOptions.base, file)
-          const dst = resolve(opts.outDir, 'node_modules', file.split('node_modules/').pop())
-          await fse.mkdirp(dirname(dst))
-          await fse.copyFile(src, dst)
+          const dst = resolve(opts.outDir, 'node_modules', file.replace(/^.*?node_modules[\\/](.*)$/, '$1'))
+          await fsp.mkdir(dirname(dst), { recursive: true })
+          await fsp.copyFile(src, dst)
         }
         if (process.platform === 'win32') {
           // Workaround for EBUSY on windows (#424)

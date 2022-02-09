@@ -41,6 +41,16 @@ async function getAllFiles (dirPath, arrayOfFiles, dir) {
   return arrayOfFiles
 }
 
+export async function isFile (file) {
+  try {
+    const stat = await fse.stat(file)
+    return stat.isFile()
+  } catch (err) {
+    if (err.code === 'ENOENT') { return false }
+    throw err
+  }
+}
+
 export async function writeFile (file, contents, log = false) {
   await fse.mkdirp(dirname(file))
   await fse.writeFile(file, contents, 'utf-8')

@@ -1,6 +1,7 @@
 import * as rollup from 'rollup'
 import fse from 'fs-extra'
 import chalk from 'chalk'
+import { traceFiles } from './tracer'
 
 //TODO: add wait for first build
 export function watchRollupEntry(firesteadContext){
@@ -33,11 +34,22 @@ export function watchRollupEntry(firesteadContext){
 }
 
 export async function buildRollup(firesteadContext){
-  // if build is skipped, just copy entry file instead of building
+  // if build is skipped, just copy entry file and trace needed modules instead of building
   if(firesteadContext.buildOptions?.skip){
+    await traceFiles([
+      'node_modules/firebase-functions/lib/index.js'
+    ],{
+        outDir: `${firesteadContext.buildPath}/build/functions`,
+        traceOptions: {
+          base: '/',
+          processCwd: firesteadContext.rootPath,
+          exportsOnly: true
+      }
+    })
     await fse.copy(`${firesteadContext.buildPath}/build/entry.js`, `${firesteadContext.buildPath}/build/functions/index.mjs`, { overwrite: true })
     return
   }
+  // rollup build process
   const build = await rollup.rollup(firesteadContext.firebase.rollupConfig).catch((error) => {
     consola.error('Rollup error: ' + error.message)
     throw error
