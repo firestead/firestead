@@ -6413,7 +6413,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "firestead@workspace:packages/core"
   dependencies:
-    "@firestead/cli": ^0.0.10
+    "@firestead/cli": ^0.0.11
     "@firestead/kit": ^0.0.6
     "@rollup/plugin-alias": ^3.1.9
     "@rollup/plugin-commonjs": ^21.0.1
@@ -6430,8 +6430,8 @@ __metadata:
     globby: ^13.1.1
     h3: ^0.3.3
     hookable: ^5.1.1
-    klona: ^2.0.5
     pathe: ^0.2.0
+    pkg-types: ^0.3.2
     rollup: ^2.63.0
     unbuild: latest
   languageName: unknown

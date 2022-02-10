@@ -8,7 +8,7 @@
         "firestead",
         "firebase"
     ],
-    "version": "0.0.52",
+    "version": "0.0.53",
     "type": "module",
     "license": "MIT",
     "files": [
@@ -39,9 +39,8 @@
         "globby": "^13.1.1",
         "h3": "^0.3.3",
         "hookable": "^5.1.1",
-        "pkg-types": "^0.3.2",
-        "klona": "^2.0.5",
         "pathe": "^0.2.0",
+        "pkg-types": "^0.3.2",
         "rollup": "^2.63.0"
     },
     "devDependencies": {

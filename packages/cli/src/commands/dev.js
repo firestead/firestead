@@ -27,10 +27,14 @@ export default defineFiresteadCommand({
 
       //Init Firestead
       const firesteadContext = createFiresteadContext({ rootPath , dev: true })
+      // init framework
+      const frameworkInstance = await initFramework(firesteadContext)
+      //change path to firebase runtime path
+      const firebaseRuntimePath = `${firesteadContext.buildPath}/firebase`
+      process.chdir(firebaseRuntimePath)
+
       // add firebase emulator logger to firestead context
       firesteadContext.logger = client.logger.logger
-      //add firestead build dir to node env -> TODO: find better way to add build dir to middleware
-      process.env.FIRESTEAD_BUILD_DIR = firesteadContext.buildPath
       //set process envs for dev
       process.env.FIREBASE_AUTH_EMULATOR_HOST = 'localhost:9099'
       process.env.GCLOUD_PROJECT = 'default'
@@ -42,12 +46,6 @@ export default defineFiresteadCommand({
       // run rollup watch function to build firestead index.mjs
       await watchFirebase(firesteadContext)
 
-
-      // init framework
-      const frameworkInstance = await initFramework(firesteadContext)
-      //change path to firebase runtime path
-      const firebaseRuntimePath = `${firesteadContext.buildPath}/firebase`
-      process.chdir(firebaseRuntimePath)
       // set logger for firebase emulator
       firesteadContext.logger.on("data",(log)=>{
         if(['info', 'warn', 'data', 'http'].indexOf(log.level) !== -1){

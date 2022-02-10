@@ -1,6 +1,5 @@
 import { useNuxtApp } from '#app'
 import { onUnmounted, onBeforeMount, getCurrentInstance, toRefs, toRef, set, computed } from '@vue/composition-api'
-import { klona } from 'klona'
 
 export const useFirestore = (key, firestoreOptions={}) => {
     if (typeof key !== 'string') {
@@ -115,12 +114,11 @@ export const useFirestore = (key, firestoreOptions={}) => {
     //    TODO: add options pick api to update only a few values of a document
     //    check merge strategie of firebase api
     //
-    const fsUpdateDoc = async (refIdentifier=null, options = {timestamps:true}) => {
+    const fsUpdateDoc = async (refIdentifier=null, dataUpdate,options = {timestamps:true}) => {
         try {
-            const { updateDoc, serverTimestamp } = await $fs.firestore.lib()
             setState('updating', true)
+            const { updateDoc, serverTimestamp } = await $fs.firestore.lib()
             const docRef = getDocRef(refIdentifier)
-            let dataUpdate = klona(firestoreData.value[index].data)
             if(options.timestamps){
                 dataUpdate = {
                     ...dataUpdate,
