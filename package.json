@@ -5,7 +5,6 @@
     "workspaces": [
         "packages/kit",
         "packages/core",
-        "packages/ui",
         "packages/cli",
         "packages/addons/*",
         "packages/frameworks/*",

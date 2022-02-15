@@ -16,7 +16,7 @@ export const useStorage = (key='default', options= {}) => {
     }
     const storageData = payload.state[`${key}FirebaseStorage`]
 
-    let fsStorageRef = null
+    let uploadTask = null
 
     const resetStorageData = (error=false) => {
         storageData.url = null
@@ -28,24 +28,44 @@ export const useStorage = (key='default', options= {}) => {
         if(error) console.log(error)
     }
 
-    const createRef = async (path, bucket = null) => {
-        const { ref } = await $fs.storage.lib()
-        try {
-            fsStorageRef = ref($fs.storage.connection, path)
-            resetStorageData()
-        } catch (refError) {
-            resetStorageData(refError)
-        }
-        return fsStorageRef
+    const pause = () => {
+        if(uploadTask) uploadTask.pause()
     }
 
-    const upload = async (file = null, metadata = {}) => {
-        let task = null
-        if(fsStorageRef && file){
-            const { uploadBytesResumable, getDownloadURL } = await $fs.storage.lib()
-            task = uploadBytesResumable(fsStorageRef, file, metadata)
+    const resume = () => {
+        if(uploadTask) uploadTask.resume()
+    }
+
+    const cancel = () => {
+        if(uploadTask) uploadTask.cancel()
+    }
+
+    const upload = async (file = null, opts = {}) => {
+        const options = Object.assign({
+            name: false,
+            path: '',
+            url: true,
+            bucket: 'default',
+            metadata: {}
+        }, opts)
+        if(!file)  throw new Error('No file to upload')
+        const promise = new Promise(async (resolve, reject) => {
+            const { ref: storageRef, uploadBytesResumable, getDownloadURL } = await $fs.storage.lib()
+            const fileRef = {
+                name: options.name? options.name : file.name,
+                path: options.path,
+                fullPath: null,
+                bucket: options.bucket
+            }
+            if(options.path === '') {
+                fileRef.fullPath = fileRef.name
+            }else{
+                fileRef.fullPath = `${fileRef.path}/${fileRef.name}`
+            }
+            const fsStorageRef = storageRef($fs.storage.connection, fileRef.fullPath)
+            uploadTask = uploadBytesResumable(fsStorageRef, file, options.metadata)
             // Listen for state changes, errors, and completion of the upload.
-            task.on('state_changed',
+            uploadTask.on('state_changed',
             (snapshot) => {
                 // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
                 storageData.progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100
@@ -67,27 +87,32 @@ export const useStorage = (key='default', options= {}) => {
                 // A full list of error codes is available at
                 // https://firebase.google.com/docs/storage/web/handle-errors
                 resetStorageData(storageError)
+                reject(storageError)
             }, 
             async () => {
-                // Upload completed successfully, now we can get the download URL
-                storageData.state = 'complete'
                 try {
-                    storageData.url = await getDownloadURL(task.snapshot.ref)
+                    // Upload completed successfully, now we can get the download URL
+                    if(options.url){
+                        storageData.url = await getDownloadURL(uploadTask.snapshot.ref)
+                        fileRef.url = storageData.url
+                    }
+                    storageData.state = 'complete'
+                    resolve(fileRef)
                 } catch (storageError) {
                     resetStorageData(storageError)
+                    reject(storageError)
                 }
             })
-        }
-
-        return task
+        })
+        return promise
     }
 
     /*
     * TODO: define file object format
     */
     const fsDeleteObject = async (fileObject) => {
-        const { ref, deleteObject } = await $fs.storage.lib()
-        const objectRef = ref($fs.storage.connection,fileObject.path)
+        const { ref: storageRef, deleteObject } = await $fs.storage.lib()
+        const objectRef = storageRef($fs.storage.connection,fileObject.fullPath)
         try {
             await deleteObject(objectRef)
         } catch (storageError) {
@@ -97,8 +122,10 @@ export const useStorage = (key='default', options= {}) => {
 
     return {
         ...toRefs(storageData),
-        createRef,
         deleteObject: fsDeleteObject,
-        upload
+        upload,
+        pause,
+        resume,
+        cancel
     }
 }

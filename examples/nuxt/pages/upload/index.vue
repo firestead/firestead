@@ -33,28 +33,23 @@
     </div>
 </template>
 <script setup>
-    const {url, state, progress, createRef, upload} = useStorage()
+    const {url, progress, upload, pause, resume} = useStorage()
 
     let file = null
-    let task = null
 
     const watchFile = async (e)=>{
         const files = e.target.files || e.dataTransfer.files
         if (!files.length) return
         file = files[0]
-        await createRef(`images/${files[0].name}`)
     }
 
     const clickUpload = async () => {
-        if(file) task = await upload(file)
-    }
-
-    const pause = () => {
-        if(task) task.pause()
-    }
-
-    const resume = () => {
-        if(task) task.resume()
+        if(file){
+            const fileRef = await upload(file, {
+                path: 'images'
+            })
+            console.log(fileRef)
+        }
     }
 
 

@@ -85,6 +85,7 @@ export const useFirestore = (key, firestoreOptions={}) => {
         }else{
             docRef = firestoreData.value.ref
         }
+        if(!docRef) throw new Error('No valid refIdentifier given')
         return docRef
     }
 
@@ -192,6 +193,7 @@ export const useFirestore = (key, firestoreOptions={}) => {
                 setState('fetching', true)
                 //only allow one subscription at a time
                 if(!fetchDetails.subscription){
+                    fetchDetails.isHydrating = false
                     fetchDetails.subscription = true
                     unsubscribeFunction = await subFunc($fs.firestore.connection, await $fs.firestore.lib())
                 }
@@ -250,7 +252,7 @@ export const useFirestore = (key, firestoreOptions={}) => {
                   })
                 return _asyncDataPromises[key]
               }
-              /* Keep for debugging
+              /* Keep for debugging             
               console.log('hydration',fetchDetails.isHydrating)
               console.log('Fetch - fetch always if foreceFetch is set',options.forceFetch ? true: false)
               console.log('Fetch - prevent fetch if preventFetch is set and data are available',((options.preventFetch ? true: false) && (firestoreData.value ? true: false)))
