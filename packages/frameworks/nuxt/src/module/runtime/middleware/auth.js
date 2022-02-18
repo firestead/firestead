@@ -5,11 +5,11 @@ import { getAuth } from 'firebase-admin/auth'
 const app = createApp()
 
 app.use((req, res, next) => {
+    const env = process.env.NODE_ENV || 'production'
     const apps = getApps()
     if (!apps.length) {
-        initializeApp({ 
-            projectId: 'default'
-        })
+        if(env === 'development') initializeApp()
+        if(env === 'production') initializeApp()
     }
     next()
 })

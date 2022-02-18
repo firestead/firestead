@@ -13,12 +13,18 @@ export function createFiresteadContext(defaultCtxOptions = {}){
         hooks: createHooks(),
         modulePath: dirname(resolveModule('firestead')),
         contextPath: dirname(fileURLToPath(import.meta.url)),
-        functionsDir: 'firebase',
-        functionsPath: undefined,
-        functionsWatchDirs: ['functions', 'http', 'schedule', 'firestore', 'database', 'remoteConfig', 'storage', 'auth', 'analytics', 'pubsub', 'testLab'],
-        functions: [],
         buildOptions: {},
         logger : undefined,
+        functions: {
+            dir: 'firebase',
+            path: undefined,
+            watchDirs: ['functions', 'http', 'schedule', 'firestore', 'database', 'remoteConfig', 'storage', 'auth', 'analytics', 'pubsub', 'testLab'],
+            handler: []
+        },
+        env: {
+            path: null,
+            fileName: '.firestead.env.js'
+        },
         framework: {
             name: undefined,
             server: undefined
@@ -35,7 +41,8 @@ export function createFiresteadContext(defaultCtxOptions = {}){
             exportDir: 'emulator',
             exportPath: undefined,
         },
-        ui:{
+        console:{
+            active: true,
             contextPath: undefined,
             runtimeDir: undefined,
             rollupConfig: undefined,
@@ -53,7 +60,9 @@ export function createFiresteadContext(defaultCtxOptions = {}){
 
     firesteadContext.buildPath = resolve(firesteadContext.rootPath, firesteadContext.buildDir)
     firesteadContext.emulator.exportPath = resolve(firesteadContext.buildPath, firesteadContext.emulator.exportDir)
-    firesteadContext.functionsPath = resolve(firesteadContext.rootPath, firesteadContext.functionsDir)
+    
+    firesteadContext.functions.path = resolve(firesteadContext.rootPath, firesteadContext.functions.dir)
+    firesteadContext.env.path = firesteadContext.rootPath
 
     //add firebase runtime path
     firesteadContext.firebase.runtimePath =  resolve(firesteadContext.contextPath, 'runtime')

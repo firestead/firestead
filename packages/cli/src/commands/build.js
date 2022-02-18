@@ -16,7 +16,7 @@ export default defineFiresteadCommand({
         const firesteadCtx = createFiresteadContext({ dev: false, rootPath })
         // add firebase config and env vars to firesteadContext
         const { config: firesteadContext } = await loadConfig({
-          configFile: `${rootPath}/env.config.js`,
+          configFile: `${rootPath}/.firestead.env.js`,
           overrides: firesteadCtx
         })
         try {

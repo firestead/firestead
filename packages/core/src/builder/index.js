@@ -47,7 +47,7 @@ export async function createFirebaseConfig(firesteadContext){
 export async function buildFirebase(firesteadContext){
   await firesteadContext.hooks.callHook('builder:build:before', firesteadContext)
   // initialize build options
-  if(firesteadContext.functions.length === 0){
+  if(firesteadContext.functions.handler.length === 0){
     firesteadContext.buildOptions.skip = true
   }
   // load rollup config in build mode

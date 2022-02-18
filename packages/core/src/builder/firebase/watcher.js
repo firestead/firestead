@@ -8,8 +8,8 @@ const scanQueue = []
 export async function watchFirebaseFiles(firesteadContext){
   firesteadContext.hooks.hook('watch:event',async (event,path)=>{
       if(['add', 'unlink'].indexOf(event) !== -1){
-        for( const dir of firesteadContext.functionsWatchDirs){
-          if(path.includes(`${firesteadContext.functionsDir}/${dir}`)){
+        for( const dir of firesteadContext.functions.watchDirs){
+          if(path.includes(`${firesteadContext.functions.dir}/${dir}`)){
             await addToScanQueue(firesteadContext, path, event)
             break
           }

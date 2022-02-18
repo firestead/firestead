@@ -11,13 +11,13 @@ export async function isDirectory (path) {
 }
 
 export async function scanDirs (firesteadContext) {
-    firesteadContext.functions = []
-    for (const dir of firesteadContext.functionsWatchDirs){
-        const dirPath = `${firesteadContext.functionsPath}/${dir}`
+    firesteadContext.functions.handler = []
+    for (const dir of firesteadContext.functions.watchDirs){
+        const dirPath = `${firesteadContext.functions.path}/${dir}`
         if(await isDirectory(dirPath)){
             const functions = await getAllFiles(dirPath, [], dir)
             if(functions.length>0){
-                firesteadContext.functions=[...firesteadContext.functions,...functions]
+                firesteadContext.functions.handler=[...firesteadContext.functions.handler,...functions]
             }
         }
     }

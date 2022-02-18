@@ -25,7 +25,7 @@ export async function writeEntryFile(firesteadContext){
     return
   }
   //add all created watch files to entry file
-  let entryContent = firesteadContext.functions.map(p => `import {default as ${p.name}_import, config as ${p.name}_config} from "${p.path}";`).join('\n')
+  let entryContent = firesteadContext.functions.handler.map(p => `import {default as ${p.name}_import, config as ${p.name}_config} from "${p.path}";`).join('\n')
   //add imports e.g. runtime wrapper and config helper
   entryContent = entryContent.concat('\n', `
     import functions from 'firebase-functions'
@@ -35,7 +35,7 @@ export async function writeEntryFile(firesteadContext){
     
   entryContent = entryContent.concat('\n', `const defaultBucketName = "${firesteadContext.firebase?.config?.storageBucket ? firesteadContext.firebase.config.storageBucket:'default'}"`, '\n')
     
-  for( const functionItem of firesteadContext.functions){
+  for( const functionItem of firesteadContext.functions.handler){
     if(functionItem.type === 'schedule'){
       entryContent = entryContent.concat(`export const ${functionItem.name} = functions.pubsub.schedule(getSchedule(${functionItem.name}_config)).onRun(${functionItem.name}_import)`, '\n')
     }

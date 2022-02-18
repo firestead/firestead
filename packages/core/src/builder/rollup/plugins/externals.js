@@ -1,4 +1,5 @@
 // Based on https://github.com/nuxt/framework/blob/main/packages/nitro/src/rollup/plugins/externals.ts (MIT)
+import fse from 'fs-extra'
 import { resolve, dirname } from 'pathe'
 import { isFile } from '../../utils'
 import { nodeFileTrace } from '@vercel/nft'
@@ -78,8 +79,8 @@ export function externals (opts){
           if (!await isFile(file)) { return }
           const src = resolve(opts.traceOptions.base, file)
           const dst = resolve(opts.outDir, 'node_modules', file.replace(/^.*?node_modules[\\/](.*)$/, '$1'))
-          await fsp.mkdir(dirname(dst), { recursive: true })
-          await fsp.copyFile(src, dst)
+          await fse.mkdir(dirname(dst), { recursive: true })
+          await fse.copyFile(src, dst)
         }
         if (process.platform === 'win32') {
           // Workaround for EBUSY on windows (#424)

@@ -1,4 +1,4 @@
-import { promises as fsp } from 'fs'
+import fse from 'fs-extra'
 import { resolve, dirname } from 'pathe'
 import { isFile } from '../utils'
 import { nodeFileTrace } from '@vercel/nft'
@@ -25,8 +25,8 @@ export async function traceFiles(modules = [], opts = {}){
         if (!await isFile(file)) { return }
         const src = resolve(opts.traceOptions.base, file)
         const dst = resolve(opts.outDir, 'node_modules', file.replace(/^.*?node_modules[\\/](.*)$/, '$1'))
-        await fsp.mkdir(dirname(dst), { recursive: true })
-        await fsp.copyFile(src, dst)
+        await fse.mkdir(dirname(dst), { recursive: true })
+        await fse.copyFile(src, dst)
     }
 
     if (process.platform === 'win32') {
