@@ -4,12 +4,7 @@
     "useWorkspaces": true,
     "conventionalCommits": true,
     "packages": [
-      "packages/kit",
-      "packages/console",
-      "packages/core",
-      "packages/cli",
-      "packages/addons/*",
-      "packages/frameworks/*"
+      "packages/*"
     ],
     "command": {
       "publish": {

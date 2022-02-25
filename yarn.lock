@@ -871,26 +871,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@firestead/addon-dashboard@workspace:packages/addons/dashboard":
-  version: 0.0.0-use.local
-  resolution: "@firestead/addon-dashboard@workspace:packages/addons/dashboard"
-  dependencies:
-    "@firestead/kit": latest
-    pathe: ^0.2.0
-    unbuild: latest
-  languageName: unknown
-  linkType: soft
-
-"@firestead/addon-operations@workspace:packages/addons/operations":
-  version: 0.0.0-use.local
-  resolution: "@firestead/addon-operations@workspace:packages/addons/operations"
-  dependencies:
-    "@firestead/kit": latest
-    pathe: ^0.2.0
-    unbuild: latest
-  languageName: unknown
-  linkType: soft
-
 "@firestead/cli@workspace:./packages/cli, @firestead/cli@workspace:packages/cli":
   version: 0.0.0-use.local
   resolution: "@firestead/cli@workspace:packages/cli"
@@ -925,11 +905,6 @@ __metadata:
     pathe: ^0.2.0
     ufo: ^0.7.9
     unbuild: latest
-    vite: ^2.8.4
-    vite-plugin-windicss: ^1.7.1
-    vue: ^3.2.31
-    vue-router: ^4.0.12
-    windicss: 3.2.1
   languageName: unknown
   linkType: soft
 
@@ -937,7 +912,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@firestead/kit@workspace:packages/kit"
   dependencies:
-    "@firestead/console": latest
+    "@firestead/console": ^0.0.7
     fs-extra: ^10.0.0
     jiti: ^1.12.x
     mlly: ^0.3.x
@@ -947,9 +922,9 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@firestead/nuxt@workspace:./packages/frameworks/nuxt, @firestead/nuxt@workspace:packages/frameworks/nuxt":
+"@firestead/nuxt@workspace:./packages/nuxt, @firestead/nuxt@workspace:packages/nuxt":
   version: 0.0.0-use.local
-  resolution: "@firestead/nuxt@workspace:packages/frameworks/nuxt"
+  resolution: "@firestead/nuxt@workspace:packages/nuxt"
   dependencies:
     "@nuxt/design": latest
     "@nuxt/kit": "npm:@nuxt/kit-edge@latest"
@@ -6567,8 +6542,8 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "firestead@workspace:packages/core"
   dependencies:
-    "@firestead/cli": ^0.0.13
-    "@firestead/kit": ^0.0.6
+    "@firestead/cli": ^0.0.14
+    "@firestead/kit": ^0.0.8
     "@rollup/plugin-alias": ^3.1.9
     "@rollup/plugin-commonjs": ^21.0.1
     "@rollup/plugin-node-resolve": ^13.1.3
@@ -6588,6 +6563,11 @@ __metadata:
     pkg-types: ^0.3.2
     rollup: ^2.63.0
     unbuild: latest
+    vite: ^2.8.4
+    vite-plugin-windicss: ^1.7.1
+    vue: ^3.2.31
+    vue-router: ^4.0.12
+    windicss: ^3.4.4
   languageName: unknown
   linkType: soft
 
@@ -13584,21 +13564,21 @@ __metadata:
   languageName: node
   linkType: hard
 
-"windicss@npm:3.2.1":
-  version: 3.2.1
-  resolution: "windicss@npm:3.2.1"
-  bin:
-    windicss: cli/index.js
-  checksum: 05406b5b02a70d5a232d451b8f92ed7d1357b0e850290f165d7be2561797832a9aa6d488301452a716234386bf4b28621becac6a9a7f762280a48432ffa9626e
-  languageName: node
-  linkType: hard
-
 "windicss@npm:^3.4.3":
   version: 3.4.3
   resolution: "windicss@npm:3.4.3"
   bin:
     windicss: cli/index.js
   checksum: 3029c69249a1f5676ce2b4a991830bf0f86f47098ff1d6fa78668cd165e0388800c8edf479fd3209deefa5b027de50fdc10f02f6ec0de0af55db1afdaf5df7f2
+  languageName: node
+  linkType: hard
+
+"windicss@npm:^3.4.4":
+  version: 3.4.4
+  resolution: "windicss@npm:3.4.4"
+  bin:
+    windicss: cli/index.js
+  checksum: 6f480eb199929af87bad679cb22e61a1538b1c4ad80a013d18ef226e36c2e10a2f357f7ebafb18c5c83c8e36a92f3591ece8f5d5afdd4104f641ed71712154d9
   languageName: node
   linkType: hard
 

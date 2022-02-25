@@ -5,9 +5,7 @@ packages=(
   "packages/kit"
   "packages/cli"
   "packages/console"
-  "packages/frameworks/nuxt"
-  "packages/addons/dashboard" 
-  "packages/addons/operations"
+  "packages/nuxt"
   )
 
 if [ -z "$1" ]

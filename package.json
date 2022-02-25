@@ -3,12 +3,7 @@
     "type": "module",
     "license": "MIT",
     "workspaces": [
-        "packages/kit",
-        "packages/console",
-        "packages/core",
-        "packages/cli",
-        "packages/addons/*",
-        "packages/frameworks/*",
+        "packages/*",
         "examples/*"
     ],
     "scripts": {
@@ -26,9 +21,7 @@
         "@firestead/kit": "workspace:./packages/kit",
         "@firestead/console": "workspace:./packages/console",
         "@firestead/cli": "workspace:./packages/cli",
-        "@firestead/nuxt": "workspace:./packages/frameworks/nuxt",
-        "@firestead/addon-dashboard": "workspace:./packages/addons/dashboard",
-        "@firestead/addon-operations": "workspace:./packages/addons/operations",
+        "@firestead/nuxt": "workspace:./packages/nuxt",
         "unbuild": "^0.6.8",
         "jiti": "^1.12.14",
         "rollup": "^2.63.0",
