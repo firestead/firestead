@@ -14,6 +14,11 @@ export default defineBuildConfig({
   dependencies: [
   ],
   externals: [
-    'hash-sum'
+    'hash-sum',
+    'vite',
+    'vite-plugin-windicss',
+    'vue',
+    'vue-router',
+    'windicss'
   ]
 })
