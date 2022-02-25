@@ -34,7 +34,7 @@ async function addToScanQueue(firesteadContext, path, event){
 async function rescan(firesteadContext, path, event){
     await scanDirs(firesteadContext)
     await writeEntryFile(firesteadContext)
-    console.log(`${chalk.bold.green('✔')} ${chalk.bold.yellow('Firestead:')} ${(event==='add')?chalk.bold.green('Added new file: ' + path ):chalk.bold.red('Removed file: ' + path )}`)
+    firesteadContext.logger.log('Info',`${chalk.bold.green('✔')} ${chalk.bold.yellow('Firestead:')} ${(event==='add')?chalk.bold.green('Added new file: ' + path ):chalk.bold.red('Removed file: ' + path )}`)
     if(scanQueue.length>=1){
         const scanParams = scanQueue.shift()
         await rescan(scanParams.firesteadContext, scanParams.path, scanParams.event )

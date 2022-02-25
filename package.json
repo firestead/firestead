@@ -4,6 +4,7 @@
     "license": "MIT",
     "workspaces": [
         "packages/kit",
+        "packages/console",
         "packages/core",
         "packages/cli",
         "packages/addons/*",
@@ -23,7 +24,7 @@
     "resolutions": {
         "firestead": "workspace:./packages/core",
         "@firestead/kit": "workspace:./packages/kit",
-        "@firestead/ui": "workspace:./packages/ui",
+        "@firestead/console": "workspace:./packages/console",
         "@firestead/cli": "workspace:./packages/cli",
         "@firestead/nuxt": "workspace:./packages/frameworks/nuxt",
         "@firestead/addon-dashboard": "workspace:./packages/addons/dashboard",

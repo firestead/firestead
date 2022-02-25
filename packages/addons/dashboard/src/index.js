@@ -4,7 +4,7 @@ import { fileURLToPath } from 'url'
 
 const dashboardAddon = defineFsAddon({
     name: "dashboard",
-    ui: {
+    console: {
         routePrefix: false,
         pages: resolve(dirname(fileURLToPath(import.meta.url)), "pages"),
         navigation: {
@@ -14,7 +14,6 @@ const dashboardAddon = defineFsAddon({
         },
     },
     functions: [],
-    middleware: [],
     setup() {}
 })
 

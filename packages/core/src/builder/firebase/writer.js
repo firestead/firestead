@@ -76,7 +76,7 @@ export async function injectFrameworkHandle({ buildPath }){
 }
 
 export async function writeFirebaseConfigs(firesteadContext){
-  console.log(`${chalk.bold.green('✔')} ${chalk.bold.yellow('Firestead:')} Create firebase configuration files`)
+  firesteadContext.logger.log('info',`${chalk.bold.green('✔')} ${chalk.bold.yellow('Firestead:')} Create firebase configuration files`)
   const rootFBDir = firesteadContext.dev ? `${firesteadContext.buildPath}/firebase` : `${firesteadContext.buildPath}/build`
   const firebaseConf = getFirebaseConfig(firesteadContext)
   await writeFile(`${rootFBDir}/firebase.json`, JSON.stringify(firebaseConf))

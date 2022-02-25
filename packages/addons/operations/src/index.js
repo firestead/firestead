@@ -4,7 +4,7 @@ import { fileURLToPath } from 'url'
 
 const operationsAddon = defineFsAddon({
     name: "operations",
-    ui: {
+    console: {
         pages: resolve(dirname(fileURLToPath(import.meta.url)), "pages"),
         navigation: {
             label: "Operations",
@@ -22,7 +22,6 @@ const operationsAddon = defineFsAddon({
         },
     },
     functions: [],
-    api: [],
     setup() {}
 })
 

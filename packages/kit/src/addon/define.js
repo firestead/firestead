@@ -1,6 +1,6 @@
 // Inspired by nuxt3 kit https://github.com/nuxt/framework/tree/main/packages/kit (MIT)
-import { addPagesPath } from '../ui/pages'
-import { addNavbarEntry } from '../ui/navigation'
+import { addPagesPath } from '../console/pages'
+import { addNavbarEntry } from '../console/navigation'
 
 export function defineFsAddon(definition){
     if (typeof definition !== 'object') {

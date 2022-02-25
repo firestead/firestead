@@ -2,11 +2,11 @@ import { defineFiresteadCommand } from "./index"
 import requireg from "requireg"
 import { resolve } from 'pathe'
 import chalk from 'chalk'
-import util from 'util'
 import chokidar from 'chokidar'
 import { initFramework } from '../utils/framwork'
+import { registerLogger, progressBar } from '../utils/logger'
 import { waitUntilEmulatorReady } from '../utils/wait'
-import { isDir } from '@firestead/kit'
+import { isDir, initConsoleBundle } from '@firestead/kit'
 import { prepareFirebase, watchFirebase, createFirebaseConfig, createFiresteadContext } from 'firestead'
 
 export default defineFiresteadCommand({
@@ -16,6 +16,7 @@ export default defineFiresteadCommand({
       description: 'Run firestead in development mode'
     },
     async invoke (args) {
+      //use firestead logger
       process.env.NODE_ENV = process.env.NODE_ENV || 'development'
       let client = null
       try {
@@ -27,36 +28,44 @@ export default defineFiresteadCommand({
 
       //Init Firestead
       const firesteadContext = createFiresteadContext({ rootPath , dev: true })
+      // add firebase emulator logger to firestead context
+      firesteadContext.logger = client.logger.logger
+      registerLogger(firesteadContext)
+      firesteadContext.logger.log('startup', `${chalk.yellow('i Firestead')} starting in dev mode \n`)
+      const progress = progressBar(14)
       // init framework
       const frameworkInstance = await initFramework(firesteadContext)
+      progress.increment({
+        msg: 'Framework initialized',
+      })
       //change path to firebase runtime path
       const firebaseRuntimePath = `${firesteadContext.buildPath}/firebase`
       process.chdir(firebaseRuntimePath)
 
-      // add firebase emulator logger to firestead context
-      firesteadContext.logger = client.logger.logger
       //set process envs for dev
       process.env.FIREBASE_AUTH_EMULATOR_HOST = 'localhost:9099'
       process.env.GCLOUD_PROJECT = 'default'
       
       //prepare build for firestead
-      await prepareFirebase(firesteadContext)       
+      await prepareFirebase(firesteadContext)
+      progress.increment({
+        msg: 'Prepare Firestead runtime environment'
+      })       
       // create firebase configuration
       await createFirebaseConfig(firesteadContext)
+      progress.increment({
+        msg: 'Created Firebase configuration'
+      })
       // run rollup watch function to build firestead index.mjs
       await watchFirebase(firesteadContext)
-
-      // set logger for firebase emulator
-      firesteadContext.logger.on("data",(log)=>{
-        if(['info', 'warn', 'data', 'http'].indexOf(log.level) !== -1){
-          const logArgs = log[Symbol.for('splat')]
-          if (logArgs) {
-            log.message = util.format(log.message, logArgs[0]) 
-          }
-          console.log(log.message)
-        }
+      progress.increment({
+        msg: 'Watching Firebase functions'
       })
-      firesteadContext.logger.log('info', `${chalk.yellow('i Firestead')} Starting Firebase emulator \n`)
+
+      await initConsoleBundle(firesteadContext)
+      progress.increment({  
+        msg: 'Initialized Firestead Console'
+      })
       //start firebase emulator
       const emulatorOptions = {
         project: 'default', 
@@ -67,11 +76,13 @@ export default defineFiresteadCommand({
       if(isDir(firesteadContext.emulator.exportPath)){
         emulatorOptions.import = firesteadContext.emulator.exportPath
       }
+      progress.increment()
       client.emulators.start(emulatorOptions)
       //change dir back to cli command path
       process.chdir(`${process.env.INIT_CWD}`)
       //await emulator ready
-      await waitUntilEmulatorReady(firesteadContext)
+      await waitUntilEmulatorReady(firesteadContext,progress)
+      progress.increment()
       // start framework server and watch file changes if needed
       firesteadContext.logger.log('info', `${chalk.yellow('i Firestead')} Starting dev server for framework '${firesteadContext.framework.name}'`)
       try {

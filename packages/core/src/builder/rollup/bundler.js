@@ -22,7 +22,7 @@ export function watchRollupEntry(firesteadContext){
         // Finished building all bundles
         case 'END':
           //nitroContext._internal.hooks.callHook('nitro:compiled', nitroContext)
-          console.log(`${chalk.bold.green('✔')} ${chalk.bold.yellow('Firestead:')}` + ' built', start ? `in ${Date.now() - start} ms` : '')
+          firesteadContext.logger.log('info',`${chalk.bold.green('✔')} ${chalk.bold.yellow('Firestead:')}` + ' built', start ? `in ${Date.now() - start} ms` : '')
           return
   
         // Encountered an error while bundling
@@ -54,7 +54,7 @@ export async function buildRollup(firesteadContext){
     consola.error('Rollup error: ' + error.message)
     throw error
   })
-  consola.start('Writing firebase bundle...')
+  console.log('Writing firebase bundle...')
   await build.write(firesteadContext.firebase.rollupConfig.output)
-  consola.start('Built firestead successfully')
+  console.log('Built firestead successfully')
 }

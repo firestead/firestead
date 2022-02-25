@@ -1,6 +1,6 @@
 // Based on https://github.com/nuxt/framework/blob/main/packages/nuxi/src/utils/prepare.ts
 import { promises as fsp } from 'fs'
-import { join, relative, resolve } from 'pathe'
+import { isAbsolute, join, relative, resolve } from 'pathe'
 import defu from 'defu'
 import { getModulePaths, getNearestPackage } from './cjs'
 
@@ -45,7 +45,9 @@ export const writeTypes = async (nuxt) => {
     if (excludedAlias.some(re => re.test(alias))) {
       continue
     }
-    const relativePath = relative(nuxt.options.rootDir, aliases[alias]).replace(/(?<=\w)\.\w+$/g, '') /* remove extension */ || '.'
+    const relativePath = isAbsolute(aliases[alias])
+      ? relative(nuxt.options.rootDir, aliases[alias]).replace(/(?<=\w)\.\w+$/g, '') /* remove extension */ || '.'
+      : aliases[alias]
     tsConfig.compilerOptions.paths[alias] = [relativePath]
 
     try {
@@ -70,7 +72,7 @@ export const writeTypes = async (nuxt) => {
 
   const declaration = [
     ...references.map((ref) => {
-      if ('path' in ref) {
+      if ('path' in ref && isAbsolute(ref.path)) {
         ref.path = relative(nuxt.options.buildDir, ref.path)
       }
       return `/// <reference ${renderAttrs(ref)} />`

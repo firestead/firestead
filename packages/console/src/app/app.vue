@@ -3,7 +3,7 @@
         <header>
             <div class="border-b-1 h-12 border-gray-300 bg-gray-100 px-6">
                 <div class="p-1">
-                  <SVGFiresteadLogo class="h-9 pt-1 w-auto"></SVGFiresteadLogo>
+                  <logo class="h-9 pt-1 w-auto"></logo>
                 </div>
             </div>
             <div class="border-b-1 border-gray-300 h-10 px-6 py-2">
@@ -19,7 +19,7 @@
     </div>
 </template>
 <script setup>
-  import SVGFiresteadLogo from './assets/FiresteadLogo.svg'
+  import logo from './components/logo.vue'
   import navbar from './components/navbar.vue'
   import sidebarDesktop from './components/sidebar-desktop.vue'
   import { inject } from 'vue'

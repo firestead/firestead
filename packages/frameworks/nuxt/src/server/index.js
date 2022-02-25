@@ -5,7 +5,7 @@ import { createServer as nuxtServer, createLoadingHandler } from './utils/server
 import { loadNuxt, buildNuxt, extendViteConfig } from '@nuxt/kit'
 import { relative } from 'pathe'
 
-export const createServer =  async function(args, { rootPath }){
+export const createServer =  async function(args, { rootPath, hooks }){
 
     //create server
     const server = nuxtServer()
@@ -56,6 +56,8 @@ export const createServer =  async function(args, { rootPath }){
     }
 
     await load(false)
+    //set framework ready hook
+    hooks.callHook('framework:ready', currentNuxt.server)
     if (currentNuxt) {
       await currentNuxt.hooks.callHook('listen', listener.server, listener)
     }

@@ -1,9 +1,9 @@
 import { createApp, ref } from 'vue'
 import { createRouter, createWebHistory } from 'vue-router'
-import App from '#ui/app.vue'
+import App from '#console/app.vue'
 import routes from './routes.js'
 import { menu } from './navigation.js'
-import '#ui/assets/style.css'
+import 'virtual:windi.css'
 
 const baseURL = 'fs'
 

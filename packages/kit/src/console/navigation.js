@@ -3,7 +3,7 @@ import { createUUID } from '../utils'
 
 export function getNavigation(){
     const firesteadContext = useFiresteadContext()
-    return firesteadContext.ui.navigation
+    return firesteadContext.console.navigation
 }
 
 export function addNavbarEntry(navbarEntry, firesteadContext = null){
@@ -27,7 +27,7 @@ export function addNavbarEntry(navbarEntry, firesteadContext = null){
             }
         }
     }
-    firesteadContext.ui.navigation.menu.push(navbarEntry)
+    firesteadContext.console.navigation.menu.push(navbarEntry)
     return navbarEntry
 }
 

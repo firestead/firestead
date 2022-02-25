@@ -1,8 +1,3 @@
-import { getFiresteadContext } from "./context"
-import { prepare, bundle } from "./build"
-
-export async function initApp(){
-    const firesteadContext = getFiresteadContext()
-    await prepare(firesteadContext)
-    await bundle(firesteadContext)
-}
+export { addConsoleContext } from './context'
+export { prepareRuntime, createFiles } from "./build"
+export { createServer } from './build/vite/server'

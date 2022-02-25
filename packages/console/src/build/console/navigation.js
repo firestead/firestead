@@ -1,7 +1,7 @@
 import fse from 'fs-extra'
 
 export async function writeNavigationFile (firesteadContext) {
-    const { menu } = firesteadContext.ui.navigation
+    const { menu } = firesteadContext.console.navigation
     let navigationContent = ''
     // add navbar menu
     navigationContent = navigationContent.concat('\n','export const menu = [];', '\n')
@@ -15,5 +15,5 @@ export async function writeNavigationFile (firesteadContext) {
             }
         }
     }
-    await fse.writeFile(`${firesteadContext.ui.buildRuntimePath}/navigation.js`, navigationContent, 'utf-8')
+    await fse.writeFile(`${firesteadContext.console.buildRuntimePath}/navigation.js`, navigationContent, 'utf-8')
 }

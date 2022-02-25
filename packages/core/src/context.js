@@ -27,7 +27,8 @@ export function createFiresteadContext(defaultCtxOptions = {}){
         },
         framework: {
             name: undefined,
-            server: undefined
+            server: undefined,
+            isReady: false
         },
         firebase: {
             projectId: undefined,
@@ -37,6 +38,7 @@ export function createFiresteadContext(defaultCtxOptions = {}){
         },
         emulator: {
             active: true,
+            isReady: false,
             services: ['functions', 'storage', 'auth', 'firestore', 'pubsub'],
             exportDir: 'emulator',
             exportPath: undefined,

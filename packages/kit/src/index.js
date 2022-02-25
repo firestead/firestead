@@ -1,5 +1,6 @@
 export * from './context'
-export * from './ui/navigation'
+export * from './console/navigation'
+export * from './console/build'
 export * from './addon/define'
 export * from './addon/install'
 export { resolveModule } from './addon/cjs'
