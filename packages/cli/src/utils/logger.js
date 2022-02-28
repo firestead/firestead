@@ -12,7 +12,7 @@ const startup = {
     frameworkReady: false,
 }
 
-function filterOutput(output){
+function storeOutputOnStartup(output){
     const startupWarningsFilter = [
         '⚠ '
     ]
@@ -40,13 +40,7 @@ function logOutput(output){
         newLine = false
     }
     if(startup.frameworkReady && startup.emulatorReady) process.stdout.write(`${output + (newLine ? '\n' : '')}`)
-    else filterOutput(output)
-}
-
-class ConsolaReporter {
-    log (logObj) {
-        logOutput(logObj)
-    }
+    else storeOutputOnStartup(output)
 }
 
 export function progressBar(count){
@@ -83,11 +77,8 @@ export function printServiceTable(){
 
 export function registerLogger({ logger, hooks })
 {
-    //Nuxt3 related: wrap consola logger
-    consola.wrapConsole()
-    consola.addReporter(new ConsolaReporter())
-    // we want a clean console startup, so we pause consola also
-    consola.pause()
+    //Nuxt3 related: set console log to ooutput only errors/warnings to have a clean startup
+    consola.level = 1
     // wrap other console logs
     var methods = ["log", "debug", "warn", "info",'success','error','trace','start','ready','verbose']
     for(var i=0;i<methods.length;i++){
@@ -116,13 +107,13 @@ export function registerLogger({ logger, hooks })
     hooks.hook('framework:ready', (server)=>{
         startup.progressBar.stop()
         startup.frameworkReady = true
+        //Nuxt3 related: set log level to info after startup
+        consola.level = 3
         if(startup.warnings.length > 0){
             logOutput(`\n${chalk.yellow('i Firestead')} is ready: \n`)
             startup.warnings.forEach(v => logOutput(v))
             startup.warnings = []
         }
-        //Nuxt3 related: to have a clean console startup, we clear all messages first and resume consola
-        consola.resume()
         // print service table
         printServiceTable()
     })

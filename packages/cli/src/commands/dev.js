@@ -38,19 +38,18 @@ export default defineFiresteadCommand({
       progress.increment({
         msg: 'Framework initialized',
       })
-      //change path to firebase runtime path
-      const firebaseRuntimePath = `${firesteadContext.buildPath}/firebase`
-      process.chdir(firebaseRuntimePath)
-
-      //set process envs for dev
-      process.env.FIREBASE_AUTH_EMULATOR_HOST = 'localhost:9099'
-      process.env.GCLOUD_PROJECT = 'default'
-      
+      //throw new Error('Framework not ready')
       //prepare build for firestead
       await prepareFirebase(firesteadContext)
       progress.increment({
         msg: 'Prepare Firestead runtime environment'
-      })       
+      })    
+      //change path to firebase runtime path
+      const firebaseRuntimePath = `${firesteadContext.buildPath}/firebase`
+      process.chdir(firebaseRuntimePath)
+      //set process envs for dev
+      process.env.FIREBASE_AUTH_EMULATOR_HOST = 'localhost:9099'
+      process.env.GCLOUD_PROJECT = 'default'   
       // create firebase configuration
       await createFirebaseConfig(firesteadContext)
       progress.increment({
