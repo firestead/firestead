@@ -4,6 +4,7 @@ import { resolve } from 'pathe'
 import chalk from 'chalk'
 import { loadConfig } from 'c12'
 import { createFiresteadContext } from 'firestead'
+import { registerLogger } from '../utils/logger'
 import { isDir } from '@firestead/kit'
 import util from 'util'
 
@@ -15,9 +16,9 @@ export default defineFiresteadCommand({
     },
     async invoke (args) {
       process.env.NODE_ENV = process.env.NODE_ENV || 'development'
-      let client = null
+      let firebaseClient = null
       try {
-        client = await requireg('firebase-tools')        
+        firebaseClient = await requireg('firebase-tools')        
       } catch (error) {
         throw new Error(`Failed to run firestead in development mode: ${error.message}`)
       }
@@ -27,14 +28,13 @@ export default defineFiresteadCommand({
       const firesteadCtx = createFiresteadContext({ rootPath , dev: false })
       // add firebase config and env vars to firesteadContext
       const { config: firesteadContext } = await loadConfig({
-        configFile: `${rootPath}/env.config.js`,
+        configFile: `${rootPath}/.firestead.env.js`,
         overrides: firesteadCtx
       })
       if(!firesteadContext?.firebase?.projectId){
-        throw new Error(`Failed to deploy project, no firebase project id found in env.config.js`)
+        throw new Error(`Failed to deploy project, no firebase project id found in .firestead.env.js`)
       }
-      // add firebase emulator logger to firestead context
-      firesteadContext.logger = client.logger.logger
+      registerLogger(firesteadContext,firebaseClient)
 
       //change path to firebase runtime path
       const firebaseRuntimePath = `${firesteadContext.buildPath}/build`
@@ -55,7 +55,7 @@ export default defineFiresteadCommand({
       const deployOptions = {
         project: firesteadContext.firebase.projectId
       }
-      await client.deploy(deployOptions)
+      await firebaseClient.deploy(deployOptions)
       firesteadContext.logger.log('info', `${chalk.yellow('i Firestead')} Deployed successfully \n`)
       //change dir back to cli command path
       process.chdir(`${process.env.INIT_CWD}`)

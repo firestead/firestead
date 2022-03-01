@@ -8,7 +8,7 @@
         "firestead",
         "firebase"
     ],
-    "version": "0.0.57",
+    "version": "0.0.59",
     "type": "module",
     "license": "MIT",
     "files": [
@@ -22,7 +22,7 @@
         "./package.json": "./package.json"
     },
     "dependencies": {
-        "@firestead/cli": "^0.0.15",
+        "@firestead/cli": "^0.0.17",
         "@firestead/kit": "^0.0.8",
         "@rollup/plugin-alias": "^3.1.9",
         "@rollup/plugin-commonjs": "^21.0.1",

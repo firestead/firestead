@@ -75,19 +75,21 @@ export function printServiceTable(){
     },500)
 }
 
-export function registerLogger({ logger, hooks })
+export function registerLogger(firesteadContext, firebaseClient = null)
 {
-    //Nuxt3 related: set console log to ooutput only errors/warnings to have a clean startup
-    consola.level = 1
-    // wrap other console logs
-    var methods = ["log", "debug", "warn", "info",'success','error','trace','start','ready','verbose']
-    for(var i=0;i<methods.length;i++){
-        console[methods[i]] = function(args){
-            logOutput(args)
+    // add firebase emulator logger to firestead context or register simple console logger
+    if(firebaseClient){
+        firesteadContext.logger = firebaseClient.logger.logger
+    }else{
+        firesteadContext.logger = {
+            log: (output) => {
+                console.log(util.format.apply(output))
+            },
         }
+        return
     }
     // register logger for firebase emulator
-    logger.on("data",(log)=>{
+    firesteadContext.logger.on("data",(log)=>{
         if(['info', 'warn', 'data', 'http', 'startup'].indexOf(log.level) !== -1){
             const logArgs = log[Symbol.for('splat')]
             if (logArgs) {
@@ -100,21 +102,33 @@ export function registerLogger({ logger, hooks })
             }
         }
     })
-    hooks.hook('emulator:ready', ()=>{
-        startup.emulatorReady = true
-    })
-    //since we await emulator first, framework is always last  
-    hooks.hook('framework:ready', (server)=>{
-        startup.progressBar.stop()
-        startup.frameworkReady = true
-        //Nuxt3 related: set log level to info after startup
-        consola.level = 3
-        if(startup.warnings.length > 0){
-            logOutput(`\n${chalk.yellow('i Firestead')} is ready: \n`)
-            startup.warnings.forEach(v => logOutput(v))
-            startup.warnings = []
+    //allow clean startup
+    if(firesteadContext.dev){
+        //Nuxt3 related: set console log to ooutput only errors/warnings to have a clean startup
+        consola.level = 1
+        // wrap other console logs
+        var methods = ["log", "debug", "warn", "info",'success','error','trace','start','ready','verbose']
+        for(var i=0;i<methods.length;i++){
+            console[methods[i]] = function(args){
+                logOutput(args)
+            }
         }
-        // print service table
-        printServiceTable()
-    })
+        firesteadContext.hooks.hook('emulator:ready', ()=>{
+            startup.emulatorReady = true
+        })
+        //since we await emulator first, framework is always last  
+        firesteadContext.hooks.hook('framework:ready', (server)=>{
+            startup.progressBar.stop()
+            startup.frameworkReady = true
+            //Nuxt3 related: set log level to info after startup
+            consola.level = 3
+            if(startup.warnings.length > 0){
+                logOutput(`\n${chalk.yellow('i Firestead')} is ready: \n`)
+                startup.warnings.forEach(v => logOutput(v))
+                startup.warnings = []
+            }
+            // print service table
+            printServiceTable()
+        })
+    }
 }

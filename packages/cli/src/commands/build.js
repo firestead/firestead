@@ -1,6 +1,7 @@
 import { defineFiresteadCommand } from "./index"
 import { createFiresteadContext, prepareFirebase, buildFirebase, createFirebaseConfig } from 'firestead'
 import { initFramework } from '../utils/framwork'
+import { registerLogger } from '../utils/logger'
 import { resolve } from 'pathe'
 import { loadConfig } from 'c12'
 
@@ -19,6 +20,7 @@ export default defineFiresteadCommand({
           configFile: `${rootPath}/.firestead.env.js`,
           overrides: firesteadCtx
         })
+        registerLogger(firesteadContext)
         try {
           //prepare build for firestead
           await prepareFirebase(firesteadContext)

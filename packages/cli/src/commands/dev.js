@@ -18,9 +18,9 @@ export default defineFiresteadCommand({
     async invoke (args) {
       //use firestead logger
       process.env.NODE_ENV = process.env.NODE_ENV || 'development'
-      let client = null
+      let firebaseClient = null
       try {
-        client = await requireg('firebase-tools')        
+        firebaseClient = await requireg('firebase-tools')        
       } catch (error) {
         throw new Error(`Failed to run firestead in development mode: ${error.message}`)
       }
@@ -28,9 +28,8 @@ export default defineFiresteadCommand({
 
       //Init Firestead
       const firesteadContext = createFiresteadContext({ rootPath , dev: true })
-      // add firebase emulator logger to firestead context
-      firesteadContext.logger = client.logger.logger
-      registerLogger(firesteadContext)
+      //register Logger
+      registerLogger(firesteadContext, firebaseClient)
       firesteadContext.logger.log('startup', `${chalk.yellow('i Firestead')} starting in dev mode \n`)
       const progress = progressBar(14)
       // init framework
@@ -76,7 +75,7 @@ export default defineFiresteadCommand({
         emulatorOptions.import = firesteadContext.emulator.exportPath
       }
       progress.increment()
-      client.emulators.start(emulatorOptions)
+      firebaseClient.emulators.start(emulatorOptions)
       //change dir back to cli command path
       process.chdir(`${process.env.INIT_CWD}`)
       //await emulator ready
