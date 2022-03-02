@@ -5,6 +5,8 @@ const forms = require('windicss/plugin/forms')
 const lineClamp = require('windicss/plugin/line-clamp')
 const aspectRatio = require("windicss/plugin/aspect-ratio")
 
+delete colors['coolGray']
+
 module.exports = {
   extract: {
     include: ['**/*.{vue,html,jsx,tsx}'],

@@ -9,10 +9,10 @@ import { clientAuth, authUnsubscribe } from '#build/utils.auth.js'
 export default defineNuxtPlugin(async (nuxtApp) => {
     const firesteadOptions = JSON.parse('<%= JSON.stringify(options) %>')
     const firebaseConfig = {
+        projectId: firesteadOptions?.config?.projectId || 'default',
         apiKey: firesteadOptions?.config?.apiKey || '123456789',    
         authDomain: firesteadOptions?.config?.authDomain || '',
         databaseURL: firesteadOptions?.config?.databaseURL || '',
-        projectId: firesteadOptions?.config?.projectId || 'default',
         storageBucket: firesteadOptions?.config?.storageBucket || 'default-bucket',
         messagingSenderId: firesteadOptions?.config?.messagingSenderId || '',
         appId: firesteadOptions?.config?.appId || ''

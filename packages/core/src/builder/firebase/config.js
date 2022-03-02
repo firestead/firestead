@@ -2,7 +2,7 @@ export function getDefaultFirebaseRc(){
     return {}
 }
 
-export function getFirebaseConfig(firesteadContext){
+export function getFirebaseConfig({ dev, enviromentsRuntime }){
     const firebaseConfig = {}
     //TODO make it more configurable
     firebaseConfig.functions = {
@@ -12,7 +12,7 @@ export function getFirebaseConfig(firesteadContext){
     firebaseConfig.storage = {
       rules: "storage.rules"
     }
-    if(firesteadContext.dev){
+    if(dev){
       firebaseConfig.emulators = {
         auth: {
           port: 9099
@@ -39,7 +39,7 @@ export function getFirebaseConfig(firesteadContext){
     }else{
       firebaseConfig.hosting = [
         {
-          site: firesteadContext.firebase.projectId,
+          site: enviromentsRuntime.config.projectId,
           public: 'functions/framework/public',
           cleanUrls: true,
           rewrites: [

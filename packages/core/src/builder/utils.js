@@ -1,45 +1,7 @@
 import { createRequire } from 'module'
 import fse from 'fs-extra'
-import { join, resolve, dirname } from 'pathe'
+import { resolve, dirname } from 'pathe'
 
-export async function isDirectory (path) {
-    try {
-      return (await fse.stat(path)).isDirectory()
-    } catch (_err) {
-      return false
-    }
-}
-
-export async function scanDirs (firesteadContext) {
-    firesteadContext.functions.handler = []
-    for (const dir of firesteadContext.functions.watchDirs){
-        const dirPath = `${firesteadContext.functions.path}/${dir}`
-        if(await isDirectory(dirPath)){
-            const functions = await getAllFiles(dirPath, [], dir)
-            if(functions.length>0){
-                firesteadContext.functions.handler=[...firesteadContext.functions.handler,...functions]
-            }
-        }
-    }
-    return firesteadContext
-}
-
-async function getAllFiles (dirPath, arrayOfFiles, dir) {
-    const files = await fse.readdir(dirPath)
-    for(const file of files){
-        if (await isDirectory(dirPath + "/" + file)) {
-            //ignore directories
-            //arrayOfFiles = await getAllFiles(dirPath + "/" + file, arrayOfFiles)
-          } else {
-            arrayOfFiles.push({
-              type: dir,
-              path: join(dirPath, "/", file),
-              ...splitFile(file)
-            })
-        }
-    }
-  return arrayOfFiles
-}
 
 export async function isFile (file) {
   try {
@@ -48,6 +10,14 @@ export async function isFile (file) {
   } catch (err) {
     if (err.code === 'ENOENT') { return false }
     throw err
+  }
+}
+
+export async function isDirectory (path) {
+  try {
+    return (await fse.stat(path)).isDirectory()
+  } catch (_err) {
+    return false
   }
 }
 
@@ -114,28 +84,4 @@ export async function mergeDirs (src, dest) {
       }
     }
   })
-}
-
-function splitFile(file){
-  let event = false
-  let name = file
-  let ext = ''
-  const extArr = /(?:\.([^.]+))?$/.exec(file)
-  const validExt = ['js','ts','mjs'].indexOf(extArr[1])
-  if(validExt!==-1) {
-    name = file.split(extArr[0])[0]
-    if(name.split('.').length > 1){
-      const splitName = name.split('.')
-      name = splitName[0]
-      if(['onCreate','onUpdate','onDelete','onWrite','onArchive','onFinalize','onMetadataUpdate'].indexOf(splitName[1])!==-1){
-        event = splitName[1]
-      }
-    }
-    ext = extArr[1]
-  }
-  return {
-    name: name,
-    event: event,
-    ext: ext
-  }
 }

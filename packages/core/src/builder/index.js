@@ -1,6 +1,6 @@
 import fse from 'fs-extra'
-import { isDirectory, scanDirs } from './utils'
-import { watchFirebaseFiles } from './firebase/watcher'
+import { isDirectory } from './utils'
+import { scanDirs, watchFunctionsFolder } from './firebase/watcher'
 import { writeEntryFile, injectFrameworkHandle, writeFirebaseConfigs, writePackageJson } from './firebase/writer'
 import { watchRollupEntry, buildRollup } from './rollup/bundler'
 import { getRollupConfig } from './rollup/config'
@@ -15,27 +15,33 @@ export async function prepareFirebase(firesteadContext){
     }
     await fse.mkdirp(`${firesteadContext.buildPath}/firebase/functions`)
     await fse.mkdirp(`${firesteadContext.buildPath}/firebase/runtime`)
-    await fse.copy(firesteadContext.firebase.runtimePath, `${firesteadContext.buildPath}/firebase/runtime`, { overwrite: true })
+    await fse.copy(firesteadContext.runtimePath, `${firesteadContext.buildPath}/firebase/runtime`, { overwrite: true })
   }else{
     if(firesteadDir){
         await fse.emptyDir(`${firesteadContext.buildPath}/build`)
     }
     await fse.mkdirp(`${firesteadContext.buildPath}/build/functions`)
-    await fse.copy(firesteadContext.firebase.runtimePath, `${firesteadContext.buildPath}/build/runtime`, { overwrite: true })
+    await fse.copy(firesteadContext.runtimePath, `${firesteadContext.buildPath}/build/runtime`, { overwrite: true })
   }
-  await scanDirs(firesteadContext)
+  firesteadContext.functions = await scanDirs(firesteadContext)
 }
 
 export async function watchFirebase(firesteadContext){
   await firesteadContext.hooks.callHook('builder:watch:before', firesteadContext)
-  // load rollup config in dev mode
-  firesteadContext.firebase.rollupConfig = await getRollupConfig(firesteadContext)
-  // write firebase build entry file
+  // write default entry file
   await writeEntryFile(firesteadContext)
+  // load rollup config in dev mode
+  firesteadContext.rollupConfig = await getRollupConfig(firesteadContext)
   // watch and bundle firebase files
   watchRollupEntry(firesteadContext)
+  // watch firebase files
+  firesteadContext.hooks.hook('functions:updated',async (functions)=>{
+    firesteadContext.functions = functions
+    // write firebase build entry file
+    await writeEntryFile(firesteadContext)
+  })
   //activate chokidar watcher for firebase folder
-  watchFirebaseFiles(firesteadContext)
+  watchFunctionsFolder(firesteadContext)
 }
 
 export async function createFirebaseConfig(firesteadContext){
@@ -44,14 +50,29 @@ export async function createFirebaseConfig(firesteadContext){
   await writePackageJson(firesteadContext)
 }
 
+export function useEnviroment(firesteadContext, enviroment){
+    let enviromentsRuntime = firesteadContext.enviroments.filter(env => env.id === enviroment)[0]
+    if(typeof enviromentsRuntime === 'undefined'){
+      enviromentsRuntime = {
+        id: "development",
+        name: "Development",
+        config: {
+          projectId: "default"
+        },
+        envVariables: {}
+      }
+    }
+    firesteadContext.enviromentsRuntime = enviromentsRuntime
+}
+
 export async function buildFirebase(firesteadContext){
   await firesteadContext.hooks.callHook('builder:build:before', firesteadContext)
   // initialize build options
-  if(firesteadContext.functions.handler.length === 0){
+  if(firesteadContext.functions.length === 0){
     firesteadContext.buildOptions.skip = true
   }
   // load rollup config in build mode
-  firesteadContext.firebase.rollupConfig = await getRollupConfig(firesteadContext)
+  firesteadContext.rollupConfig = await getRollupConfig(firesteadContext)
   // write firebase build entry file
   await writeEntryFile(firesteadContext)
   // build firebase file with rollup

@@ -47,7 +47,7 @@ export async function getRollupConfig(firesteadContext){
         ],
         inline: [
             firesteadContext.dev ? `${firesteadContext.buildPath}/firebase` : `${firesteadContext.buildPath}/build`,
-            firesteadContext.functions.path
+            firesteadContext.functionsPath
         ],
         trace: (!firesteadContext.dev)? true: false,
         traceOptions: {

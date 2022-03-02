@@ -25,7 +25,7 @@ export async function writeEntryFile(firesteadContext){
     return
   }
   //add all created watch files to entry file
-  let entryContent = firesteadContext.functions.handler.map(p => `import {default as ${p.name}_import, config as ${p.name}_config} from "${p.path}";`).join('\n')
+  let entryContent = firesteadContext.functions.map(p => `import {default as ${p.name}_import, config as ${p.name}_config} from "${p.path}";`).join('\n')
   //add imports e.g. runtime wrapper and config helper
   entryContent = entryContent.concat('\n', `
     import functions from 'firebase-functions'
@@ -33,9 +33,9 @@ export async function writeEntryFile(firesteadContext){
     import { getDocument, getSchedule, getBucketName } from './runtime/config.js'    
     `, '\n')
     
-  entryContent = entryContent.concat('\n', `const defaultBucketName = "${firesteadContext.firebase?.config?.storageBucket ? firesteadContext.firebase.config.storageBucket:'default'}"`, '\n')
+  entryContent = entryContent.concat('\n', `const defaultBucketName = "${firesteadContext.enviromentsRuntime.config?.storageBucket ? firesteadContext.enviromentsRuntime.config.storageBucket:'default'}"`, '\n')
     
-  for( const functionItem of firesteadContext.functions.handler){
+  for( const functionItem of firesteadContext.functions){
     if(functionItem.type === 'schedule'){
       entryContent = entryContent.concat(`export const ${functionItem.name} = functions.pubsub.schedule(getSchedule(${functionItem.name}_config)).onRun(${functionItem.name}_import)`, '\n')
     }
@@ -75,10 +75,10 @@ export async function injectFrameworkHandle({ buildPath }){
   }
 }
 
-export async function writeFirebaseConfigs(firesteadContext){
-  firesteadContext.logger.log('info',`${chalk.bold.green('✔')} ${chalk.bold.yellow('Firestead:')} Create firebase configuration files`)
-  const rootFBDir = firesteadContext.dev ? `${firesteadContext.buildPath}/firebase` : `${firesteadContext.buildPath}/build`
-  const firebaseConf = getFirebaseConfig(firesteadContext)
+export async function writeFirebaseConfigs({ logger, dev, buildPath, enviromentsRuntime }){
+  logger.log('info',`${chalk.bold.green('✔')} ${chalk.bold.yellow('Firestead:')} Create firebase configuration files`)
+  const rootFBDir = dev ? `${buildPath}/firebase` : `${buildPath}/build`
+  const firebaseConf = getFirebaseConfig({dev, enviromentsRuntime})
   await writeFile(`${rootFBDir}/firebase.json`, JSON.stringify(firebaseConf))
   const firestoreIndexes = getDefaultFirestoreIndexes()
   await writeFile(`${rootFBDir}/firestore.indexes.json`, JSON.stringify(firestoreIndexes))
@@ -86,13 +86,13 @@ export async function writeFirebaseConfigs(firesteadContext){
   await writeFile(`${rootFBDir}/storage.rules`, getDefaultStorageRules())
 }
 
-export async function writePackageJson(firesteadContext){
-  const serverDir = firesteadContext.dev ? `${firesteadContext.buildPath}/firebase/functions` : `${firesteadContext.buildPath}/build/functions`
+export async function writePackageJson({ dev, buildPath, rootPath }){
+  const serverDir = dev ? `${buildPath}/firebase/functions` : `${buildPath}/build/functions`
   const _require = createRequire(import.meta.url)
 
   // for production build write dependencies to package.json
   let dependencies = {}
-  if(!firesteadContext.dev){
+  if(!dev){
     // merge node modules from framework into main -> nuxt related build process
     try {
       console.log(`${chalk.bold.green('✔')} ${chalk.bold.yellow('Firestead:')} Merge duplicated modules`)
@@ -117,14 +117,14 @@ export async function writePackageJson(firesteadContext){
 
   let nodeVersion = '14'
   try {
-    const currentNodeVersion = fse.readJSONSync(join(firesteadContext.rootPath, 'package.json')).engines.node
+    const currentNodeVersion = fse.readJSONSync(join(rootPath, 'package.json')).engines.node
     if (['16', '14'].includes(currentNodeVersion)) {
       nodeVersion = currentNodeVersion
     }
   } catch {}
 
   const getPackageVersion = async (id) => {
-    const pkg = await readPackageJSON(id, { url: `${firesteadContext.rootPath}/node_modules` })
+    const pkg = await readPackageJSON(id, { url: `${rootPath}/node_modules` })
     return pkg.version
   }
 

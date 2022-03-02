@@ -20,6 +20,7 @@ package-lock.json
 # Generated dirs
 _firestead
 .firestead.env.js
+firestead.env.json
 dist
 .nuxt
 .nuxt-*

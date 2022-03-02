@@ -13,8 +13,7 @@
         "firestead": "./node_modules/.bin/firestead",
         "examples:nuxt": "yarn run firestead dev examples/nuxt",
         "examples:nuxt:build": "yarn run firestead build examples/nuxt",
-        "examples:nuxt:deploy": "yarn run firestead deploy examples/nuxt",
-        "watch:ui": "./node_modules/windicss/cli/index.js './packages/**/*.vue'  -to ./packages/ui/src/app/assets/style.css --config './packages/ui/windi.config.cjs' --style --dev"
+        "examples:nuxt:deploy": "yarn run firestead deploy examples/nuxt"
     },
     "resolutions": {
         "firestead": "workspace:./packages/core",

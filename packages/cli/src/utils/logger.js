@@ -8,8 +8,8 @@ const startup = {
     warnings : [],
     infos: [],
     progressBar: null,
-    emulatorReady: false,
-    frameworkReady: false,
+    debug: false,
+    loggingEnabled: false
 }
 
 function storeOutputOnStartup(output){
@@ -33,27 +33,34 @@ function storeOutputOnStartup(output){
     }
 }
 
-function logOutput(output){
+export function logOutput(output, force = false){
     let newLine = true
     if(typeof output === 'object')  {
         output = util.format.apply(output)
         newLine = false
     }
-    if(startup.frameworkReady && startup.emulatorReady) process.stdout.write(`${output + (newLine ? '\n' : '')}`)
+    if(startup.loggingEnabled || force) process.stdout.write(`${output + (newLine ? '\n' : '')}`)
     else storeOutputOnStartup(output)
 }
 
 export function progressBar(count){
-    //init progress bar
-    startup.progressBar = new cliProgress.SingleBar({
-        format: 'Progress |' + chalk.yellow('{bar}') + '| {percentage}% || {msg}',
-        barCompleteChar: '\u2588',
-        barIncompleteChar: '\u2591',
-        hideCursor: true
-    }, cliProgress.Presets.shades_classic)
-    startup.progressBar.start(count, 0, {
-        msg: "Starting"
-    })
+    if(startup.debug){
+        startup.progressBar = {
+            increment: () => {},
+            stop: () => {}
+        }
+    }else{
+        //init progress bar
+        startup.progressBar = new cliProgress.SingleBar({
+            format: 'Progress |' + chalk.yellow('{bar}') + '| {percentage}% || {msg}',
+            barCompleteChar: '\u2588',
+            barIncompleteChar: '\u2591',
+            hideCursor: true
+        }, cliProgress.Presets.shades_classic)
+        startup.progressBar.start(count, 0, {
+            msg: "Starting"
+        })
+    }
     return startup.progressBar
 }
 
@@ -75,8 +82,9 @@ export function printServiceTable(){
     },500)
 }
 
-export function registerLogger(firesteadContext, firebaseClient = null)
+export function registerLogger(firesteadContext, firebaseClient = null, debug = false)
 {
+    startup.debug = debug
     // add firebase emulator logger to firestead context or register simple console logger
     if(firebaseClient){
         firesteadContext.logger = firebaseClient.logger.logger
@@ -90,20 +98,17 @@ export function registerLogger(firesteadContext, firebaseClient = null)
     }
     // register logger for firebase emulator
     firesteadContext.logger.on("data",(log)=>{
-        if(['info', 'warn', 'data', 'http', 'startup'].indexOf(log.level) !== -1){
+        if(['info', 'warn', 'data', 'http'].indexOf(log.level) !== -1){
             const logArgs = log[Symbol.for('splat')]
             if (logArgs) {
                 if(typeof logArgs[0] === 'string') log.message = util.format(log.message, logArgs[0])
                 else if(typeof logArgs[0] === 'object') log.message = logArgs[0].user
             }
             logOutput(log.message)
-            if(log.level==='startup'){
-                process.stdout.write(`${ log.message } \n`)
-            }
         }
     })
     //allow clean startup
-    if(firesteadContext.dev){
+    if(firesteadContext.dev && !debug){
         //Nuxt3 related: set console log to ooutput only errors/warnings to have a clean startup
         consola.level = 1
         // wrap other console logs
@@ -114,12 +119,12 @@ export function registerLogger(firesteadContext, firebaseClient = null)
             }
         }
         firesteadContext.hooks.hook('emulator:ready', ()=>{
-            startup.emulatorReady = true
+            //???
         })
         //since we await emulator first, framework is always last  
         firesteadContext.hooks.hook('framework:ready', (server)=>{
             startup.progressBar.stop()
-            startup.frameworkReady = true
+            startup.loggingEnabled = true
             //Nuxt3 related: set log level to info after startup
             consola.level = 3
             if(startup.warnings.length > 0){
@@ -130,5 +135,8 @@ export function registerLogger(firesteadContext, firebaseClient = null)
             // print service table
             printServiceTable()
         })
+    }else{
+        //allow print
+        startup.loggingEnabled = true
     }
 }

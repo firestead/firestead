@@ -8,7 +8,7 @@
         "firestead",
         "firebase"
     ],
-    "version": "0.0.39",
+    "version": "0.0.40",
     "type": "module",
     "license": "MIT",
     "files": [
@@ -26,8 +26,9 @@
     "dependencies": {
         "@nuxt/design": "latest",
         "@nuxt/kit": "npm:@nuxt/kit-edge@latest",
+        "chokidar": "^3.3.1",
         "defu": "^5.0.1",
-        "firebase": "^9.6.6",
+        "firebase": "^9.6.7",
         "firebase-admin": "^10.0.2",
         "listhen": "^0.2.6",
         "nuxt3": "latest",

@@ -5,7 +5,7 @@ import { traceFiles } from './tracer'
 
 //TODO: add wait for first build
 export function watchRollupEntry(firesteadContext){
-    const watcher = rollup.watch(firesteadContext.firebase.rollupConfig)
+    const watcher = rollup.watch(firesteadContext.rollupConfig)
     let start = null
   
     watcher.on('event', (event) => {
@@ -50,11 +50,11 @@ export async function buildRollup(firesteadContext){
     return
   }
   // rollup build process
-  const build = await rollup.rollup(firesteadContext.firebase.rollupConfig).catch((error) => {
+  const build = await rollup.rollup(firesteadContext.rollupConfig).catch((error) => {
     consola.error('Rollup error: ' + error.message)
     throw error
   })
   console.log('Writing firebase bundle...')
-  await build.write(firesteadContext.firebase.rollupConfig.output)
+  await build.write(firesteadContext.rollupConfig.output)
   console.log('Built firestead successfully')
 }

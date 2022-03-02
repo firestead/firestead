@@ -1,6 +1,7 @@
 import { clearDir } from './utils/fs'
 import { writeTypes } from './utils/prepare'
 import debounce from 'p-debounce'
+import chokidar from 'chokidar'
 import { createServer as nuxtServer, createLoadingHandler } from './utils/server'
 import { loadNuxt, buildNuxt, extendViteConfig } from '@nuxt/kit'
 import { relative } from 'pathe'
@@ -68,7 +69,8 @@ export const createServer =  async function(args, { rootPath, hooks }){
       dLoad(true, 'Manual triggered reload')
     }
 
-    const watchEffect = (event, file) => {
+    const watcher = chokidar.watch([rootPath], { ignoreInitial: true, depth: 1 })
+    watcher.on('all', async (event, file) => {
       if (!currentNuxt) { return }
       if (file.startsWith(currentNuxt.options.buildDir)) { return }
       if (file.match(/nuxt\.config\.(js|ts|mjs|cjs)$/)) {
@@ -89,22 +91,20 @@ export const createServer =  async function(args, { rootPath, hooks }){
           dLoad(true, `\`${relative(rootPath, file)}\` ${event === 'add' ? 'created' : 'removed'}`)
         }
       }
-    }
+    })
     
     return {
-      reload,
-      watchEffect
+      reload
     }
 }
 
-export const build = async ({ rootPath, buildDir, firebase }) => {
+export const build = async ({ rootPath, buildDir, enviromentsRuntime }) => {
   process.env.NITRO_PRESET = 'node'
   process.env.NODE_ENV = process.env.NODE_ENV || 'production'
   const nuxt = await loadNuxt({ rootDir: rootPath, ready: false })
   // set firestead config in nuxt context
   nuxt.options['firestead'] = {
-    projectId: firebase.projectId,
-    config: firebase.config
+    config: enviromentsRuntime.config
   }
 
   //nitro context -> add firestead output dir

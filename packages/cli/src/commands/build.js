@@ -1,5 +1,5 @@
 import { defineFiresteadCommand } from "./index"
-import { createFiresteadContext, prepareFirebase, buildFirebase, createFirebaseConfig } from 'firestead'
+import { createFiresteadContext, prepareFirebase, useEnviroment, buildFirebase, createFirebaseConfig } from 'firestead'
 import { initFramework } from '../utils/framwork'
 import { registerLogger } from '../utils/logger'
 import { resolve } from 'pathe'
@@ -17,9 +17,10 @@ export default defineFiresteadCommand({
         const firesteadCtx = createFiresteadContext({ dev: false, rootPath })
         // add firebase config and env vars to firesteadContext
         const { config: firesteadContext } = await loadConfig({
-          configFile: `${rootPath}/.firestead.env.js`,
+          configFile: `${rootPath}/${firesteadCtx.enviromentsFileName}`,
           overrides: firesteadCtx
         })
+        useEnviroment(firesteadContext, 'production')
         registerLogger(firesteadContext)
         try {
           //prepare build for firestead
