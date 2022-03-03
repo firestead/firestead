@@ -47,7 +47,8 @@ export function progressBar(count){
     if(startup.debug){
         startup.progressBar = {
             increment: () => {},
-            stop: () => {}
+            stop: () => {},
+            update: () => {}
         }
     }else{
         //init progress bar

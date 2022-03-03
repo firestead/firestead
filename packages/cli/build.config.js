@@ -9,6 +9,7 @@ export default defineBuildConfig({
   dependencies: [
   ],
   externals: [
-    '@firestead/nuxt'
+    '@firestead/nuxt',
+    '@firestead/console'
   ]
 })

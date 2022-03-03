@@ -6,7 +6,7 @@ import { loadConfig } from 'c12'
 import { initFramework } from '../utils/framwork'
 import { registerLogger, progressBar, logOutput } from '../utils/logger'
 import { waitUntilEmulatorReady } from '../utils/wait'
-import { isDir } from '../utils/helper'
+import { isDir, tryImportModule } from '../utils/helper'
 import { prepareFirebase, watchFirebase, useEnviroment, createFirebaseConfig, createFiresteadContext } from 'firestead'
 
 export default defineFiresteadCommand({
@@ -37,7 +37,7 @@ export default defineFiresteadCommand({
       useEnviroment(firesteadContext, 'development')
       //register Logger
       registerLogger(firesteadContext, firebaseClient)
-      logOutput(`${chalk.yellow('i Firestead')} starting in dev mode`, true)
+      logOutput(`${chalk.yellow('i Firestead')} running in dev mode \n`, true)
       const progress = progressBar(14)
       // init framework
       const frameworkInstance = await initFramework(firesteadContext)
@@ -64,8 +64,11 @@ export default defineFiresteadCommand({
       progress.increment({
         msg: 'Watching Firebase functions'
       })
-      //TODO: add console if it is installed
-
+      //start console if it is installed
+      const firesteadConsole = await tryImportModule('@firestead/console')
+      if (firesteadConsole) {
+        firesteadConsole.start(firesteadContext)
+      }
       //start firebase emulator
       const emulatorOptions = {
         project: 'default', 
@@ -82,7 +85,7 @@ export default defineFiresteadCommand({
       process.chdir(`${process.env.INIT_CWD}`)
       //await emulator ready
       await waitUntilEmulatorReady(firesteadContext,progress)
-      progress.increment()
+      progress.update(14)
       try {
         // start framework server
         firesteadContext.logger.log('info', `${chalk.yellow('i Firestead')} Starting dev server for framework '${firesteadContext.framework}'`)

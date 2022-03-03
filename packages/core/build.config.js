@@ -9,12 +9,7 @@ export default defineBuildConfig({
   devDependencies: [],
   dependencies: [
     '@firestead/cli',
-    'firebase-functions',
-    'vite',
-    'vite-plugin-windicss',
-    'vue',
-    'vue-router',
-    'windicss'
+    'firebase-functions'
   ],
   externals: [
   ]

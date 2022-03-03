@@ -9,3 +9,9 @@ export function isDir(path) {
         return false
     }
 }
+
+export async function tryImportModule (id) {
+    try {
+      return await import(id)
+    } catch { }
+}

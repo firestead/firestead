@@ -888,7 +888,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@firestead/console@workspace:./packages/console, @firestead/console@workspace:packages/console":
+"@firestead/console@workspace:packages/console":
   version: 0.0.0-use.local
   resolution: "@firestead/console@workspace:packages/console"
   dependencies:
@@ -901,6 +901,11 @@ __metadata:
     pathe: ^0.2.0
     ufo: ^0.7.9
     unbuild: latest
+    vite: ^2.8.4
+    vite-plugin-windicss: ^1.7.1
+    vue: ^3.2.31
+    vue-router: ^4.0.12
+    windicss: ^3.4.4
   languageName: unknown
   linkType: soft
 
@@ -908,7 +913,6 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@firestead/kit@workspace:packages/kit"
   dependencies:
-    "@firestead/console": ^0.0.7
     fs-extra: ^10.0.0
     jiti: ^1.12.x
     mlly: ^0.3.x
@@ -926,7 +930,7 @@ __metadata:
     "@nuxt/kit": "npm:@nuxt/kit-edge@latest"
     chokidar: ^3.3.1
     defu: ^5.0.1
-    firebase: ^9.6.6
+    firebase: ^9.6.7
     firebase-admin: ^10.0.2
     listhen: ^0.2.6
     nuxt3: latest
@@ -5813,7 +5817,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"firebase@npm:^9.6.6":
+"firebase@npm:^9.6.7":
   version: 9.6.7
   resolution: "firebase@npm:9.6.7"
   dependencies:
@@ -5861,8 +5865,8 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "firestead@workspace:packages/core"
   dependencies:
-    "@firestead/cli": ^0.0.17
-    "@firestead/kit": ^0.0.8
+    "@firestead/cli": ^0.0.19
+    "@firestead/kit": ^0.0.9
     "@rollup/plugin-alias": ^3.1.9
     "@rollup/plugin-commonjs": ^21.0.1
     "@rollup/plugin-node-resolve": ^13.1.3
@@ -5883,11 +5887,6 @@ __metadata:
     pkg-types: ^0.3.2
     rollup: ^2.63.0
     unbuild: latest
-    vite: ^2.8.4
-    vite-plugin-windicss: ^1.7.1
-    vue: ^3.2.31
-    vue-router: ^4.0.12
-    windicss: ^3.4.4
   languageName: unknown
   linkType: soft
 

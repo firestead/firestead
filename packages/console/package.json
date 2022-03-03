@@ -8,7 +8,7 @@
         "firestead",
         "firebase"
     ],
-    "version": "0.0.7",
+    "version": "0.0.8",
     "type": "module",
     "license": "MIT",
     "files": [
@@ -29,7 +29,12 @@
         "fs-extra": "^10.0.0",
         "globby": "^11.1.0",
         "pathe": "^0.2.0",
-        "ufo": "^0.7.9"
+        "ufo": "^0.7.9",
+        "vite": "^2.8.4",
+        "vite-plugin-windicss": "^1.7.1",
+        "vue": "^3.2.31",
+        "vue-router": "^4.0.12",
+        "windicss": "^3.4.4"
     },
     "devDependencies": {
         "unbuild": "latest"
