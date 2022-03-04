@@ -4,41 +4,57 @@ import { firesteadCtx, resolveModule } from '@firestead/kit'
 import { createHooks } from 'hookable'
 import defu from 'defu'
 
-export function createFiresteadContext(defaultCtxOptions = {}){
-    const firesteadContext = defu(defaultCtxOptions,{
-        dev: true,
-        rootPath: undefined,
-        buildDir: '_firestead',
-        buildPath: undefined,
-        buildOptions: {},
-        rollupConfig: undefined,
-        runtimePath: undefined,
-        hooks: createHooks(),
-        modulePath: dirname(resolveModule('firestead')),
-        contextPath: dirname(fileURLToPath(import.meta.url)),
-        logger : null,
-        functionsVersion: 1,
-        functionsDir: 'firebase',
-        functionsPath: undefined,
-        functionsWatchDirs: ['functions', 'http', 'schedule', 'firestore', 'database', 'remoteConfig', 'storage', 'auth', 'analytics', 'pubsub', 'testLab'],
-        functions: [],
-        enviromentsRuntime: null,
-        enviromentsFileName: 'firestead.env.json',
-        enviroments: [],
-        framework: null,
-        emulatorServices: ['functions', 'storage', 'auth', 'firestore', 'pubsub'],
-        emulatorExportDir: 'emulator',
-        emulatorExportPath: undefined
-    })
+export function createFiresteadContext(ctxOptions = { rootPath: process.cwd() }){
 
-    firesteadContext.buildPath = resolve(firesteadContext.rootPath, firesteadContext.buildDir)
-    firesteadContext.emulatorExportPath = resolve(firesteadContext.buildPath, firesteadContext.emulatorExportDir)
-    firesteadContext.functionsPath = resolve(firesteadContext.rootPath, firesteadContext.functionsDir)
-    //add firebase runtime path
-    firesteadContext.runtimePath =  resolve(firesteadContext.contextPath, 'runtime')
+    const modulePath = dirname(resolveModule('firestead'))
+    const contextPath = dirname(fileURLToPath(import.meta.url))
+
+    const ctx = {
+        hooks: createHooks(),
+        logger: null,
+        options: defu(ctxOptions,{
+            dev: true,
+            rootPath: undefined,
+            buildConfig: {
+                dir: '_firestead',
+                path: undefined,
+                skip: false
+            },
+            rollupConfig: undefined,
+            functions: {
+                version: 1,
+                dir: 'firebase',
+                path: undefined,
+                runtimePath: resolve(contextPath, 'runtime'),
+                watchDirs: ['functions', 'http', 'schedule', 'firestore', 'database', 'remoteConfig', 'storage', 'auth', 'analytics', 'pubsub', 'testLab'],
+                handler: []
+            },
+            modulePath: modulePath,
+            contextPath: contextPath,
+            enviroments: {
+                runtime: null,
+                fileName: 'firestead.env.json',
+                envs: []
+            },
+            framework: {
+                name: null
+            },
+            emulator: {
+                services: ['functions', 'storage', 'auth', 'firestore', 'pubsub'],
+                exportDir: 'emulator',
+                exportPath: undefined,
+            },
+            console: false
+        })
+    }
+
+    //resolve paths that are relative to context, root or build
+    ctx.options.buildConfig.path = resolve(ctx.options.rootPath, ctx.options.buildConfig.dir)
+    ctx.options.emulator.exportPath = resolve(ctx.options.buildConfig.path, ctx.options.emulator.exportDir)
+    ctx.options.functions.path = resolve(ctx.options.rootPath, ctx.options.functions.dir)
 
     //create global firestead context
-    firesteadCtx.set(firesteadContext)
+    firesteadCtx.set(ctx)
 
-    return firesteadContext
+    return ctx
 }

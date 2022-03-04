@@ -4,8 +4,8 @@ import chalk from 'chalk'
 import { traceFiles } from './tracer'
 
 //TODO: add wait for first build
-export function watchRollupEntry(firesteadContext){
-    const watcher = rollup.watch(firesteadContext.rollupConfig)
+export function watchRollupEntry(rollupConfig){
+    const watcher = rollup.watch(rollupConfig)
     let start = null
   
     watcher.on('event', (event) => {
@@ -22,7 +22,7 @@ export function watchRollupEntry(firesteadContext){
         // Finished building all bundles
         case 'END':
           //nitroContext._internal.hooks.callHook('nitro:compiled', nitroContext)
-          firesteadContext.logger.log('info',`${chalk.bold.green('✔')} ${chalk.bold.yellow('Firestead:')}` + ' built', start ? `in ${Date.now() - start} ms` : '')
+          console.log('info',`${chalk.bold.green('✔')} ${chalk.bold.yellow('Firestead:')}` + ' built', start ? `in ${Date.now() - start} ms` : '')
           return
   
         // Encountered an error while bundling
@@ -33,28 +33,28 @@ export function watchRollupEntry(firesteadContext){
     })
 }
 
-export async function buildRollup(firesteadContext){
+export async function buildRollup({ rootPath, buildConfig, rollupConfig }){
   // if build is skipped, just copy entry file and trace needed modules instead of building
-  if(firesteadContext.buildOptions?.skip){
+  if(buildConfig.skip){
     await traceFiles([
       'node_modules/firebase-functions/lib/index.js'
     ],{
-        outDir: `${firesteadContext.buildPath}/build/functions`,
+        outDir: `${buildConfig.path}/build/functions`,
         traceOptions: {
           base: '/',
-          processCwd: firesteadContext.rootPath,
+          processCwd: rootPath,
           exportsOnly: true
       }
     })
-    await fse.copy(`${firesteadContext.buildPath}/build/entry.js`, `${firesteadContext.buildPath}/build/functions/index.mjs`, { overwrite: true })
+    await fse.copy(`${buildConfig.path}/build/entry.js`, `${buildConfig.path}/build/functions/index.mjs`, { overwrite: true })
     return
   }
   // rollup build process
-  const build = await rollup.rollup(firesteadContext.rollupConfig).catch((error) => {
+  const build = await rollup.rollup(rollupConfig).catch((error) => {
     consola.error('Rollup error: ' + error.message)
     throw error
   })
   console.log('Writing firebase bundle...')
-  await build.write(firesteadContext.rollupConfig.output)
+  await build.write(rollupConfig.output)
   console.log('Built firestead successfully')
 }

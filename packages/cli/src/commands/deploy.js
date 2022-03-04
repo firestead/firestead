@@ -4,7 +4,6 @@ import { resolve } from 'pathe'
 import chalk from 'chalk'
 import { loadConfig } from 'c12'
 import { createFiresteadContext, useEnviroment } from 'firestead'
-import { registerLogger } from '../utils/logger'
 import { isDir } from '../utils/helper'
 
 export default defineFiresteadCommand({
@@ -24,30 +23,31 @@ export default defineFiresteadCommand({
       const rootPath = resolve(args._[0] || '.')
 
       //Init Firestead
-      const firesteadCtx = createFiresteadContext({ rootPath , dev: false })
+      const firesteadContext = createFiresteadContext({ rootPath , dev: false })
       // add firebase config and env vars to firesteadContext
-      const { config: firesteadContext } = await loadConfig({
-        configFile: `${rootPath}/${firesteadCtx.enviromentsFileName}`,
-        overrides: firesteadCtx
+      const { config: envsConfig } = await loadConfig({
+        configFile: `${rootPath}/${firesteadContext.options.enviroments.fileName}`,
+        overrides: firesteadContext.options.enviroments
       })
+      firesteadContext.options.enviroments = envsConfig
+      // init runtime enviroment
       useEnviroment(firesteadContext, 'production')
-      if(!firesteadContext?.enviromentsRuntime?.config?.projectId){
-        throw new Error(`Failed to deploy project, no firebase project id found in .firestead.env.js`)
+      if(!firesteadContext.options.enviroments.runtime?.config?.projectId){
+        throw new Error(`Failed to deploy project, no firebase project id found in firestead.env.json`)
       }
-      registerLogger(firesteadContext, firebaseClient, true)
 
       //change path to firebase runtime path
-      const firebaseRuntimePath = `${firesteadContext.buildPath}/build`
+      const firebaseRuntimePath = `${firesteadContext.options.buildConfig.path}/build`
       if(!isDir(firebaseRuntimePath)) throw new Error(`You have to build your project first`)
       process.chdir(firebaseRuntimePath)
 
-      firesteadContext.logger.log('info', `${chalk.yellow('i Firestead')} Start to deploy project \n`)
+      console.log(`${chalk.yellow('i Firestead')} Start to deploy project \n`)
       //start firebase emulator
       const deployOptions = {
-        project: firesteadContext.enviromentsRuntime.config.projectId
+        project: firesteadContext.options.enviroments.runtime.config.projectId
       }
       await firebaseClient.deploy(deployOptions)
-      firesteadContext.logger.log('info', `${chalk.yellow('i Firestead')} Deployed successfully \n`)
+      console.log(`${chalk.yellow('i Firestead')} Deployed successfully \n`)
       //change dir back to cli command path
       process.chdir(`${process.env.INIT_CWD}`)
     }

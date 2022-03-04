@@ -38,10 +38,11 @@ function updateProgressbar(output, progress){
     }
 }
 
-export async function waitUntilEmulatorReady(firesteadContext, progress){
+export async function waitUntilEmulatorReady(firebaseClient, hooks, progress){
     return new Promise(async (resolve) => {
-        firesteadContext.logger.on("data",(log)=>{
-            if(log.level==='info'){
+        let silent = false
+        firebaseClient.logger.logger.on("data",(log)=>{
+            if((log.level==='info') && !silent){
                 const logArgs = log[Symbol.for('splat')]
                 if (logArgs) {
                     if(typeof logArgs[0] === 'string') log.message = util.format(log.message, logArgs[0])
@@ -49,7 +50,8 @@ export async function waitUntilEmulatorReady(firesteadContext, progress){
                 }
                 updateProgressbar(log.message, progress)
                 if(log.message.includes('All emulators ready!')){
-                    firesteadContext.hooks.callHook('emulator:ready', firesteadContext)
+                    hooks.callHook('emulator:ready')
+                    silent = true
                     resolve()
                 }
             }

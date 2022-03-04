@@ -9,17 +9,18 @@ let fileWatcher = {
   queue: []
 }
 
-export function watchFunctionsFolder({functionsWatchDirs, functionsDir, functionsPath, hooks, logger}){
-  fileWatcher.functionsWatchDirs = functionsWatchDirs
-  fileWatcher.functionsDir = functionsDir
-  fileWatcher.functionsPath = functionsPath
+export function watchFunctionsFolder({hooks, options}){
+  //set up watcher vars
+  fileWatcher.watchDirs = options.functions.watchDirs
+  fileWatcher.dir = options.functions.dir
+  fileWatcher.path = options.functions.path
   fileWatcher.callHook = hooks.callHook
-  fileWatcher.log = logger.log
-  const watcher = chokidar.watch([functionsPath], { ignoreInitial: true, depth: 3 })
+  //add chokidar watcher for firebase functions
+  const watcher = chokidar.watch([fileWatcher.path], { ignoreInitial: true, depth: 3 })
   watcher.on('all', async (event, path) => {
     if(['add', 'unlink'].indexOf(event) !== -1){
-      for( const dir of functionsWatchDirs){
-        if(path.includes(`${functionsDir}/${dir}`)){
+      for( const dir of fileWatcher.watchDirs){
+        if(path.includes(`${fileWatcher.dir}/${dir}`)){
           await addToScanQueue(path, event)
           break
         }
@@ -27,7 +28,7 @@ export function watchFunctionsFolder({functionsWatchDirs, functionsDir, function
     }
   })
 }
-
+// debounce events to queue to avoid multiple scans
 async function addToScanQueue(path, event){
     fileWatcher.queue.push({
       path,
@@ -41,9 +42,20 @@ async function addToScanQueue(path, event){
   }
   
 async function rescan(path, event){
-    const functions = await scanDirs(fileWatcher)
-    await fileWatcher.callHook('functions:updated',functions)
-    fileWatcher.log('info',`${chalk.bold.green('✔')} ${chalk.bold.yellow('Firestead:')} ${(event==='add')?chalk.bold.green('Added new file: ' + path ):chalk.bold.red('Removed file: ' + path )}`)
+    const functionHandler = await scanDirs(fileWatcher)
+    //get updated function
+    const updateContext = {
+      event: event,
+      handler: false
+    }
+    if(event==='add'){
+      const newFunction = functionHandler.find(v=>v.path===path)
+      if(newFunction){
+        updateContext.handler = newFunction
+      }
+    }
+    await fileWatcher.callHook('functions:updated', functionHandler, updateContext)
+    console.log('info',`${chalk.bold.green('✔')} ${chalk.bold.yellow('Firestead:')} ${(event==='add')?chalk.bold.green('Added new file: ' + path ):chalk.bold.red('Removed file: ' + path )}`)
     if(fileWatcher.queue.length>=1){
         const scanParams = fileWatcher.queue.shift()
         await rescan(scanParams.path, scanParams.event )
@@ -51,10 +63,10 @@ async function rescan(path, event){
     fileWatcher.isScanRunning = false
 }
 
-export async function scanDirs ({functionsPath, functionsWatchDirs}) {
+export async function scanDirs ({ path, watchDirs}) {
   let retFunctions = []
-  for (const dir of functionsWatchDirs){
-      const dirPath = `${functionsPath}/${dir}`
+  for (const dir of watchDirs){
+      const dirPath = `${path}/${dir}`
       if(await isDirectory(dirPath)){
           const functions = await getAllFiles(dirPath, [], dir)
           if(functions.length>0){

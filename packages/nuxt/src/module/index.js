@@ -17,7 +17,6 @@ const firesteadModule = defineNuxtModule({
             console.log('@firestead/nuxt does not supporting nuxt2')
             return
         }
-
         // Transpile runtime
         const runtimeDir = fileURLToPath(new URL('./runtime', import.meta.url))
         nuxt.options.build.transpile.push(runtimeDir)

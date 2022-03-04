@@ -6,8 +6,8 @@ import { createServer as nuxtServer, createLoadingHandler } from './utils/server
 import { loadNuxt, buildNuxt, extendViteConfig } from '@nuxt/kit'
 import { relative } from 'pathe'
 
-export const createServer =  async function(args, { rootPath, hooks }){
-
+export const createServer =  async function(args, firesteadContext){
+    const { options, hooks } = firesteadContext
     //create server
     const server = nuxtServer()
     const listener = await server.listen({
@@ -34,7 +34,7 @@ export const createServer =  async function(args, { rootPath, hooks }){
         if (currentNuxt) {
           await currentNuxt.close()
         }
-        const newNuxt = await loadNuxt({ rootDir: rootPath, dev: true, ready: false })
+        const newNuxt = await loadNuxt({ rootDir: options.rootPath, dev: true, ready: false })
         //firestead nuxt module
         if(newNuxt.options.buildModules.indexOf('@firestead/nuxt/module') === -1){
           newNuxt.options.buildModules.push('@firestead/nuxt/module')
@@ -69,12 +69,12 @@ export const createServer =  async function(args, { rootPath, hooks }){
       dLoad(true, 'Manual triggered reload')
     }
 
-    const watcher = chokidar.watch([rootPath], { ignoreInitial: true, depth: 1 })
+    const watcher = chokidar.watch([options.rootPath], { ignoreInitial: true, depth: 1 })
     watcher.on('all', async (event, file) => {
       if (!currentNuxt) { return }
       if (file.startsWith(currentNuxt.options.buildDir)) { return }
       if (file.match(/nuxt\.config\.(js|ts|mjs|cjs)$/)) {
-        dLoad(true, `${relative(rootPath, file)} updated`)
+        dLoad(true, `${relative(options.rootPath, file)} updated`)
       }
 
       const isDirChange = ['addDir', 'unlinkDir'].includes(event)
@@ -88,7 +88,7 @@ export const createServer =  async function(args, { rootPath, hooks }){
         }
       } else if (isFileChange) {
         if (file.match(/app\.(js|ts|mjs|jsx|tsx|vue)$/)) {
-          dLoad(true, `\`${relative(rootPath, file)}\` ${event === 'add' ? 'created' : 'removed'}`)
+          dLoad(true, `\`${relative(options.rootPath, file)}\` ${event === 'add' ? 'created' : 'removed'}`)
         }
       }
     })
@@ -98,20 +98,20 @@ export const createServer =  async function(args, { rootPath, hooks }){
     }
 }
 
-export const build = async ({ rootPath, buildDir, enviromentsRuntime }) => {
+export const build = async ({ rootPath, buildConfig, enviroments }) => {
   process.env.NITRO_PRESET = 'node'
   process.env.NODE_ENV = process.env.NODE_ENV || 'production'
   const nuxt = await loadNuxt({ rootDir: rootPath, ready: false })
   // set firestead config in nuxt context
   nuxt.options['firestead'] = {
-    config: enviromentsRuntime.config
+    config: enviroments.runtime.config
   }
 
   //nitro context -> add firestead output dir
   nuxt.hooks.hook('nitro:context',(nitroContext)=>{
-    nitroContext.output.dir = `${rootPath}/${buildDir}/build/functions/framework`
-    nitroContext.output.serverDir = `${rootPath}/${buildDir}/build/functions/framework/server`
-    nitroContext.output.publicDir = `${rootPath}/${buildDir}/build/functions/framework/public`
+    nitroContext.output.dir = `${rootPath}/${buildConfig.dir}/build/functions/framework`
+    nitroContext.output.serverDir = `${rootPath}/${buildConfig.dir}/build/functions/framework/server`
+    nitroContext.output.publicDir = `${rootPath}/${buildConfig.dir}/build/functions/framework/public`
   })
 
   //add firestead nuxt module

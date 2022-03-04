@@ -8,12 +8,12 @@ export async function getRollupConfig(firesteadContext){
 
     await firesteadContext.hooks.callHook('builder:rollup:config', firesteadContext)
 
-    if(firesteadContext.buildOptions?.skip) return null 
+    if(firesteadContext.options.buildConfig.skip) return null 
 
     const extensions = ['.ts', '.mjs', '.js', '.json', '.node']
 
-    const entryPath = firesteadContext.dev ? `${firesteadContext.buildPath}/firebase/entry.js` : `${firesteadContext.buildPath}/build/entry.js`
-    const outputPath = firesteadContext.dev ? `${firesteadContext.buildPath}/firebase/functions/index.mjs` : `${firesteadContext.buildPath}/build/functions/index.mjs`
+    const entryPath = firesteadContext.options.dev ? `${firesteadContext.options.buildConfig.path}/firebase/entry.js` : `${firesteadContext.options.buildConfig.path}/build/entry.js`
+    const outputPath = firesteadContext.options.dev ? `${firesteadContext.options.buildConfig.path}/firebase/functions/index.mjs` : `${firesteadContext.options.buildConfig.path}/build/functions/index.mjs`
 
     const rollupConfig = {
         input: entryPath,
@@ -35,24 +35,24 @@ export async function getRollupConfig(firesteadContext){
       }))
 
     const moduleDirectories = [
-        resolve(firesteadContext.rootPath, 'node_modules'),
+        resolve(firesteadContext.options.rootPath, 'node_modules'),
         'node_modules'
       ]
     // Externals
-    const externalsPath = firesteadContext.dev ? `${firesteadContext.buildPath}/firebase/functions` : `${firesteadContext.buildPath}/build/functions`
+    const externalsPath = firesteadContext.options.dev ? `${firesteadContext.options.buildConfig.path}/firebase/functions` : `${firesteadContext.options.buildConfig.path}/build/functions`
     rollupConfig.plugins.push(externals({
         outDir: externalsPath,
         moduleDirectories,
         external: [
         ],
         inline: [
-            firesteadContext.dev ? `${firesteadContext.buildPath}/firebase` : `${firesteadContext.buildPath}/build`,
-            firesteadContext.functionsPath
+            firesteadContext.options.dev ? `${firesteadContext.options.buildConfig.path}/firebase` : `${firesteadContext.options.buildConfig.path}/build`,
+            firesteadContext.options.functions.path
         ],
-        trace: (!firesteadContext.dev)? true: false,
+        trace: (!firesteadContext.options.dev)? true: false,
         traceOptions: {
             base: '/',
-            processCwd: firesteadContext.rootPath,
+            processCwd: firesteadContext.options.rootPath,
             exportsOnly: true
         }
     }))
@@ -60,7 +60,7 @@ export async function getRollupConfig(firesteadContext){
     rollupConfig.plugins.push(nodeResolve({
         extensions,
         preferBuiltins: true,
-        rootDir: firesteadContext.rootPath,
+        rootDir: firesteadContext.options.rootPath,
         moduleDirectories,
         // 'module' is intentionally not supported because of externals
         mainFields: ['main'],

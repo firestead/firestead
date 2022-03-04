@@ -1,9 +1,9 @@
 import fse from 'fs-extra'
 
-export async function writeRoutesFile (firesteadContext) {
+export async function writeRoutesFile ({ routes, buildConfig }) {
     let routesContent = ''
     // import route components
-    for( const route of firesteadContext.console.routes){
+    for( const route of routes){
         const routeName = route.name.replace("-", "")
         routesContent = routesContent.concat(`import ${routeName} from "${route.file}"`, '\n')
         if(route.children){
@@ -16,7 +16,7 @@ export async function writeRoutesFile (firesteadContext) {
     // add routes
     routesContent = routesContent.concat('\n','const routes = [];', '\n')
     let routesIndex = 0
-    for( const route of firesteadContext.console.routes){
+    for( const route of routes){
         const routeName = route.name.replace("-", "")
         routesContent = routesContent.concat(`routes.push({name:'${routeName}',path:'${route.path}',component:${routeName},children:[]});`, '\n')
         if(route.children){
@@ -28,5 +28,5 @@ export async function writeRoutesFile (firesteadContext) {
         routesIndex++
     }
     routesContent = routesContent.concat('export default routes;')
-    await fse.writeFile(`${firesteadContext.console.buildRuntimePath}/routes.js`, routesContent, 'utf-8')
+    await fse.writeFile(`${buildConfig.runtimePath}/routes.js`, routesContent, 'utf-8')
 }

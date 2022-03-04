@@ -65,40 +65,11 @@ export function progressBar(count){
     return startup.progressBar
 }
 
-export function printServiceTable(){
-    const serviceTable = new Table({
-        columns: [
-          { name: "Service", alignment: "left" },
-          { name: "URL", alignment: "left" }
-        ],
-    })
-    serviceTable.addRow({ Service: 'Firebase Emulator', URL: 'http://localhost:4000'})
-    serviceTable.addRow({ Service: '', URL: ''})
-    serviceTable.addRow({ Service: 'Framework App', URL: 'http://localhost:3000' })
-    serviceTable.addRow({ Service: '', URL: ''})
-    serviceTable.addRow({ Service: 'Firestead Console', URL: 'http://localhost:1337' })
-    const tableStr = serviceTable.render()
-    setTimeout(()=>{
-        logOutput(`\n${tableStr}\n`)
-    },500)
-}
-
 export function registerLogger(firesteadContext, firebaseClient = null, debug = false)
 {
     startup.debug = debug
-    // add firebase emulator logger to firestead context or register simple console logger
-    if(firebaseClient){
-        firesteadContext.logger = firebaseClient.logger.logger
-    }else{
-        firesteadContext.logger = {
-            log: (output) => {
-                console.log(util.format.apply(output))
-            },
-        }
-        return
-    }
     // register logger for firebase emulator
-    firesteadContext.logger.on("data",(log)=>{
+    firebaseClient.logger.logger.on("data",(log)=>{
         if(['info', 'warn', 'data', 'http'].indexOf(log.level) !== -1){
             const logArgs = log[Symbol.for('splat')]
             if (logArgs) {
@@ -109,7 +80,7 @@ export function registerLogger(firesteadContext, firebaseClient = null, debug = 
         }
     })
     //allow clean startup
-    if(firesteadContext.dev && !debug){
+    if(firesteadContext.options.dev && !debug){
         //Nuxt3 related: set console log to ooutput only errors/warnings to have a clean startup
         consola.level = 1
         // wrap other console logs
@@ -120,21 +91,36 @@ export function registerLogger(firesteadContext, firebaseClient = null, debug = 
             }
         }
         firesteadContext.hooks.hook('emulator:ready', ()=>{
-            //???
+            //TODO:
         })
         //since we await emulator first, framework is always last  
         firesteadContext.hooks.hook('framework:ready', (server)=>{
             startup.progressBar.stop()
             startup.loggingEnabled = true
-            //Nuxt3 related: set log level to info after startup
-            consola.level = 3
             if(startup.warnings.length > 0){
-                logOutput(`\n${chalk.yellow('i Firestead')} is ready: \n`)
+                logOutput(`\n${chalk.yellow('i Firestead')} Firebase Emulator started with warnings:`)
                 startup.warnings.forEach(v => logOutput(v))
                 startup.warnings = []
             }
             // print service table
-            printServiceTable()
+            const serviceTable = new Table({
+                columns: [
+                  { name: "Service", alignment: "left" },
+                  { name: "URL", alignment: "left" }
+                ],
+            })
+            serviceTable.addRow({ Service: 'Firebase Emulator', URL: 'http://localhost:4000'})
+            serviceTable.addRow({ Service: '', URL: ''})
+            serviceTable.addRow({ Service: 'Framework App', URL: 'http://localhost:3000' })
+            serviceTable.addRow({ Service: '', URL: ''})
+            serviceTable.addRow({ Service: 'Firestead Console', URL: 'http://localhost:1337' })
+            const tableStr = serviceTable.render()
+            setTimeout(()=>{
+                logOutput(`\n${tableStr}\n`)
+                //Nuxt3 related: set log level to info after startup
+                consola.level = 3
+            },500)
+              
         })
     }else{
         //allow print

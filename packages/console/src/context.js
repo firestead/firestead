@@ -3,13 +3,14 @@ import { fileURLToPath } from 'url'
 
 export function addConsoleContext(firesteadContext){
     //add UI context
-    firesteadContext.console = {
-        active: true,
-        contextPath: undefined,
-        runtimeDir: undefined,
+    firesteadContext.options.console = {
+        contextPath: dirname(fileURLToPath(import.meta.url)),
         rollupConfig: undefined,
-        buildRuntimePath: undefined,
-        buildAppPath: undefined,
+        buildConfig:{
+            appPath: `${firesteadContext.options.buildConfig.path}/console/app`,
+            runtimePath: `${firesteadContext.options.buildConfig.path}/console/runtime`,
+            runtimeDir: 'runtime'
+        },
         pages: [],
         extensions: ['.js','.vue'],
         routes: [],
@@ -18,8 +19,4 @@ export function addConsoleContext(firesteadContext){
             menu: []
         }
     }
-    firesteadContext.console.contextPath = dirname(fileURLToPath(import.meta.url))
-    firesteadContext.console.buildRuntimePath = `${firesteadContext.buildPath}/console/runtime`
-    firesteadContext.console.buildAppPath = `${firesteadContext.buildPath}/console/app`
-    firesteadContext.console.runtimeDir = 'runtime'
 }

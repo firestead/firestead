@@ -6,52 +6,56 @@ import { watchRollupEntry, buildRollup } from './rollup/bundler'
 import { getRollupConfig } from './rollup/config'
 
 export async function prepareFirebase(firesteadContext){
-  await firesteadContext.hooks.callHook('builder:prepare', firesteadContext)
-  const firesteadDir = await isDirectory(firesteadContext.buildPath)
-  if(firesteadContext.dev){
+  await firesteadContext.hooks.callHook('builder:prepare', firesteadContext.options)
+  const firesteadDir = await isDirectory(firesteadContext.options.buildConfig.path)
+  if(firesteadContext.options.dev){
     if(firesteadDir){
-        await fse.emptyDir(`${firesteadContext.buildPath}/firebase`)
-        await fse.emptyDir(`${firesteadContext.buildPath}/ui`)
+        await fse.emptyDir(`${firesteadContext.options.buildConfig.path}/firebase`)
+        await fse.emptyDir(`${firesteadContext.options.buildConfig.path}/console`)
     }
-    await fse.mkdirp(`${firesteadContext.buildPath}/firebase/functions`)
-    await fse.mkdirp(`${firesteadContext.buildPath}/firebase/runtime`)
-    await fse.copy(firesteadContext.runtimePath, `${firesteadContext.buildPath}/firebase/runtime`, { overwrite: true })
+    await fse.mkdirp(`${firesteadContext.options.buildConfig.path}/firebase/functions`)
+    await fse.mkdirp(`${firesteadContext.options.buildConfig.path}/firebase/runtime`)
+    await fse.copy(firesteadContext.options.functions.runtimePath, `${firesteadContext.options.buildConfig.path}/firebase/runtime`, { overwrite: true })
   }else{
     if(firesteadDir){
-        await fse.emptyDir(`${firesteadContext.buildPath}/build`)
+        await fse.emptyDir(`${firesteadContext.options.buildConfig.path}/build`)
     }
-    await fse.mkdirp(`${firesteadContext.buildPath}/build/functions`)
-    await fse.copy(firesteadContext.runtimePath, `${firesteadContext.buildPath}/build/runtime`, { overwrite: true })
+    await fse.mkdirp(`${firesteadContext.options.buildConfig.path}/build/functions`)
+    await fse.copy(firesteadContext.options.functions.runtimePath, `${firesteadContext.options.buildConfig.path}/build/runtime`, { overwrite: true })
   }
-  firesteadContext.functions = await scanDirs(firesteadContext)
+  //get all function handler on startup
+  firesteadContext.options.functions.handler = await scanDirs(firesteadContext.options.functions)
 }
 
 export async function watchFirebase(firesteadContext){
-  await firesteadContext.hooks.callHook('builder:watch:before', firesteadContext)
+  await firesteadContext.hooks.callHook('builder:watch:before', firesteadContext.options)
   // write default entry file
-  await writeEntryFile(firesteadContext)
+  await writeEntryFile(firesteadContext.options)
   // load rollup config in dev mode
-  firesteadContext.rollupConfig = await getRollupConfig(firesteadContext)
+  firesteadContext.options.rollupConfig = await getRollupConfig(firesteadContext)
   // watch and bundle firebase files
-  watchRollupEntry(firesteadContext)
+  watchRollupEntry(firesteadContext.options.rollupConfig)
   // watch firebase files
-  firesteadContext.hooks.hook('functions:updated',async (functions)=>{
-    firesteadContext.functions = functions
-    // write firebase build entry file
-    await writeEntryFile(firesteadContext)
+  firesteadContext.hooks.hook('functions:updated',async (functionHandler, updateContext)=>{
+    firesteadContext.functions.handler = functionHandler
+    //if a new function is added or removed, we need to rewrite the entry file
+    if(['add', 'unlink'].indexOf(updateContext.event) !== -1){
+      // write firebase build entry file
+      await writeEntryFile(firesteadContext.options)
+    }
   })
   //activate chokidar watcher for firebase folder
   watchFunctionsFolder(firesteadContext)
 }
 
 export async function createFirebaseConfig(firesteadContext){
-  await firesteadContext.hooks.callHook('builder:config', firesteadContext)
-  await writeFirebaseConfigs(firesteadContext)
-  await writePackageJson(firesteadContext)
+  await firesteadContext.hooks.callHook('builder:config:before', firesteadContext.options)
+  await writeFirebaseConfigs(firesteadContext.options)
+  await writePackageJson(firesteadContext.options)
 }
 
 export function useEnviroment(firesteadContext, enviroment){
-    let enviromentsRuntime = firesteadContext.enviroments.filter(env => env.id === enviroment)[0]
+    let enviromentsRuntime = firesteadContext.options.enviroments.envs.filter(env => env.id === enviroment)[0]
     if(typeof enviromentsRuntime === 'undefined'){
       enviromentsRuntime = {
         id: "development",
@@ -62,24 +66,24 @@ export function useEnviroment(firesteadContext, enviroment){
         envVariables: {}
       }
     }
-    firesteadContext.enviromentsRuntime = enviromentsRuntime
+    firesteadContext.options.enviroments.runtime = enviromentsRuntime
 }
 
 export async function buildFirebase(firesteadContext){
-  await firesteadContext.hooks.callHook('builder:build:before', firesteadContext)
+  await firesteadContext.hooks.callHook('builder:build:before', firesteadContext.options)
   // initialize build options
-  if(firesteadContext.functions.length === 0){
-    firesteadContext.buildOptions.skip = true
+  if(firesteadContext.options.functions.handler.length === 0){
+    firesteadContext.options.buildConfig.skip = true
   }
   // load rollup config in build mode
-  firesteadContext.rollupConfig = await getRollupConfig(firesteadContext)
+  firesteadContext.options.rollupConfig = await getRollupConfig(firesteadContext)
   // write firebase build entry file
-  await writeEntryFile(firesteadContext)
+  await writeEntryFile(firesteadContext.options)
   // build firebase file with rollup
-  await buildRollup(firesteadContext)
+  await buildRollup(firesteadContext.options)
   //inject Framework handle
-  await injectFrameworkHandle(firesteadContext)
+  await injectFrameworkHandle(firesteadContext.options)
   //delete entry file and runtime folder
-  await fse.remove(`${firesteadContext.buildPath}/build/runtime`)
-  await fse.remove(`${firesteadContext.buildPath}/build/entry.js`)
+  await fse.remove(`${firesteadContext.options.buildConfig.path}/build/runtime`)
+  await fse.remove(`${firesteadContext.options.buildConfig.path}/build/entry.js`)
 }

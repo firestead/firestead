@@ -11,14 +11,14 @@ export function defineFsAddon(definition){
     }
     async function initAddon(firesteadCtx) {
         //add pages to firestead context
-        if(definition.ui?.pages){
+        if(definition.console?.pages){
             let routePrefix = definition.name
-            if(definition.ui.routePrefix !== undefined) routePrefix = definition.ui.routePrefix 
-            addPagesPath(definition.ui.pages, routePrefix , firesteadCtx)
+            if(definition.console.routePrefix !== undefined) routePrefix = definition.console.routePrefix 
+            addPagesPath(definition.console.pages, routePrefix , firesteadCtx)
         }
         //add navigation to firestead context
-        if(definition.ui?.navigation){
-            addNavbarEntry(definition.ui.navigation, firesteadCtx)
+        if(definition.console?.navigation){
+            addNavbarEntry(definition.console.navigation, firesteadCtx)
         }
 
         //call setup function

@@ -14,18 +14,18 @@ import {
 /*
   Creates entry file for rollup bundler
 */
-export async function writeEntryFile(firesteadContext){
+export async function writeEntryFile({ dev, buildConfig, functions, enviroments }){
   
-  const entryFilePath = firesteadContext.dev ? `${firesteadContext.buildPath}/firebase/entry.js` : `${firesteadContext.buildPath}/build/entry.js`
+  const entryFilePath = dev ? `${buildConfig.path}/firebase/entry.js` : `${buildConfig.path}/build/entry.js`
   
   // no firebase functions to build - only import firebase-functions for framework
-  if(firesteadContext.buildOptions?.skip && !firesteadContext.dev){
+  if(buildConfig.skip && !dev){
     let entryContent = `import functions from 'firebase-functions';\n`
     await fse.writeFile(entryFilePath, entryContent, 'utf-8')
     return
   }
   //add all created watch files to entry file
-  let entryContent = firesteadContext.functions.map(p => `import {default as ${p.name}_import, config as ${p.name}_config} from "${p.path}";`).join('\n')
+  let entryContent = functions.handler.map(p => `import {default as ${p.name}_import, config as ${p.name}_config} from "${p.path}";`).join('\n')
   //add imports e.g. runtime wrapper and config helper
   entryContent = entryContent.concat('\n', `
     import functions from 'firebase-functions'
@@ -33,9 +33,9 @@ export async function writeEntryFile(firesteadContext){
     import { getDocument, getSchedule, getBucketName } from './runtime/config.js'    
     `, '\n')
     
-  entryContent = entryContent.concat('\n', `const defaultBucketName = "${firesteadContext.enviromentsRuntime.config?.storageBucket ? firesteadContext.enviromentsRuntime.config.storageBucket:'default'}"`, '\n')
+  entryContent = entryContent.concat('\n', `const defaultBucketName = "${enviroments.runtime.config?.storageBucket ? enviroments.runtime.config.storageBucket:'default'}"`, '\n')
     
-  for( const functionItem of firesteadContext.functions){
+  for( const functionItem of functions.handler){
     if(functionItem.type === 'schedule'){
       entryContent = entryContent.concat(`export const ${functionItem.name} = functions.pubsub.schedule(getSchedule(${functionItem.name}_config)).onRun(${functionItem.name}_import)`, '\n')
     }
@@ -62,11 +62,11 @@ export async function writeEntryFile(firesteadContext){
   /*
   * adds framework handle to built file
   */
-export async function injectFrameworkHandle({ buildPath }){
-  const filePath = `${buildPath}/build/functions/index.mjs`
+export async function injectFrameworkHandle({ buildConfig }){
+  const filePath = `${buildConfig.path}/build/functions/index.mjs`
   try {
     await fse.ensureFile(filePath)
-    let bundledFile = await fse.readFile(`${buildPath}/build/functions/index.mjs`, 'utf-8')
+    let bundledFile = await fse.readFile(`${buildConfig.path}/build/functions/index.mjs`, 'utf-8')
     bundledFile = bundledFile.replace (/^/,`import { handle as frameworkHandle } from  './framework/server/index.mjs';\n`)
     bundledFile = bundledFile.concat(`export const frameworkApp = functions.https.onRequest(frameworkHandle);`)
     await fse.writeFile(filePath, bundledFile, 'utf-8')
@@ -75,10 +75,10 @@ export async function injectFrameworkHandle({ buildPath }){
   }
 }
 
-export async function writeFirebaseConfigs({ logger, dev, buildPath, enviromentsRuntime }){
-  logger.log('info',`${chalk.bold.green('✔')} ${chalk.bold.yellow('Firestead:')} Create firebase configuration files`)
-  const rootFBDir = dev ? `${buildPath}/firebase` : `${buildPath}/build`
-  const firebaseConf = getFirebaseConfig({dev, enviromentsRuntime})
+export async function writeFirebaseConfigs({ dev, buildConfig, enviroments }){
+  console.log(`${chalk.bold.green('✔')} ${chalk.bold.yellow('Firestead:')} Create firebase configuration files`)
+  const rootFBDir = dev ? `${buildConfig.path}/firebase` : `${buildConfig.path}/build`
+  const firebaseConf = getFirebaseConfig({dev, enviroments })
   await writeFile(`${rootFBDir}/firebase.json`, JSON.stringify(firebaseConf))
   const firestoreIndexes = getDefaultFirestoreIndexes()
   await writeFile(`${rootFBDir}/firestore.indexes.json`, JSON.stringify(firestoreIndexes))
@@ -86,8 +86,8 @@ export async function writeFirebaseConfigs({ logger, dev, buildPath, enviroments
   await writeFile(`${rootFBDir}/storage.rules`, getDefaultStorageRules())
 }
 
-export async function writePackageJson({ dev, buildPath, rootPath }){
-  const serverDir = dev ? `${buildPath}/firebase/functions` : `${buildPath}/build/functions`
+export async function writePackageJson({ dev, rootPath, buildConfig }){
+  const serverDir = dev ? `${buildConfig.path}/firebase/functions` : `${buildConfig.path}/build/functions`
   const _require = createRequire(import.meta.url)
 
   // for production build write dependencies to package.json

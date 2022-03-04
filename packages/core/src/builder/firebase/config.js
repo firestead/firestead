@@ -2,7 +2,7 @@ export function getDefaultFirebaseRc(){
     return {}
 }
 
-export function getFirebaseConfig({ dev, enviromentsRuntime }){
+export function getFirebaseConfig({ dev, enviroments }){
     const firebaseConfig = {}
     //TODO make it more configurable
     firebaseConfig.functions = {
@@ -39,7 +39,7 @@ export function getFirebaseConfig({ dev, enviromentsRuntime }){
     }else{
       firebaseConfig.hosting = [
         {
-          site: enviromentsRuntime.config.projectId,
+          site: enviroments.runtime.config.projectId,
           public: 'functions/framework/public',
           cleanUrls: true,
           rewrites: [
