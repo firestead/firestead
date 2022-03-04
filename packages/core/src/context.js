@@ -11,7 +11,7 @@ export function createFiresteadContext(ctxOptions = { rootPath: process.cwd() })
 
     const ctx = {
         hooks: createHooks(),
-        logger: null,
+        console: false,
         options: defu(ctxOptions,{
             dev: true,
             rootPath: undefined,
@@ -43,8 +43,7 @@ export function createFiresteadContext(ctxOptions = { rootPath: process.cwd() })
                 services: ['functions', 'storage', 'auth', 'firestore', 'pubsub'],
                 exportDir: 'emulator',
                 exportPath: undefined,
-            },
-            console: false
+            }
         })
     }
 

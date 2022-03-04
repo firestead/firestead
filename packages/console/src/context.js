@@ -3,7 +3,7 @@ import { fileURLToPath } from 'url'
 
 export function addConsoleContext(firesteadContext){
     //add UI context
-    firesteadContext.options.console = {
+    firesteadContext.console = {
         contextPath: dirname(fileURLToPath(import.meta.url)),
         rollupConfig: undefined,
         buildConfig:{

@@ -5,7 +5,7 @@ import { createServer } from './build/vite/server'
 
 export async function start(firesteadContext){
     addConsoleContext(firesteadContext)
-    await prepareRuntime(firesteadContext.options.console)
+    await prepareRuntime(firesteadContext.console)
     await createFiles(firesteadContext)
-    await createServer(firesteadContext.options.console)
+    await createServer(firesteadContext.console)
 }

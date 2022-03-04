@@ -13,9 +13,9 @@ export async function createFiles(firesteadContext){
     // get pages for fs ui
     await resolvePagesRoutes(firesteadContext)
     // write routes to file
-    await writeRoutesFile(firesteadContext.options.console)
+    await writeRoutesFile(firesteadContext.console)
     // write navigation to file
-    await writeNavigationFile(firesteadContext.options.console)
+    await writeNavigationFile(firesteadContext.console)
     // watch and bundle ui files
     //watch(firesteadContext)
   }
