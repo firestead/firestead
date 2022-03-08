@@ -22,7 +22,7 @@ export function watchRollupEntry(rollupConfig){
         // Finished building all bundles
         case 'END':
           //nitroContext._internal.hooks.callHook('nitro:compiled', nitroContext)
-          console.log('info',`${chalk.bold.green('✔')} ${chalk.bold.yellow('Firestead:')}` + ' built', start ? `in ${Date.now() - start} ms` : '')
+          console.log(`${chalk.bold.green('✔')} ${chalk.bold.yellow('Firestead:')}` + ' built', start ? `in ${Date.now() - start} ms` : '')
           return
   
         // Encountered an error while bundling

@@ -25,7 +25,7 @@ export async function writeEntryFile({ dev, buildConfig, functions, enviroments 
     return
   }
   //add all created watch files to entry file
-  let entryContent = functions.handler.map(p => `import {default as ${p.name}_import, config as ${p.name}_config} from "${p.path}";`).join('\n')
+  let entryContent = functions.handler.filter(h => h.active).map(p => `import {default as ${p.name}_import, config as ${p.name}_config} from "${p.path}";`).join('\n')
   //add imports e.g. runtime wrapper and config helper
   entryContent = entryContent.concat('\n', `
     import functions from 'firebase-functions'
@@ -36,23 +36,25 @@ export async function writeEntryFile({ dev, buildConfig, functions, enviroments 
   entryContent = entryContent.concat('\n', `const defaultBucketName = "${enviroments.runtime.config?.storageBucket ? enviroments.runtime.config.storageBucket:'default'}"`, '\n')
     
   for( const functionItem of functions.handler){
-    if(functionItem.type === 'schedule'){
-      entryContent = entryContent.concat(`export const ${functionItem.name} = functions.pubsub.schedule(getSchedule(${functionItem.name}_config)).onRun(${functionItem.name}_import)`, '\n')
-    }
-    if(functionItem.type === 'http'){
-      entryContent = entryContent.concat(`
-      const ${functionItem.name}_httpRuntime = httpWrapper(${functionItem.name}_import)
-      export const ${functionItem.name} = functions.https.onRequest(${functionItem.name}_httpRuntime)
-      `, '\n')
-    }
-    if(functionItem.type === 'functions'){
-      entryContent = entryContent.concat(`export const ${functionItem.name} = functions.https.onCall(${functionItem.name}_import)`, '\n')
-    }
-    if(functionItem.type === 'storage'){
-      entryContent = entryContent.concat(`export const ${functionItem.name} = functions.storage.bucket(getBucketName(defaultBucketName,${functionItem.name}_config)).object().${functionItem.event?functionItem.event:'onFinalize'}(${functionItem.name}_import)`, '\n')
-    }
-    if(functionItem.type === 'firestore'){
-      entryContent = entryContent.concat(`export const ${functionItem.name} = functions.firestore.document(getDocument(${functionItem.name}_config)).${functionItem.event?functionItem.event:'onWrite'}(${functionItem.name}_import)`, '\n')
+    if(functionItem.active){
+      if(functionItem.type === 'schedule'){
+        entryContent = entryContent.concat(`export const ${functionItem.name} = functions.pubsub.schedule(getSchedule(${functionItem.name}_config)).onRun(${functionItem.name}_import)`, '\n')
+      }
+      if(functionItem.type === 'http'){
+        entryContent = entryContent.concat(`
+        const ${functionItem.name}_httpRuntime = httpWrapper(${functionItem.name}_import)
+        export const ${functionItem.name} = functions.https.onRequest(${functionItem.name}_httpRuntime)
+        `, '\n')
+      }
+      if(functionItem.type === 'functions'){
+        entryContent = entryContent.concat(`export const ${functionItem.name} = functions.https.onCall(${functionItem.name}_import)`, '\n')
+      }
+      if(functionItem.type === 'storage'){
+        entryContent = entryContent.concat(`export const ${functionItem.name} = functions.storage.bucket(getBucketName(defaultBucketName,${functionItem.name}_config)).object().${functionItem.event?functionItem.event:'onFinalize'}(${functionItem.name}_import)`, '\n')
+      }
+      if(functionItem.type === 'firestore'){
+        entryContent = entryContent.concat(`export const ${functionItem.name} = functions.firestore.document(getDocument(${functionItem.name}_config)).${functionItem.event?functionItem.event:'onWrite'}(${functionItem.name}_import)`, '\n')
+      }
     }
   }
 

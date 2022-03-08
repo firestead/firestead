@@ -35,14 +35,35 @@ export async function watchFirebase(firesteadContext){
   firesteadContext.options.rollupConfig = await getRollupConfig(firesteadContext)
   // watch and bundle firebase files
   watchRollupEntry(firesteadContext.options.rollupConfig)
-  // watch firebase files
+  // handle function updates
   firesteadContext.hooks.hook('functions:updated',async (functionHandler, updateContext)=>{
-    firesteadContext.functions.handler = functionHandler
-    //if a new function is added or removed, we need to rewrite the entry file
-    if(['add', 'unlink'].indexOf(updateContext.event) !== -1){
-      // write firebase build entry file
-      await writeEntryFile(firesteadContext.options)
+    // rewrite entry file depends on case
+    let rewriteEntryFile = false
+
+    if(updateContext.event === 'add'){
+      firesteadContext.options.functions.handler.push(functionHandler)
+      if(functionHandler.active){
+        rewriteEntryFile = true
+      }
     }
+    if(updateContext.event === 'unlink'){
+      const index = firesteadContext.options.functions.handler.findIndex(v => v.path === updateContext.path)
+      firesteadContext.options.functions.handler.splice(index, 1)
+      rewriteEntryFile = true
+    }
+    if(updateContext.event === 'change'){
+      const index = firesteadContext.options.functions.handler.findIndex(v => v.path === updateContext.path)
+      // check if function turned active 
+      // -> could happen if a function was previously added but without config and default function handler
+      if(!firesteadContext.options.functions.handler[index].active && functionHandler.active){
+        rewriteEntryFile = true
+      }
+      firesteadContext.options.functions.handler[index] = functionHandler
+    }
+
+    //if a new function is added or removed, we need to rewrite the entry file
+    // also if a function turned active
+    if(rewriteEntryFile) await writeEntryFile(firesteadContext.options)
   })
   //activate chokidar watcher for firebase folder
   watchFunctionsFolder(firesteadContext)

@@ -915,7 +915,7 @@ __metadata:
   dependencies:
     fs-extra: ^10.0.0
     jiti: ^1.12.x
-    mlly: ^0.3.x
+    mlly: ^0.4.3
     pathe: ^0.2.0
     unbuild: latest
     unctx: ^1.0.2
@@ -5865,8 +5865,8 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "firestead@workspace:packages/core"
   dependencies:
-    "@firestead/cli": ^0.0.19
-    "@firestead/kit": ^0.0.9
+    "@firestead/cli": ^0.0.21
+    "@firestead/kit": ^0.0.11
     "@rollup/plugin-alias": ^3.1.9
     "@rollup/plugin-commonjs": ^21.0.1
     "@rollup/plugin-node-resolve": ^13.1.3
@@ -5883,6 +5883,7 @@ __metadata:
     globby: ^13.1.1
     h3: ^0.3.3
     hookable: ^5.1.1
+    mlly: ^0.4.3
     pathe: ^0.2.0
     pkg-types: ^0.3.2
     rollup: ^2.63.0
@@ -8360,7 +8361,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"mlly@npm:^0.3.10, mlly@npm:^0.3.6, mlly@npm:^0.3.x":
+"mlly@npm:^0.3.10, mlly@npm:^0.3.6":
   version: 0.3.19
   resolution: "mlly@npm:0.3.19"
   checksum: 85d646936d5d94b6783e12257adb64ceac9ece32ccaa33d911d44f0c265a91d4f34092beb39641cd108c14a4228f56fc591af60412f65964c72561fbd244ad36

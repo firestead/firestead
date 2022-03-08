@@ -8,7 +8,7 @@
         "firestead",
         "firebase"
     ],
-    "version": "0.0.64",
+    "version": "0.0.66",
     "type": "module",
     "license": "MIT",
     "files": [
@@ -32,7 +32,6 @@
         "@vercel/nft": "^0.17.0",
         "chalk": "^4.1.1",
         "chokidar": "^3.3.1",
-        "mlly": "^0.4.3",
         "consola": "^2.15.3",
         "defu": "^5.0.1",
         "esbuild": "^0.14.11",
@@ -41,6 +40,7 @@
         "globby": "^13.1.1",
         "h3": "^0.3.3",
         "hookable": "^5.1.1",
+        "mlly": "^0.4.3",
         "pathe": "^0.2.0",
         "pkg-types": "^0.3.2",
         "rollup": "^2.63.0"
