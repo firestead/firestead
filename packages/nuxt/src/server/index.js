@@ -39,6 +39,15 @@ export const createServer =  async function(args, firesteadContext){
         if(newNuxt.options.buildModules.indexOf('@firestead/nuxt/module') === -1){
           newNuxt.options.buildModules.push('@firestead/nuxt/module')
         }
+        //add firestead runtime config to nuxt config
+        newNuxt.options.privateRuntimeConfig = {
+          ...newNuxt.options.privateRuntimeConfig,
+          ...firesteadContext.options.enviroments.runtime.envVariables.private
+        }
+        newNuxt.options.publicRuntimeConfig = {
+          ...newNuxt.options.publicRuntimeConfig,
+          ...firesteadContext.options.enviroments.runtime.envVariables.public
+        }
         await clearDir(newNuxt.options.buildDir)
         currentNuxt = newNuxt
         await currentNuxt.ready()
@@ -105,6 +114,15 @@ export const build = async ({ rootPath, buildConfig, enviroments }) => {
   // set firestead config in nuxt context
   nuxt.options['firestead'] = {
     config: enviroments.runtime.config
+  }
+  //add firestead runtime config to nuxt config
+  nuxt.options.privateRuntimeConfig = {
+    ...nuxt.options.privateRuntimeConfig,
+    ...enviroments.runtime.envVariables.private
+  }
+  nuxt.options.publicRuntimeConfig = {
+    ...nuxt.options.publicRuntimeConfig,
+    ...enviroments.runtime.envVariables.public
   }
 
   //nitro context -> add firestead output dir

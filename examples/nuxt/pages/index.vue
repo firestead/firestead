@@ -8,10 +8,12 @@
           {{todo.data.content}}
         </p>
         <a v-on:click="fetch()">reFetch</a>
+        <h1>Env Key: {{config.testPublicKey}}</h1>
     </div>
   </div>
 </template>
 <script setup>
+  const config = useRuntimeConfig()
   const { result: todos, state, fetchDetails, serverFetch, fetch } = useFirestore('getTodos')
 
   watch(state.pending,(newState, oldState)=>{

@@ -88,6 +88,15 @@ export async function writeFirebaseConfigs({ dev, buildConfig, enviroments }){
   await writeFile(`${rootFBDir}/storage.rules`, getDefaultStorageRules())
 }
 
+export async function writeEnvVariables({ dev, buildConfig, enviroments }){
+  const serverDir = dev ? `${buildConfig.path}/firebase/functions` : `${buildConfig.path}/build/functions`
+  let envContent = ''
+  for( const envVar in enviroments.runtime.envVariables.firebase){
+    envContent =  envContent.concat(`${envVar}="${enviroments.runtime.envVariables.firebase[envVar]}";\n`)
+  }
+  await fse.writeFile(`${serverDir}/.env`,  envContent, 'utf-8')
+}
+
 export async function writePackageJson({ dev, rootPath, buildConfig }){
   const serverDir = dev ? `${buildConfig.path}/firebase/functions` : `${buildConfig.path}/build/functions`
   const _require = createRequire(import.meta.url)

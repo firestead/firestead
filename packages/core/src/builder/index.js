@@ -1,7 +1,8 @@
 import fse from 'fs-extra'
+import defu from 'defu'
 import { isDirectory } from './utils'
 import { scanDirs, watchFunctionsFolder } from './firebase/watcher'
-import { writeEntryFile, injectFrameworkHandle, writeFirebaseConfigs, writePackageJson } from './firebase/writer'
+import { writeEntryFile, injectFrameworkHandle, writeEnvVariables, writeFirebaseConfigs, writePackageJson } from './firebase/writer'
 import { watchRollupEntry, buildRollup } from './rollup/bundler'
 import { getRollupConfig } from './rollup/config'
 
@@ -29,6 +30,8 @@ export async function prepareFirebase(firesteadContext){
 
 export async function watchFirebase(firesteadContext){
   await firesteadContext.hooks.callHook('builder:watch:before', firesteadContext.options)
+  // write env file
+  await writeEnvVariables(firesteadContext.options)
   // write default entry file
   await writeEntryFile(firesteadContext.options)
   // load rollup config in dev mode
@@ -77,17 +80,19 @@ export async function createFirebaseConfig(firesteadContext){
 
 export function useEnviroment(firesteadContext, enviroment){
     let enviromentsRuntime = firesteadContext.options.enviroments.envs.filter(env => env.id === enviroment)[0]
-    if(typeof enviromentsRuntime === 'undefined'){
-      enviromentsRuntime = {
-        id: "development",
-        name: "Development",
-        config: {
-          projectId: "default"
-        },
-        envVariables: {}
+    // merge user set enviroment with default enviroment
+    firesteadContext.options.enviroments.runtime = defu(enviromentsRuntime,{
+      id: "development",
+      name: "Development",
+      config: {
+        projectId: "default"
+      },
+      envVariables: {
+        public: {},
+        private: {},
+        firebase: {}
       }
-    }
-    firesteadContext.options.enviroments.runtime = enviromentsRuntime
+    })
 }
 
 export async function buildFirebase(firesteadContext){
@@ -98,6 +103,8 @@ export async function buildFirebase(firesteadContext){
   }
   // load rollup config in build mode
   firesteadContext.options.rollupConfig = await getRollupConfig(firesteadContext)
+  // write env file
+  await writeEnvVariables(firesteadContext.options)
   // write firebase build entry file
   await writeEntryFile(firesteadContext.options)
   // build firebase file with rollup
