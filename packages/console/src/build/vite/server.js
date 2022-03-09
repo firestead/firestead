@@ -16,7 +16,8 @@ export async function createServer({ contextPath, buildConfig }){
       ],
       resolve: {
           alias: {
-            '#console': resolve(contextPath, 'app')
+            '#console': resolve(contextPath, 'app'),
+            '#runtime': buildConfig.runtimePath
           }
       },
       optimizeDeps: { 

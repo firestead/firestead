@@ -48,7 +48,7 @@ export default {
           isActive = ctxRoute.value.path === '/'
         } else {
           let index = false
-          if(props.linkType === 'navbar') index = 1
+          if(props.linkType === 'topbar') index = 1
           if(props.linkType === 'sidebar') index = 2
           const pathArray = path.split('/')
           //set active if current path is equal to the path of the link
@@ -59,7 +59,7 @@ export default {
           else if(ctxRoute.value.path===path) isActive = true
         }
         //add current name
-        if(isActive && props.linkType === 'navbar') {
+        if(isActive && props.linkType === 'topbar') {
           current.value = {
             name: props.name,
             sidebar: props.sidebar

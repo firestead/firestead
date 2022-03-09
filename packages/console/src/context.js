@@ -14,8 +14,10 @@ export function addConsoleContext(firesteadContext){
         extensions: ['.js','.vue'],
         routes: [],
         navigation: {
-            order: [],
-            menu: []
+            navbar: {
+                order: [],
+                items: []
+            }
         }
     }
 }

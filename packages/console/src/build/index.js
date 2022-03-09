@@ -18,6 +18,33 @@ export function registerCoreOptions(firesteadContext){
       path: `${firesteadContext.console.contextPath}/app/pages`,
       prefix: false
     })
+    /*
+    * add items to navbar navigation of console app
+    * navbar consists of a top bar and a side bar
+    */
+    firesteadContext.console.navigation.navbar.items.push({
+      label: "Dashboard",
+      name: "dashboard",
+      path: "/"
+    })
+    firesteadContext.console.navigation.navbar.items.push({
+      label: "Operations",
+      name: "operations",
+      path: "/operations",
+      sidebar: [{
+          name: 'overview',
+          path: '/operations',
+          label: 'Overview'
+      },{
+          name: 'functions',
+          path: '/operations/functions',
+          label: 'Functions'
+      },{
+        name: 'environment',
+        path: '/operations/environment',
+        label: 'Environment'
+      }]
+    })
 }
 
 export async function bundleFiles(firesteadContext){

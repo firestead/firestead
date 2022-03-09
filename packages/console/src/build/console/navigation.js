@@ -1,17 +1,17 @@
 import fse from 'fs-extra'
 
 export async function writeNavigationFile ({ navigation, buildConfig }) {
-    const { menu } = navigation
+    const { navbar } = navigation
     let navigationContent = ''
     // add navbar menu
-    navigationContent = navigationContent.concat('\n','export const menu = [];', '\n')
-    for( const [i, navEntry] of menu.entries()){
-        navigationContent = navigationContent.concat(`menu.push({name:'${navEntry.name}',path:'${navEntry.path}',label: '${navEntry.label}'});`, '\n')
+    navigationContent = navigationContent.concat('\n','export const navbar = [];', '\n')
+    for( const [i, navEntry] of navbar.items.entries()){
+        navigationContent = navigationContent.concat(`navbar.push({name:'${navEntry.name}',path:'${navEntry.path}',label: '${navEntry.label}'});`, '\n')
         //add sidebar menu
         if(typeof navEntry.sidebar !== "undefined"){
-            navigationContent = navigationContent.concat(`menu[${i}].sidebar = [];`, '\n')
+            navigationContent = navigationContent.concat(`navbar[${i}].sidebar = [];`, '\n')
             for( const sidebarEntry of navEntry.sidebar){
-                navigationContent = navigationContent.concat(`menu[${i}].sidebar.push({name:'${sidebarEntry.name}',path:'${sidebarEntry.path}',label: '${sidebarEntry.label}'});`, '\n')
+                navigationContent = navigationContent.concat(`navbar[${i}].sidebar.push({name:'${sidebarEntry.name}',path:'${sidebarEntry.path}',label: '${sidebarEntry.label}'});`, '\n')
             }
         }
     }
