@@ -1,4 +1,4 @@
-import { dirname, resolve } from 'pathe'
+import { dirname } from 'pathe'
 import { fileURLToPath } from 'url'
 
 export function addConsoleContext(firesteadContext){
@@ -7,8 +7,7 @@ export function addConsoleContext(firesteadContext){
         contextPath: dirname(fileURLToPath(import.meta.url)),
         rollupConfig: undefined,
         buildConfig:{
-            appPath: `${firesteadContext.options.buildConfig.path}/console/app`,
-            runtimePath: `${firesteadContext.options.buildConfig.path}/console/runtime`,
+            runtimePath: `${firesteadContext.options.buildConfig.path}/console`,
             runtimeDir: 'runtime'
         },
         pages: [],

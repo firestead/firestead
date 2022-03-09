@@ -89,12 +89,12 @@ export async function writeFirebaseConfigs({ dev, buildConfig, enviroments }){
 }
 
 export async function writeEnvVariables({ dev, buildConfig, enviroments }){
-  const serverDir = dev ? `${buildConfig.path}/firebase/functions` : `${buildConfig.path}/build/functions`
+  const dotEnvFilePath = dev ? `${buildConfig.path}/firebase/functions/.env.local` : `${buildConfig.path}/build/functions/.env`
   let envContent = ''
   for( const envVar in enviroments.runtime.envVariables.firebase){
-    envContent =  envContent.concat(`${envVar}="${enviroments.runtime.envVariables.firebase[envVar]}";\n`)
+    envContent =  envContent.concat(`"${envVar}=${enviroments.runtime.envVariables.firebase[envVar]}"\n`)
   }
-  await fse.writeFile(`${serverDir}/.env`,  envContent, 'utf-8')
+  await fse.writeFile(dotEnvFilePath,  envContent, 'utf-8')
 }
 
 export async function writePackageJson({ dev, rootPath, buildConfig }){

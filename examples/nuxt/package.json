@@ -8,6 +8,7 @@
   },
   "devDependencies": {
     "@faker-js/faker": "6.0.0-alpha.5",
+    "@firestead/console": "latest",
     "@firestead/nuxt": "latest",
     "firestead": "latest",
     "nuxt-windicss": "latest"

@@ -14,5 +14,6 @@ export default defineBuildConfig({
   dependencies: [
   ],
   externals: [
+    'chokidar'
   ]
 })

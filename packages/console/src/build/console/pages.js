@@ -12,16 +12,17 @@ async function resolveFiles (path, pattern) {
 }
 
 export async function resolvePagesRoutes (firesteadContext) {
+  let resolvedRoutes = []
   if(firesteadContext.console.pages.length > 0){
     for(const page of firesteadContext.console.pages){
       const files = await resolveFiles(page.path, `**/*{${firesteadContext.console.extensions.join(',')}}`)
       // Sort to make sure parent are listed first
       files.sort()
-      const routes = generateRoutesFromFiles(files, page)
-      firesteadContext.console.routes = firesteadContext.console.routes.concat(routes)
+      const generatedRoutes = generateRoutesFromFiles(files, page)
+      resolvedRoutes = resolvedRoutes.concat(generatedRoutes)
     }
   }
-  return true
+  return resolvedRoutes
 }
 
 export function generateRoutesFromFiles (files, page) {

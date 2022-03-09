@@ -37,7 +37,7 @@ export default defineFiresteadCommand({
       // init runtime enviroment
       useEnviroment(firesteadContext, 'development')
       //register Logger
-      registerLogger(firesteadContext, firebaseClient)
+      registerLogger(firesteadContext, firebaseClient, true)
       logOutput(`${chalk.yellow('i Firestead')} running in dev mode \n`, true)
       const progress = progressBar(14)
       // init framework
@@ -68,7 +68,7 @@ export default defineFiresteadCommand({
       //start console if it is installed
       const firesteadConsole = await tryImportModule('@firestead/console')
       if (firesteadConsole) {
-        firesteadConsole.start(firesteadContext)
+        await firesteadConsole.start(firesteadContext)
       }
       //start firebase emulator
       const emulatorOptions = {

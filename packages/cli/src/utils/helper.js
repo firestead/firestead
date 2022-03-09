@@ -13,5 +13,5 @@ export function isDir(path) {
 export async function tryImportModule (id) {
     try {
       return await import(id)
-    } catch { }
+    } catch{}
 }
