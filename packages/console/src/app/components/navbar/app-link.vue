@@ -35,7 +35,7 @@ export default {
   },
 
   setup(props) {
-    const { current } = inject('navigation')
+    const { current, navbar } = inject('navigation')
     const { route: ctxRoute, href, navigate } = useLink(props)
 
     const route = useRoute()
@@ -44,13 +44,14 @@ export default {
       () =>{
         const { path } = route
         let isActive = false
+        let pathArray = []
         if(path==='/') {
           isActive = ctxRoute.value.path === '/'
         } else {
           let index = false
           if(props.linkType === 'topbar') index = 1
           if(props.linkType === 'sidebar') index = 2
-          const pathArray = path.split('/')
+          pathArray = path.split('/')
           //set active if current path is equal to the path of the link
           if(pathArray[index]) {
             if(path !== ctxRoute.value.path) isActive = ctxRoute.value.path.includes(pathArray[index])
@@ -58,11 +59,24 @@ export default {
           }
           else if(ctxRoute.value.path===path) isActive = true
         }
-        //add current name
+        //add current
         if(isActive && props.linkType === 'topbar') {
+          const currentTopbar = navbar.filter(entry => entry.name === props.name)[0]
+          let currentSidebar = false
+          if(currentTopbar.sidebar){
+            /*
+            * there is a sidebar, but path is equal topbar path
+            */
+            if(!pathArray[2] && (currentTopbar.sidebar.length > 0)){
+              currentSidebar = currentTopbar.sidebar[0]
+            }
+            if(pathArray[2] && (currentTopbar.sidebar.length > 0)){
+              currentSidebar = currentTopbar.sidebar.filter(entry => entry.path.includes(pathArray[2]))[0]
+            }
+          }
           current.value = {
-            name: props.name,
-            sidebar: props.sidebar
+            topbar: currentTopbar,
+            sidebar: currentSidebar
           }
         }
         return isActive
