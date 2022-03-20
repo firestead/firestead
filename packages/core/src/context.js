@@ -31,13 +31,27 @@ export function createFiresteadContext(ctxOptions = { rootPath: process.cwd() })
             },
             modulePath: modulePath,
             contextPath: contextPath,
-            enviroments: {
-                runtime: null,
+            environments: {
+                current: null,
                 fileName: 'firestead.env.json',
-                envs: []
+                envs: {
+                    dev:{
+                        name: 'Development',
+                        config: {
+                            projectId: 'demo-default'
+                        },
+                        envVariables: {}
+                    },
+                    prod:{
+                        name: 'Production',
+                        config: {},
+                        envVariables: {}
+                    }
+                }
             },
             framework: {
-                name: null
+                name: null,
+                version: null
             },
             emulator: {
                 services: ['functions', 'storage', 'auth', 'firestore', 'pubsub'],

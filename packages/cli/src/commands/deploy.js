@@ -27,11 +27,11 @@ export default defineFiresteadCommand({
       // add firebase config and env vars to firesteadContext
       const { config: envsConfig } = await loadConfig({
         configFile: `${rootPath}/${firesteadContext.options.enviroments.fileName}`,
-        overrides: firesteadContext.options.enviroments
+        overrides: firesteadContext.options.enviroments.envs
       })
-      firesteadContext.options.enviroments = envsConfig
+      firesteadContext.options.enviroments.envs = envsConfig
       // init runtime enviroment
-      useEnviroment(firesteadContext, 'production')
+      useEnviroment(firesteadContext, 'prod')
       if(!firesteadContext.options.enviroments.runtime?.config?.projectId){
         throw new Error(`Failed to deploy project, no firebase project id found in firestead.env.json`)
       }
@@ -44,7 +44,7 @@ export default defineFiresteadCommand({
       console.log(`${chalk.yellow('i Firestead')} Start to deploy project \n`)
       //start firebase emulator
       const deployOptions = {
-        project: firesteadContext.options.enviroments.runtime.config.projectId
+        project: firesteadContext.options.enviroments.current.config.projectId
       }
       await firebaseClient.deploy(deployOptions)
       console.log(`${chalk.yellow('i Firestead')} Deployed successfully \n`)

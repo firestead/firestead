@@ -57,7 +57,7 @@ async function watchEffect(path, event){
   if(['add', 'change'].indexOf(event) !== -1){
     functionHandler = await createFunctionHandler(path, event)
   }
-  await fileWatcher.callHook('functions:updated', functionHandler, {path,event})
+  await fileWatcher.callHook('functions:update', functionHandler, {path,event})
   //everything done -> run next queue item
   if(fileWatcher.queue.length>=1){
     const scanParams = fileWatcher.queue.shift()

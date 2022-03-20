@@ -4,10 +4,11 @@ import { resolve } from 'pathe'
 import chalk from 'chalk'
 import { loadConfig } from 'c12'
 import { initFramework } from '../utils/framwork'
+import { createWebsocketServer } from '../server'
 import { registerLogger, progressBar, logOutput } from '../utils/logger'
 import { waitUntilEmulatorReady } from '../utils/wait'
 import { isDir, tryImportModule } from '../utils/helper'
-import { prepareFirebase, watchFirebase, useEnviroment, createFirebaseConfig, createFiresteadContext } from 'firestead'
+import { prepareFunctions, watchFunctions, useEnvironment, createFirebaseConfig, createFiresteadContext } from 'firestead'
 
 export default defineFiresteadCommand({
     meta: {
@@ -30,12 +31,12 @@ export default defineFiresteadCommand({
       const firesteadContext = createFiresteadContext({ rootPath, dev: true })
       // add firestead enviroments to context
       const { config: envsConfig } = await loadConfig({
-        configFile: `${rootPath}/${firesteadContext.options.enviroments.fileName}`,
-        overrides: firesteadContext.options.enviroments
+        configFile: `${rootPath}/${firesteadContext.options.environments.fileName}`,
+        defaults: firesteadContext.options.environments.envs
       })
-      firesteadContext.options.enviroments = envsConfig
+      firesteadContext.options.environments.envs = envsConfig
       // init runtime enviroment
-      useEnviroment(firesteadContext, 'development')
+      useEnvironment(firesteadContext, 'dev')
       //register Logger
       registerLogger(firesteadContext, firebaseClient, true)
       logOutput(`${chalk.yellow('i Firestead')} running in dev mode \n`, true)
@@ -46,7 +47,7 @@ export default defineFiresteadCommand({
         msg: 'Framework initialized',
       })
       //prepare build for firestead
-      await prepareFirebase(firesteadContext)
+      await prepareFunctions(firesteadContext)
       progress.increment({
         msg: 'Prepare Firestead runtime environment'
       })
@@ -54,6 +55,7 @@ export default defineFiresteadCommand({
       const firebaseRuntimePath = `${firesteadContext.options.buildConfig.path}/firebase`
       process.chdir(firebaseRuntimePath)
       //set process envs for firebase dev
+      //process.env.GOOGLE_APPLICATION_CREDENTIALS = `${rootPath}/service-account.json`
       process.env.FIREBASE_AUTH_EMULATOR_HOST = 'localhost:9099'
       process.env.GCLOUD_PROJECT = 'default'   
       // create firebase configuration
@@ -61,18 +63,29 @@ export default defineFiresteadCommand({
       progress.increment({
         msg: 'Created Firebase configuration'
       })
-      await watchFirebase(firesteadContext)
+      await watchFunctions(firesteadContext)
       progress.increment({
         msg: 'Watching Firebase functions'
       })
-      //start console if it is installed
+      /*
+      * Firestead Console is an admin portal for Firestead.
+      * It is not necessary to run Firestead
+      */
       const firesteadConsole = await tryImportModule('@firestead/console')
       if (firesteadConsole) {
+        /*
+        * start vite server and bundle process
+        */
         await firesteadConsole.start(firesteadContext)
+        /*
+        * start the web socket server
+        */
+        createWebsocketServer(firesteadContext)
       }
+      const { projectId } = firesteadContext.options.environments.envs.dev.config 
       //start firebase emulator
       const emulatorOptions = {
-        project: 'default', 
+        project: projectId, 
         exportOnExit: firesteadContext.options.emulator.exportPath,
         only: firesteadContext.options.emulator.services.join(',')
       }

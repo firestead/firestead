@@ -18,7 +18,6 @@
     </a>
   </router-link>
 </template>
-
 <script>
 import { computed, inject } from 'vue'
 import { RouterLink, useLink, useRoute } from 'vue-router'

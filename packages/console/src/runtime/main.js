@@ -1,10 +1,13 @@
 import { createApp, ref } from 'vue'
 import App from '#console/app.vue'
 import router from './router.js'
+import websocket from './websocket.js'
 import { navbar } from './navigation.js'
 import 'virtual:windi.css'
 
-const app = createApp(App).use(router)
+const app = createApp(App)
+app.use(router)
+app.use(websocket)
 
 const navigation = {
     current: ref(null),

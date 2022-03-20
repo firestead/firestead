@@ -40,9 +40,9 @@ export function registerCoreOptions(firesteadContext){
           path: '/operations/functions',
           label: 'Functions'
       },{
-        name: 'environment',
-        path: '/operations/environment',
-        label: 'Environment'
+        name: 'environments',
+        path: '/operations/environments',
+        label: 'Environments'
       }]
     })
 }

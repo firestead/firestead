@@ -192,6 +192,7 @@ export const useFirestore = (key, firestoreOptions={}) => {
             try{
                 setState('fetching', true)
                 //only allow one subscription at a time
+                // TODO: check if you need multiple subscriptions for different components
                 if(!fetchDetails.subscription){
                     fetchDetails.isHydrating = false
                     fetchDetails.subscription = true

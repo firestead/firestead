@@ -3,7 +3,7 @@
         <header>
             <div class="flex justify-between border-b-1 h-12 border-gray-300 bg-gray-100 px-1 md:px-6">
                 <div class="p-1">
-                  <logo class="h-9 pt-1 w-auto"></logo>
+                  <FiresteadLogo class="h-9 pt-1 w-20"></FiresteadLogo>
                 </div>
                 <div class="flex items-center md:hidden">
                   <!-- Mobile menu button -->
@@ -26,7 +26,7 @@
                         <router-link 
                             to="/"
                             class="flex-shrink-0 flex items-center">
-                            <logo class="block h-8 w-auto"></logo>
+                            <FiresteadLogo class="block h-8 w-auto"></FiresteadLogo>
                         </router-link>
                     <div class="-mr-2">
                       <button
@@ -75,7 +75,7 @@
                     <svg class="flex-shrink-0 h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
                       <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" />
                     </svg>
-                    <a href="#" class="ml-2 text-xs font-medium text-gray-500 hover:text-gray-700">{{current.sidebar.label}}</a>
+                    <router-link :to="current.sidebar.path" class="ml-2 text-xs font-medium text-gray-500 hover:text-gray-700">{{current.sidebar.label}}</router-link>
                   </div>
                 </li>
               </ol>
@@ -90,18 +90,15 @@
         </aside>
         <!-- main content of app -->
         <main
-          :class=" current?.sidebar ? 'md:pl-64 md:pt-6 flex flex-col flex-1 h-100' : 'flex flex-col flex-1 h-100 p-4'"
+          :class=" current?.sidebar ? 'md:pl-60 py-6 flex flex-col flex-1 h-screen px-6' : 'flex flex-col flex-1 h-screen p-4'"
           >
           <router-view />
         </main>
     </div>
 </template>
 <script setup>
-  import logo from './components/logo.vue'
-  import topbarLink from './components/navbar/topbar-link.vue'
-  import sidebarLink from './components/navbar/sidebar-link.vue'
-  import { inject, ref } from 'vue'
   import router from "#runtime/router"
+  import FiresteadLogo from '#assets/FiresteadLogo.svg'
 
   const { current, navbar } = inject('navigation')
 

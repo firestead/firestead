@@ -9,6 +9,3 @@
     <slot />
   </app-link>
 </template>
-<script setup>
-    import AppLink from './app-link.vue'
-</script>

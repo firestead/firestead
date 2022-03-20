@@ -1,5 +1,6 @@
 import { clearDir } from './utils/fs'
 import { writeTypes } from './utils/prepare'
+import { getRuntimeConfig } from './utils/config'
 import debounce from 'p-debounce'
 import chokidar from 'chokidar'
 import { createServer as nuxtServer, createLoadingHandler } from './utils/server'
@@ -39,14 +40,17 @@ export const createServer =  async function(args, firesteadContext){
         if(newNuxt.options.buildModules.indexOf('@firestead/nuxt/module') === -1){
           newNuxt.options.buildModules.push('@firestead/nuxt/module')
         }
-        //add firestead runtime config to nuxt config
+        /*
+        *   add firestead's current env variables to nuxt config
+        */
+        const envVariables = firesteadContext.options.environments.envs[firesteadContext.options.environments.current].envVariables
         newNuxt.options.privateRuntimeConfig = {
           ...newNuxt.options.privateRuntimeConfig,
-          ...firesteadContext.options.enviroments.runtime.envVariables.private
+          ...getRuntimeConfig('private', envVariables)
         }
         newNuxt.options.publicRuntimeConfig = {
           ...newNuxt.options.publicRuntimeConfig,
-          ...firesteadContext.options.enviroments.runtime.envVariables.public
+          ...getRuntimeConfig('public', envVariables)
         }
         await clearDir(newNuxt.options.buildDir)
         currentNuxt = newNuxt
@@ -107,22 +111,23 @@ export const createServer =  async function(args, firesteadContext){
     }
 }
 
-export const build = async ({ rootPath, buildConfig, enviroments }) => {
+export const build = async ({ rootPath, buildConfig, environments }) => {
   process.env.NITRO_PRESET = 'node'
   process.env.NODE_ENV = process.env.NODE_ENV || 'production'
   const nuxt = await loadNuxt({ rootDir: rootPath, ready: false })
   // set firestead config in nuxt context
   nuxt.options['firestead'] = {
-    config: enviroments.runtime.config
+    config: environments.envs[environments.current].config
   }
+  const envVariables = environments.envs[environments.current].envVariables
   //add firestead runtime config to nuxt config
   nuxt.options.privateRuntimeConfig = {
     ...nuxt.options.privateRuntimeConfig,
-    ...enviroments.runtime.envVariables.private
+    ...getRuntimeConfig('private', envVariables)
   }
   nuxt.options.publicRuntimeConfig = {
     ...nuxt.options.publicRuntimeConfig,
-    ...enviroments.runtime.envVariables.public
+    ...getRuntimeConfig('public', envVariables)
   }
 
   //nitro context -> add firestead output dir

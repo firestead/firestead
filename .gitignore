@@ -17,10 +17,13 @@ package-lock.json
 **/.yarn/cache
 **/.yarn/*state*
 
-# Generated dirs
+#Firestead
 _firestead
-.firestead.env.js
+service-account.json
+.firestead.env.json
 firestead.env.json
+
+# Generated dirs
 dist
 .nuxt
 .nuxt-*

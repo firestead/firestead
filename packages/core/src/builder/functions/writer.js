@@ -14,7 +14,7 @@ import {
 /*
   Creates entry file for rollup bundler
 */
-export async function writeEntryFile({ dev, buildConfig, functions, enviroments }){
+export async function writeEntryFile({ dev, buildConfig, functions, environments }){
   
   const entryFilePath = dev ? `${buildConfig.path}/firebase/entry.js` : `${buildConfig.path}/build/entry.js`
   
@@ -30,10 +30,10 @@ export async function writeEntryFile({ dev, buildConfig, functions, enviroments 
   entryContent = entryContent.concat('\n', `
     import functions from 'firebase-functions'
     import httpWrapper from './runtime/wrappers/http.js'
-    import { getDocument, getSchedule, getBucketName } from './runtime/config.js'    
+    import { getDocument, getSchedule, getBucketName } from './runtime/config.js'
     `, '\n')
     
-  entryContent = entryContent.concat('\n', `const defaultBucketName = "${enviroments.runtime.config?.storageBucket ? enviroments.runtime.config.storageBucket:'default'}"`, '\n')
+  entryContent = entryContent.concat('\n', `const defaultBucketName = "${environments.envs[environments.current].config?.storageBucket ? environments.envs[environments.current].config.storageBucket:'default'}"`, '\n')
     
   for( const functionItem of functions.handler){
     if(functionItem.active){
@@ -53,7 +53,7 @@ export async function writeEntryFile({ dev, buildConfig, functions, enviroments 
         entryContent = entryContent.concat(`export const ${functionItem.name} = functions.storage.bucket(getBucketName(defaultBucketName,${functionItem.name}_config)).object().${functionItem.event?functionItem.event:'onFinalize'}(${functionItem.name}_import)`, '\n')
       }
       if(functionItem.type === 'firestore'){
-        entryContent = entryContent.concat(`export const ${functionItem.name} = functions.firestore.document(getDocument(${functionItem.name}_config)).${functionItem.event?functionItem.event:'onWrite'}(${functionItem.name}_import)`, '\n')
+        entryContent = entryContent.concat(`export const ${functionItem.name} = functions.firestore.document(getDocument(${functionItem.name}_config)).${functionItem.event?functionItem.event:'onCreate'}(${functionItem.name}_import)`, '\n')
       }
     }
   }
@@ -77,10 +77,10 @@ export async function injectFrameworkHandle({ buildConfig }){
   }
 }
 
-export async function writeFirebaseConfigs({ dev, buildConfig, enviroments }){
+export async function writeFirebaseConfigs({ dev, buildConfig, environments }){
   console.log(`${chalk.bold.green('✔')} ${chalk.bold.yellow('Firestead:')} Create firebase configuration files`)
   const rootFBDir = dev ? `${buildConfig.path}/firebase` : `${buildConfig.path}/build`
-  const firebaseConf = getFirebaseConfig({dev, enviroments })
+  const firebaseConf = getFirebaseConfig({dev, environments })
   await writeFile(`${rootFBDir}/firebase.json`, JSON.stringify(firebaseConf))
   const firestoreIndexes = getDefaultFirestoreIndexes()
   await writeFile(`${rootFBDir}/firestore.indexes.json`, JSON.stringify(firestoreIndexes))
@@ -88,12 +88,16 @@ export async function writeFirebaseConfigs({ dev, buildConfig, enviroments }){
   await writeFile(`${rootFBDir}/storage.rules`, getDefaultStorageRules())
 }
 
-export async function writeEnvVariables({ dev, buildConfig, enviroments }){
+export async function writeFirebaseEnvVariables({ dev, buildConfig, environments }){
   const dotEnvFilePath = dev ? `${buildConfig.path}/firebase/functions/.env.local` : `${buildConfig.path}/build/functions/.env`
   let envContent = ''
-  for( const envVar in enviroments.runtime.envVariables.firebase){
-    envContent =  envContent.concat(`"${envVar}=${enviroments.runtime.envVariables.firebase[envVar]}"\n`)
-  }
+  Object.entries(environments.envs[environments.current].envVariables).forEach(
+    ([name, env]) => {
+      if(env.runtime?.firebase){
+        envContent =  envContent.concat(`${name}="${env.value}"\n`)
+      }
+    }
+  )
   await fse.writeFile(dotEnvFilePath,  envContent, 'utf-8')
 }
 
@@ -126,7 +130,7 @@ export async function writePackageJson({ dev, rootPath, buildConfig }){
     }, {})
   }
 
-  let nodeVersion = '14'
+  let nodeVersion = '16'
   try {
     const currentNodeVersion = fse.readJSONSync(join(rootPath, 'package.json')).engines.node
     if (['16', '14'].includes(currentNodeVersion)) {
