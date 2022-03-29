@@ -81,7 +81,7 @@ export async function writeFirebaseConfigs({ dev, buildConfig, environments }){
   console.log(`${chalk.bold.green('✔')} ${chalk.bold.yellow('Firestead:')} Create firebase configuration files`)
   const rootFBDir = dev ? `${buildConfig.path}/firebase` : `${buildConfig.path}/build`
   const firebaseConf = getFirebaseConfig({dev, environments })
-  await writeFile(`${rootFBDir}/firebase.json`, JSON.stringify(firebaseConf))
+  await writeFile(`${rootFBDir}/firebase.json`, JSON.stringify(firebaseConf, null, 4))
   const firestoreIndexes = getDefaultFirestoreIndexes()
   await writeFile(`${rootFBDir}/firestore.indexes.json`, JSON.stringify(firestoreIndexes))
   await writeFile(`${rootFBDir}/firestore.rules`, getDefaultFirestoreRules())
@@ -107,6 +107,7 @@ export async function writePackageJson({ dev, rootPath, buildConfig }){
 
   // for production build write dependencies to package.json
   let dependencies = {}
+  let devDependencies = {}
   if(!dev){
     // merge node modules from framework into main -> nuxt related build process
     try {
@@ -128,6 +129,11 @@ export async function writePackageJson({ dev, rootPath, buildConfig }){
       }
       return obj
     }, {})
+  }else{
+    devDependencies = {
+      'firebase-admin': await getPackageVersion('firebase-admin'),
+      'firebase-functions': await getPackageVersion('firebase-functions')
+    }
   }
 
   let nodeVersion = '16'
@@ -151,10 +157,7 @@ export async function writePackageJson({ dev, rootPath, buildConfig }){
         type: 'module',
         main: './index.mjs',
         dependencies,
-        devDependencies: {
-          'firebase-admin': await getPackageVersion('firebase-admin'),
-          'firebase-functions': await getPackageVersion('firebase-functions')
-        },
+        devDependencies,
         engines: { node: nodeVersion }
       },
       null,

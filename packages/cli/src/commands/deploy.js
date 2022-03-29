@@ -3,6 +3,7 @@ import requireg from "requireg"
 import { resolve } from 'pathe'
 import chalk from 'chalk'
 import { createFiresteadContext, useEnvironment } from 'firestead'
+import { registerLogger } from '../utils/logger'
 import { isDir } from '../utils/helper'
 
 export default defineFiresteadCommand({
@@ -23,10 +24,12 @@ export default defineFiresteadCommand({
 
       //Init Firestead
       const firesteadContext = createFiresteadContext({ rootPath , dev: false })
+      //register Logger
+      registerLogger(firesteadContext, firebaseClient, true)
       // init runtime enviroment
       await useEnvironment(firesteadContext, 'prod')
       if(!firesteadContext.options.environments.envs[firesteadContext.options.environments.current].config?.projectId){
-        throw new Error(`Failed to deploy project, no firebase project id found in firestead.env.json`)
+        throw new Error(`Failed to deploy project, no firebase project id found in .firestead.env.json`)
       }
 
       //change path to firebase runtime path
