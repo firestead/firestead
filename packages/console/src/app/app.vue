@@ -90,7 +90,7 @@
         </aside>
         <!-- main content of app -->
         <main
-          :class=" current?.sidebar ? 'md:pl-60 py-6 flex flex-col flex-1 h-screen px-6' : 'flex flex-col flex-1 h-screen p-4'"
+          :class=" current?.sidebar ? 'md:pl-60 flex flex-col flex-1 h-screen' : 'flex flex-col flex-1 h-screen p-4'"
           >
           <router-view />
         </main>

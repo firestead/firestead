@@ -8,7 +8,7 @@
           {{todo.data.content}}
         </p>
         <a v-on:click="fetch()">reFetch</a>
-        <h1>Env Key: {{config.testPublicKey}}</h1>
+        <h1>Env Key: {{config.TEST_PUBLIC_KEY_TEST}}</h1>
     </div>
   </div>
 </template>

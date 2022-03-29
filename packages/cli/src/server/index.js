@@ -1,5 +1,5 @@
 import { WebSocketServer } from 'ws'
-import { contextHandles } from './handles'
+import contextHandles from './handles'
 
 
 export function createWebsocketServer(firesteadContext){

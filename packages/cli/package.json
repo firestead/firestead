@@ -7,7 +7,7 @@
         "firestead cli",
         "firebase"
     ],
-    "version": "0.0.22",
+    "version": "0.0.23",
     "type": "module",
     "license": "MIT",
     "files": [
@@ -26,8 +26,7 @@
         "./package.json": "./package.json"
     },
     "dependencies": {
-        "c12": "^0.1.1",
-        "chalk": "^4.1.1",
+        "chalk": "^5.0.1",
         "cli-progress": "^3.10.0",
         "consola": "^2.15.3",
         "console-table-printer": "^2.10.0",

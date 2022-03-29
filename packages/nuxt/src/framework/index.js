@@ -36,6 +36,21 @@ export const createServer =  async function(args, firesteadContext){
           await currentNuxt.close()
         }
         const newNuxt = await loadNuxt({ rootDir: options.rootPath, dev: true, ready: false })
+        /*
+        * set framework updated hook
+        * all details of framework should be passed to context
+        */
+        hooks.callHook('framework:updated', {
+          version: newNuxt._version,
+          details: {
+            ssr: newNuxt.options.ssr,
+            mode: newNuxt.options.mode,
+            target: newNuxt.options.target,
+            modules: newNuxt.options.modules,
+            features: newNuxt.options.features
+          }
+        })
+
         //firestead nuxt module
         if(newNuxt.options.buildModules.indexOf('@firestead/nuxt/module') === -1){
           newNuxt.options.buildModules.push('@firestead/nuxt/module')

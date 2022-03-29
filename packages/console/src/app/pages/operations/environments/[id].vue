@@ -1,6 +1,35 @@
 <template>
-    <div class="pb-10">
-        <fs-modal-form ref="envVarsModal" v-model="envVar" @submit="saveEnvVar" :title="envVar?.name ? 'Update EnvVariable': 'Create new EnvVariable'">
+    <div class="pb-10 px-6 py-4">
+        <!-- 
+            form modal
+            edit firebase config
+        -->
+        <fs-modal-form
+            ref="firebaseConfigModal"
+            v-model="firebaseConfig"
+            @submit="saveFirebaseConfig" 
+            title="Edit Firebase Config"
+            submitButtonText="Save"
+        >
+            <fs-input label="Project Id" name="projectId" :required="true" class="mt-2"></fs-input>
+            <fs-input label="App Id" name="appId"  class="mt-2"></fs-input>
+            <fs-input label="API Key" name="apiKey" class="mt-2"></fs-input>
+            <fs-input label="Auth Domain" name="authDomain" class="mt-2"></fs-input>
+            <fs-input label="Storage Bucket" name="storageBucket" class="mt-2"></fs-input>
+            <fs-input label="Messaging Sender Id" name="messagingSenderId" class="mt-2"></fs-input>
+            <fs-input label="Measurement Id" name="measurementId" class="mt-2"></fs-input>
+        </fs-modal-form>
+        <!-- 
+            form modal
+            edit env vars 
+        -->
+        <fs-modal-form 
+            ref="envVarsModal" 
+            v-model="envVar" 
+            @submit="saveEnvVar" 
+            :title="envVar?.name ? 'Update EnvVariable': 'Create new EnvVariable'"
+            :submitButtonText="envVar?.name ? 'Update': 'Create'"
+            >
             <fs-input 
                 label="Name" 
                 name="name" 
@@ -30,7 +59,14 @@
                 </div>
             </div>
         </fs-modal-form>
+
+        <!-- confirm modal -->
         <fs-modal-confirm ref="confirmModal" @confirm="deleteEnvVar"></fs-modal-confirm>
+
+        <!-- 
+            START content
+            header bar for environment configuration
+        -->
         <div class="border-b pb-4 border-gray-200">
             <router-link :to="`/operations/environments`" class="hidden md:flex items-center text-sm font-medium text-gray-600">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -43,15 +79,14 @@
                 <span class="ml-2">{{envName}}</span>
             </div>
         </div>
+        <!-- 
+            START Env Variables
+            configure environment variables
+        -->
         <div class="bg-white mt-10 shadow sm:rounded-lg">
             <div class="flex justify-between px-4 py-5 sm:px-6">
-                <h3 class="text-lg leading-6 font-medium text-gray-900">Env Variables</h3>      
-                <button @click="showEnvVarModal" type="button" class="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-full shadow-sm text-white bg-orange-400 hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
-                    </svg>
-                    <span class="pl-2">Add</span>
-                </button>
+                <h3 class="text-lg leading-6 font-medium text-gray-900">Env Variables</h3> 
+                <fs-button @click="showEnvVarModal" icon="add">Add</fs-button>
             </div>
             <div class="border-t border-gray-200 px-4 py-5 sm:p-0">
                 <dl class="divide-y divide-gray-200">
@@ -112,9 +147,14 @@
                 </dl>
             </div>
         </div>
+        <!-- 
+            START firebase config
+            configure firebase configuration
+        -->
         <div class="bg-white mt-8 shadow overflow-hidden sm:rounded-lg">
-            <div class="px-4 py-5 sm:px-6">
-                <h3 class="text-lg leading-6 font-medium text-gray-900">Firebase Config</h3>
+            <div class="flex justify-between px-4 py-5 sm:px-6">
+                <h3 class="text-lg leading-6 font-medium text-gray-900">Firebase Config</h3> 
+                <fs-button @click="showFirebaseConfigModal" icon="edit">Edit</fs-button>
             </div>
             <div class="border-t border-gray-200 px-4 py-5 sm:p-0">
                 <dl class="sm:divide-y sm:divide-gray-200">
@@ -141,6 +181,8 @@
     const confirmModal = ref(null)
     const envVarsModal = ref(null)
     const envVar = ref({})
+    const firebaseConfigModal = ref(null)
+    const firebaseConfig = ref({})
 
     const envName = pick((data) => {
         return data.envs[params.id]?.name
@@ -161,6 +203,18 @@
     const showEnvVarModal = (data={}) => {
         envVar.value = data
         envVarsModal.value.show(data?.name)
+    }
+
+    const showFirebaseConfigModal = () => {
+        firebaseConfig.value = {...config.value}
+        firebaseConfigModal.value.show()
+    }
+
+    const saveFirebaseConfig = () => {
+        post(`environments`, {...firebaseConfig.value},{
+            createObject: `envs.${params.id}.config`
+        })
+        firebaseConfigModal.value.close()
     }
 
     const saveEnvVar = (formData, oldKey) => {

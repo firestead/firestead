@@ -13,6 +13,7 @@ export function createFiresteadContext(ctxOptions = { rootPath: process.cwd() })
         hooks: createHooks(),
         console: false,
         options: defu(ctxOptions,{
+            _version: null,
             dev: true,
             rootPath: undefined,
             buildConfig: {
@@ -33,7 +34,7 @@ export function createFiresteadContext(ctxOptions = { rootPath: process.cwd() })
             contextPath: contextPath,
             environments: {
                 current: null,
-                fileName: 'firestead.env.json',
+                fileName: '.firestead.env.json',
                 envs: {
                     dev:{
                         name: 'Development',
@@ -51,7 +52,8 @@ export function createFiresteadContext(ctxOptions = { rootPath: process.cwd() })
             },
             framework: {
                 name: null,
-                version: null
+                version: null,
+                details: {} 
             },
             emulator: {
                 services: ['functions', 'storage', 'auth', 'firestore', 'pubsub'],

@@ -2,13 +2,12 @@ import { defineFiresteadCommand } from "./index"
 import requireg from "requireg"
 import { resolve } from 'pathe'
 import chalk from 'chalk'
-import { loadConfig } from 'c12'
 import { initFramework } from '../utils/framwork'
 import { createWebsocketServer } from '../server'
 import { registerLogger, progressBar, logOutput } from '../utils/logger'
 import { waitUntilEmulatorReady } from '../utils/wait'
 import { isDir, tryImportModule } from '../utils/helper'
-import { prepareFunctions, watchFunctions, useEnvironment, createFirebaseConfig, createFiresteadContext } from 'firestead'
+import { createFiresteadContext, useEnvironment, loadFirestead } from 'firestead'
 
 export default defineFiresteadCommand({
     meta: {
@@ -29,47 +28,31 @@ export default defineFiresteadCommand({
 
       //Init Firestead
       const firesteadContext = createFiresteadContext({ rootPath, dev: true })
-      // add firestead enviroments to context
-      const { config: envsConfig } = await loadConfig({
-        configFile: `${rootPath}/${firesteadContext.options.environments.fileName}`,
-        defaults: firesteadContext.options.environments.envs
-      })
-      firesteadContext.options.environments.envs = envsConfig
       // init runtime enviroment
-      useEnvironment(firesteadContext, 'dev')
+      await useEnvironment(firesteadContext, 'dev')
+
       //register Logger
       registerLogger(firesteadContext, firebaseClient, true)
       logOutput(`${chalk.yellow('i Firestead')} running in dev mode \n`, true)
       const progress = progressBar(14)
+
+      /*
+      * Load firestead in dev environment, prepares firestead functions for dev mode
+      * -> watch firebase functions afterwards
+      */
+      const { watch } = await loadFirestead(firesteadContext)
+      await watch(firesteadContext)
+
       // init framework
       const frameworkInstance = await initFramework(firesteadContext.options)
       progress.increment({
         msg: 'Framework initialized',
       })
-      //prepare build for firestead
-      await prepareFunctions(firesteadContext)
-      progress.increment({
-        msg: 'Prepare Firestead runtime environment'
-      })
-      //change path to firebase runtime path
-      const firebaseRuntimePath = `${firesteadContext.options.buildConfig.path}/firebase`
-      process.chdir(firebaseRuntimePath)
-      //set process envs for firebase dev
-      //process.env.GOOGLE_APPLICATION_CREDENTIALS = `${rootPath}/service-account.json`
-      process.env.FIREBASE_AUTH_EMULATOR_HOST = 'localhost:9099'
-      process.env.GCLOUD_PROJECT = 'default'   
-      // create firebase configuration
-      await createFirebaseConfig(firesteadContext)
-      progress.increment({
-        msg: 'Created Firebase configuration'
-      })
-      await watchFunctions(firesteadContext)
-      progress.increment({
-        msg: 'Watching Firebase functions'
-      })
+
       /*
       * Firestead Console is an admin portal for Firestead.
-      * It is not necessary to run Firestead
+      * It is not necessary to run Firestead, so we try to import it
+      * if it is not installed we just skip it
       */
       const firesteadConsole = await tryImportModule('@firestead/console')
       if (firesteadConsole) {
@@ -82,8 +65,18 @@ export default defineFiresteadCommand({
         */
         createWebsocketServer(firesteadContext)
       }
+      /*
+      * Start Firebase emulator 
+      */
       const { projectId } = firesteadContext.options.environments.envs.dev.config 
-      //start firebase emulator
+      //change path to firebase runtime path
+      const firebaseRuntimePath = `${firesteadContext.options.buildConfig.path}/firebase`
+      process.chdir(firebaseRuntimePath)
+      //set process envs for firebase dev
+      //process.env.GOOGLE_APPLICATION_CREDENTIALS = `${rootPath}/service-account.json`
+      process.env.FIREBASE_AUTH_EMULATOR_HOST = 'localhost:9099'
+      process.env.GCLOUD_PROJECT = projectId   
+
       const emulatorOptions = {
         project: projectId, 
         exportOnExit: firesteadContext.options.emulator.exportPath,

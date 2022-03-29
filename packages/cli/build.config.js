@@ -5,7 +5,8 @@ export default defineBuildConfig({
   entries: [
     'src/index'
   ],
-  devDependencies: [],
+  devDependencies: [
+  ],
   dependencies: [
   ],
   externals: [

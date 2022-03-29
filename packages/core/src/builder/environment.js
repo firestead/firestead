@@ -1,3 +1,4 @@
+import { loadConfig } from 'c12'
 import defu from 'defu'
 import { writeFile } from './utils'
 import { debounce } from 'perfect-debounce'
@@ -14,7 +15,7 @@ async function writeFiresteadEnvFile({ rootPath, environments}){
   )
 }
 
-export function useEnvironment(firesteadContext, environment){
+export async function useEnvironment(firesteadContext, environment){
     if(typeof firesteadContext.options.environments.envs[environment] === 'undefined'){
       throw new Error(`Environment ${environment} does not exist`)
     }
@@ -22,6 +23,14 @@ export function useEnvironment(firesteadContext, environment){
     * set pointer to current environment
     */
     firesteadContext.options.environments.current = environment
+
+
+    // add firestead enviroments to context
+    const { config: envsConfig } = await loadConfig({
+        configFile: `${firesteadContext.options.rootPath}/${firesteadContext.options.environments.fileName}`,
+        defaults: firesteadContext.options.environments.envs
+    })
+    firesteadContext.options.environments.envs = envsConfig
 
     /*
     * register debounce function for writing env config file
@@ -45,7 +54,7 @@ export function useEnvironment(firesteadContext, environment){
       firesteadContext.options.environments = mergeEnvironments(updatedEnvironmentObj,firesteadContext.options.environments)
       /* 
       * TODO: check if framework or firebase env vars can be updated on runtime
-      * currently firebase emulator does not support updating env vars
+      * currently firebase emulator does not support updating env vars on runtime
       */
 
       /*

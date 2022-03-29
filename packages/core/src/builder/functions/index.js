@@ -34,6 +34,8 @@ export async function watchFunctions(firesteadContext){
     await writeFirebaseEnvVariables(firesteadContext.options)
     // write default entry file
     await writeEntryFile(firesteadContext.options)
+    // write package.json
+    await writePackageJson(firesteadContext.options)
     // load rollup config in dev mode
     firesteadContext.options.rollupConfig = await getRollupConfig(firesteadContext)
     // watch and bundle firebase files
@@ -75,7 +77,6 @@ export async function watchFunctions(firesteadContext){
   export async function createFirebaseConfig(firesteadContext){
     await firesteadContext.hooks.callHook('builder:config:before', firesteadContext.options)
     await writeFirebaseConfigs(firesteadContext.options)
-    await writePackageJson(firesteadContext.options)
   }
   
   
@@ -89,13 +90,15 @@ export async function watchFunctions(firesteadContext){
     // load rollup config in build mode
     firesteadContext.options.rollupConfig = await getRollupConfig(firesteadContext)
     // write env file
-    await writeEnvVariables(firesteadContext.options)
+    await writeFirebaseEnvVariables(firesteadContext.options)
     // write firebase build entry file
     await writeEntryFile(firesteadContext.options)
     // build firebase file with rollup
     await buildRollup(firesteadContext.options)
     //inject Framework handle
     await injectFrameworkHandle(firesteadContext.options)
+    // write package.json
+    await writePackageJson(firesteadContext.options)
     //delete entry file and runtime folder
     await fse.remove(`${firesteadContext.options.buildConfig.path}/build/runtime`)
     await fse.remove(`${firesteadContext.options.buildConfig.path}/build/entry.js`)
