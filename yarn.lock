@@ -899,6 +899,7 @@ __metadata:
   dependencies:
     "@firestead/kit": latest
     "@firestead/ui": latest
+    "@headlessui/vue": ^1.5.0
     "@vitejs/plugin-vue": ^2.2.4
     chalk: ^5.0.1
     consola: ^2.15.3
@@ -1068,6 +1069,15 @@ __metadata:
   bin:
     proto-loader-gen-types: build/bin/proto-loader-gen-types.js
   checksum: 30081a5a6e866506d8e799ebed00367024a2710b9b990104d804fe23c60d81d5ccaa74ad14bd0bedfab6fb313eccbc18e0bbcf3bda7f3288d8eb31cab040255f
+  languageName: node
+  linkType: hard
+
+"@headlessui/vue@npm:^1.5.0":
+  version: 1.5.0
+  resolution: "@headlessui/vue@npm:1.5.0"
+  peerDependencies:
+    vue: ^3.2.0
+  checksum: 0aab7484326ae4a4bea379618ad08a8b03408edf8d48500bfcf6cad433dd29735687073ba3518be6a37da3c84fdee049fc3f68bf9e6870d67bb2ed508a93f548
   languageName: node
   linkType: hard
 
@@ -5951,7 +5961,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "firestead@workspace:packages/core"
   dependencies:
-    "@firestead/cli": ^0.0.23
+    "@firestead/cli": ^0.0.24
     "@firestead/kit": ^0.0.11
     "@rollup/plugin-alias": ^3.1.9
     "@rollup/plugin-commonjs": ^21.0.1

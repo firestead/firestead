@@ -1,10 +1,11 @@
 import defu from 'defu'
 
 export function registerFrameworkHook(firesteadContext){
-        /*
-        * register hook for environment updates
-        */
-        firesteadContext.hooks.hook('framework:update', (framework)=>{
+    /*
+    * register hook for environment updates
+    */
+    firesteadContext.hooks.hook('framework:update', (framework)=>{
+        
         /* 
         * merge framework object with latest state
         * arrays should be overwritten

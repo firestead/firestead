@@ -2,7 +2,8 @@ import Sockette from 'sockette'
 import { reactive } from 'vue'
 
 const subscriptions = {
-    'environments': {}
+    'environments': {},
+    'framework': {}
 }
 
 function callHandle(data){

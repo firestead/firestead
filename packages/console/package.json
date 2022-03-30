@@ -8,7 +8,7 @@
         "firestead",
         "firebase"
     ],
-    "version": "0.0.12",
+    "version": "0.0.14",
     "type": "module",
     "license": "MIT",
     "files": [
@@ -23,7 +23,8 @@
     },
     "dependencies": {
         "@firestead/kit": "latest",
-        "@firestead/ui": "latest",
+        "@firestead/ui": "^0.0.26",
+        "@headlessui/vue": "^1.5.0",
         "@vitejs/plugin-vue": "^2.2.4",
         "chalk": "^5.0.1",
         "consola": "^2.15.3",

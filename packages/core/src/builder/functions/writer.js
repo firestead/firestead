@@ -130,8 +130,12 @@ export async function writePackageJson({ dev, rootPath, buildConfig }){
       return obj
     }, {})
   }else{
+    const getPackageVersion = async (id) => {
+      const pkg = await readPackageJSON(id, { url: `${rootPath}/node_modules` })
+      return pkg.version
+    }
     devDependencies = {
-      'firebase-admin': await getPackageVersion('firebase-admin'),
+      'firebase-admin':  await getPackageVersion('firebase-admin'),
       'firebase-functions': await getPackageVersion('firebase-functions')
     }
   }
@@ -143,11 +147,6 @@ export async function writePackageJson({ dev, rootPath, buildConfig }){
       nodeVersion = currentNodeVersion
     }
   } catch {}
-
-  const getPackageVersion = async (id) => {
-    const pkg = await readPackageJSON(id, { url: `${rootPath}/node_modules` })
-    return pkg.version
-  }
 
   await writeFile(
     resolve(serverDir, 'package.json'),

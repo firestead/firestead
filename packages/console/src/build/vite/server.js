@@ -7,6 +7,7 @@ import Components from 'unplugin-vue-components/vite'
 import svgImport from './plugins/svg-import'
 
 export async function createServer({ contextPath, buildConfig }){
+
     const server = await createViteServer({
       configFile: false,
       plugins: [
@@ -19,7 +20,8 @@ export async function createServer({ contextPath, buildConfig }){
                   'useFirestead'
                 ]
               }
-            ]
+            ],
+            exclude: [/[\\/]node_modules[\\/].(?!firestead|)/, /[\\/]\.git[\\/]/]
            }),
           vue(),
           Components({
@@ -44,7 +46,8 @@ export async function createServer({ contextPath, buildConfig }){
             ],
             dirs: [
               resolve(contextPath, 'app/components')
-            ]
+            ],
+            exclude: [/[\\/]node_modules[\\/].(?!firestead|)/, /[\\/]\.git[\\/]/, /[\\/]\.nuxt[\\/]/],
           }),
           svgImport(),
           WindiCSS({
