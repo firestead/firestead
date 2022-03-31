@@ -10,5 +10,8 @@ export default defineNuxtConfig({
     },
     privateRuntimeConfig: {
         apiKey: 'TestKey'
+    },
+    firestead: {
+        auth: true
     }
 })

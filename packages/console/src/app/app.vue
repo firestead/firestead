@@ -98,7 +98,7 @@
 </template>
 <script setup>
   import router from "#runtime/router"
-  import FiresteadLogo from '#assets/FiresteadLogo.svg'
+  import FiresteadLogo from '#assets/firestead/logo-lettering.svg'
 
   const { current, navbar } = inject('navigation')
 

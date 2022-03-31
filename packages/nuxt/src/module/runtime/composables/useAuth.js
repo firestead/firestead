@@ -14,7 +14,8 @@ const postSessionCookie = async (authResp) => {
 const fsSignInWithEmailAndPassword = async (email, password) => {
     const { $fs } = useNuxtApp()
     const { signInWithEmailAndPassword } = await $fs.auth.lib()
-    const authResp = await signInWithEmailAndPassword(await $fs.auth.connection(), email, password)
+    const connection = await $fs.auth.connection()
+    const authResp = await signInWithEmailAndPassword(connection, email, password)
     await postSessionCookie(authResp)
     return authResp
 }
@@ -22,7 +23,8 @@ const fsSignInWithEmailAndPassword = async (email, password) => {
 const fsCreateUserWithEmailAndPassword = async (email, password) => {
     const { $fs } = useNuxtApp()
     const { createUserWithEmailAndPassword } = await $fs.auth.lib()
-    const authResp = await createUserWithEmailAndPassword(await $fs.auth.connection(), email, password)
+    const connection = await $fs.auth.connection()
+    const authResp = await createUserWithEmailAndPassword(connection, email, password)
     await postSessionCookie(authResp)
     return authResp
 }
@@ -30,7 +32,8 @@ const fsCreateUserWithEmailAndPassword = async (email, password) => {
 const fsSignOut = async () => {
     const { $fs } = useNuxtApp()
     const { signOut } = await $fs.auth.lib()
-    await signOut(await $fs.auth.connection())
+    const connection = await $fs.auth.connection()
+    await signOut(connection)
     await fetch($fs.auth.options.signOutUrl, {
         method: 'POST'
     })

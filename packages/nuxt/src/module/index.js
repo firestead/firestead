@@ -10,6 +10,7 @@ const firesteadModule = defineNuxtModule({
     name: 'firestead',
     configKey: 'firestead',
     defaults: {
+      auth: false,
       config: {}
     },
     async setup(options, nuxt) {
@@ -34,6 +35,7 @@ const firesteadModule = defineNuxtModule({
 
         const firebaseConfig = {
           dev: nuxt.options.dev,
+          auth: options.auth,
           config: options.config
         }
         //Firebase server client sdk for web
