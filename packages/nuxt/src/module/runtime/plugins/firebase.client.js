@@ -1,9 +1,5 @@
 import { defineNuxtPlugin } from '#app'
 import { initializeApp, getApps } from "@firebase/app"
-import { getFirestore, connectFirestoreEmulator } from "@firebase/firestore"
-import { getAuth, connectAuthEmulator } from "@firebase/auth"
-import { getFunctions, connectFunctionsEmulator } from '@firebase/functions'
-import { getStorage, connectStorageEmulator } from "@firebase/storage"
 import { clientAuth, authUnsubscribe } from '#build/utils.auth.js'
 
 export default defineNuxtPlugin(async (nuxtApp) => {
@@ -25,28 +21,50 @@ export default defineNuxtPlugin(async (nuxtApp) => {
         firebaseApp = apps[0]
     }
 
-    const authConnection = getAuth(firebaseApp)
-    const firestoreDb = getFirestore(firebaseApp)
-    const functionsConnection = getFunctions(firebaseApp)
-    const storage = (bucket = null) => {
+    const storage = async (bucket = null) => {
+        const { getStorage } = await import('@firebase/storage')
         if(bucket) return getStorage(firebaseApp, bucket)
         else return getStorage(firebaseApp)
     }
+    /*
+    *   initialize firebase with emulator
+    *   TODO: just connect to enabled emulator
+    */
     if(firesteadOptions.dev){
-        connectFunctionsEmulator(functionsConnection, "localhost", 5001)
-        connectFirestoreEmulator(firestoreDb, 'localhost', 8080)
-        connectStorageEmulator(storage(), "localhost", 9199)
-        connectAuthEmulator(authConnection, "http://localhost:9099")
+        /*
+        * Connect to firebase function emulator
+        * TODO: make port configurable
+        */
+        const { getFunctions, connectFunctionsEmulator } = await import('@firebase/functions')
+        connectFunctionsEmulator(getFunctions(firebaseApp), "localhost", 5001)
+        /*
+        * Connect to firebase firestore emulator
+        * TODO: make port configurable
+        */
+        const { getFirestore, connectFirestoreEmulator } =  await import('@firebase/firestore')
+        connectFirestoreEmulator(getFirestore(firebaseApp), 'localhost', 8080)
+        /*
+        * Connect to firebase storage emulator
+        * TODO: make port configurable
+        */
+        const { connectStorageEmulator } = await import('@firebase/storage')
+        connectStorageEmulator(await storage(), "localhost", 9199)
+        /*
+        * Connect to firebase auth emulator
+        * TODO: make port configurable
+        */
+        const { getAuth, connectAuthEmulator } = await import('@firebase/auth')
+        connectAuthEmulator(getAuth(firebaseApp), "http://localhost:9099")
     }
 
     //auth user
-    await clientAuth(nuxtApp, authConnection)
+    await clientAuth(nuxtApp, firebaseApp)
 
 
     nuxtApp.provide('fs', {
         auth: {
             unsubscribe: authUnsubscribe,
-            connection: authConnection,
+            connection: async () => (await import('@firebase/auth')).getAuth(firebaseApp),
             options: {
                 sessionUrl: '/api/auth/session',
                 signOutUrl: '/api/auth/signout'
@@ -54,15 +72,15 @@ export default defineNuxtPlugin(async (nuxtApp) => {
             lib: async () => await import('@firebase/auth')
         },
         firestore: {
-            connection: firestoreDb,
+            connection: async () => (await import('@firebase/firestore')).getFirestore(firebaseApp),
             lib: async () => await import('@firebase/firestore')
         },
         functions: {
-            connection: functionsConnection,
+            connection: async () => (await import('@firebase/functions')).getFunctions(firebaseApp),
             lib: async () => await import('@firebase/functions')
         },
         storage:{
-            connection: storage(),
+            connection: async (bucket) => storage(bucket),
             lib: async () => await import('@firebase/storage')
         }
     })

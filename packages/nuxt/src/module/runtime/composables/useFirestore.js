@@ -92,9 +92,10 @@ export const useFirestore = (key, firestoreOptions={}) => {
     
     const fsSetDoc = async (refPath, newData, options={timestamps:true}) => {
         try {
+            const connection = await $fs.firestore.connection()
             const { doc, collection, setDoc, serverTimestamp } = await $fs.firestore.lib()
             setState('creating', true)
-            const docRef = doc(collection($fs.firestore.connection,refPath))
+            const docRef = doc(collection(connection,refPath))
             if(options.timestamps){
                 newData = {
                     ...newData,
@@ -196,7 +197,7 @@ export const useFirestore = (key, firestoreOptions={}) => {
                 if(!fetchDetails.subscription){
                     fetchDetails.isHydrating = false
                     fetchDetails.subscription = true
-                    unsubscribeFunction = await subFunc($fs.firestore.connection, await $fs.firestore.lib())
+                    unsubscribeFunction = await subFunc(await $fs.firestore.connection(), await $fs.firestore.lib())
                 }
             } catch (error) {
                 setState('error', error)
@@ -238,7 +239,7 @@ export const useFirestore = (key, firestoreOptions={}) => {
                 setState('fetching', true)
                 // TODO: Cancel previus promise
                 // TODO: Handle immediate errors
-                _asyncDataPromises[key] = Promise.resolve(fetchFunc($fs.firestore.connection, await $fs.firestore.lib()))
+                _asyncDataPromises[key] = Promise.resolve(fetchFunc(await $fs.firestore.connection(), await $fs.firestore.lib()))
                   .then((fetchResult) => {
                     if(fetchResult){
                         updateResult(fetchResult)

@@ -62,7 +62,7 @@ export const useStorage = (key='default', options= {}) => {
             }else{
                 fileRef.fullPath = `${fileRef.path}/${fileRef.name}`
             }
-            const fsStorageRef = storageRef($fs.storage.connection, fileRef.fullPath)
+            const fsStorageRef = storageRef(await $fs.storage.connection(), fileRef.fullPath)
             uploadTask = uploadBytesResumable(fsStorageRef, file, options.metadata)
             // Listen for state changes, errors, and completion of the upload.
             uploadTask.on('state_changed',
@@ -112,7 +112,7 @@ export const useStorage = (key='default', options= {}) => {
     */
     const fsDeleteObject = async (fileObject) => {
         const { ref: storageRef, deleteObject } = await $fs.storage.lib()
-        const objectRef = storageRef($fs.storage.connection,fileObject.fullPath)
+        const objectRef = storageRef(await $fs.storage.connection(),fileObject.fullPath)
         try {
             await deleteObject(objectRef)
         } catch (storageError) {

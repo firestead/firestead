@@ -31,7 +31,7 @@ const getUserData = (authUser) => {
   }
 }
 
-export const clientAuth = async (nuxtApp, connection, options = {}) =>{
+export const clientAuth = async (nuxtApp, firebaseApp, options = {}) =>{
     //init and hydrate auth state
     if(nuxtApp.payload.state['FirebaseAuth']){
       set(nuxtApp.payload.state, 'FirebaseAuth', nuxtApp.payload.state['FirebaseAuth'])
@@ -43,12 +43,11 @@ export const clientAuth = async (nuxtApp, connection, options = {}) =>{
       })
     }
     const { FirebaseAuth } = nuxtApp.payload.state
-    const onAuthStateChanged = (await import('@firebase/auth')).onAuthStateChanged
-    const onIdTokenChanged = (await import('@firebase/auth')).onIdTokenChanged
+    const {getAuth, onAuthStateChanged, onIdTokenChanged  } = await import('@firebase/auth')
     const promises = []
     if (!unsubscribeAuthStateListener) {
       promises.push(new Promise(resolve => {
-        unsubscribeAuthStateListener = onAuthStateChanged(connection, async authUser => {
+        unsubscribeAuthStateListener = onAuthStateChanged(getAuth(firebaseApp), async authUser => {
             const claims = authUser ? (await authUser.getIdTokenResult(true)).claims : null
             FirebaseAuth.isAuthenticated = authUser ? true : false
             if(authUser){
@@ -62,7 +61,7 @@ export const clientAuth = async (nuxtApp, connection, options = {}) =>{
   
      if (!unsubscribeIdTokenListener) { 
       promises.push(new Promise(resolve => {
-        unsubscribeIdTokenListener = onIdTokenChanged(connection, async authUser => {
+        unsubscribeIdTokenListener = onIdTokenChanged(getAuth(firebaseApp), async authUser => {
             const claims = authUser ? (await authUser.getIdTokenResult(true)).claims : null
             FirebaseAuth.isAuthenticated = authUser ? true : false
             if(authUser){
