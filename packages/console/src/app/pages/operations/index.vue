@@ -48,7 +48,8 @@
                                 >
                                 <div class="w-0 flex-1 flex items-center">
                                     <Windicss v-if="module==='nuxt-windicss'" class="flex-shrink-0 h-5 w-5 text-gray-400" aria-hidden="true" />
-                                    <FiresteadLogo v-if="module==='@firestead/nuxt/module'" class="flex-shrink-0 h-5 w-5 text-gray-400" aria-hidden="true" />
+                                    <Firestead v-if="module==='@firestead/nuxt/module'" class="flex-shrink-0 h-5 w-5 text-gray-400" aria-hidden="true" />
+                                    <Vueuse v-if="module==='@vueuse/nuxt'" class="flex-shrink-0 h-5 w-5 text-gray-400" aria-hidden="true" />
                                     <span class="ml-2 flex-1 w-0 truncate"> {{module}} </span>
                                 </div>
                             </li>
@@ -61,9 +62,10 @@
     </div>
 </template>
 <script setup>
-    import FiresteadLogo from '#assets/firestead/logo-logomark.svg'
+    import Firestead from '#assets/firestead/logo-logomark.svg'
     import NuxtLogo from '#assets/frameworks/nuxt-logo.svg'
     import Windicss from '#assets/modules/windicss.svg'
+    import Vueuse from '#assets/modules/vueuse.svg'
     const { result: framework, subscribe } = useFirestead('getFramework')
 
     subscribe('framework')

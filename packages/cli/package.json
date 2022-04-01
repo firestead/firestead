@@ -7,7 +7,7 @@
         "firestead cli",
         "firebase"
     ],
-    "version": "0.0.24",
+    "version": "0.0.25",
     "type": "module",
     "license": "MIT",
     "files": [
@@ -35,6 +35,8 @@
         "mri": "^1.2.0",
         "pathe": "^0.2.0",
         "requireg": "^0.2.2",
+        "superb": "^4.0.0",
+        "tiged": "^2.11.1",
         "ws": "^8.5.0"
     },
     "devDependencies": {
