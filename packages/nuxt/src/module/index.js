@@ -10,7 +10,7 @@ const firesteadModule = defineNuxtModule({
     name: 'firestead',
     configKey: 'firestead',
     defaults: {
-      auth: false,
+      auth: true,
       config: {}
     },
     async setup(options, nuxt) {

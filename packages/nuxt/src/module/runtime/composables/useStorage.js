@@ -1,18 +1,18 @@
 import { useNuxtApp } from '#app'
-import { toRefs, set } from '@vue/composition-api'
+import { toRefs } from 'vue'
 
 export const useStorage = (key='default', options= {}) => {
     const { $fs, payload } = useNuxtApp()
     // init state
     if (!(`${key}FirebaseStorage` in payload.state)) {
-        set(payload.state, `${key}FirebaseStorage`, {
+        payload.state[`${key}FirebaseStorage`] = {
             url: null,
             state: false,
             progress: 0,
             bytesTransferred: 0,
             totalBytes: 0,
             error: false
-        })
+        }
     }
     const storageData = payload.state[`${key}FirebaseStorage`]
 

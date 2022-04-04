@@ -75,4 +75,7 @@
      const logout = async () => {
         await signOut()
      }
+     watch(isAuthenticated,(authenticated)=>{
+         console.log(authenticated)
+     })
 </script>

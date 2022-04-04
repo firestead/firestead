@@ -1,5 +1,5 @@
 import { useNuxtApp } from '#app'
-import { toRefs } from '@vue/composition-api'
+import { toRefs } from 'vue'
 
 const postSessionCookie = async (authResp) => {
     const { $fs } = useNuxtApp()
@@ -41,12 +41,11 @@ const fsSignOut = async () => {
 
 export const useAuth = () => {
     const { payload } = useNuxtApp()
-    const { FirebaseAuth } = payload.state
 
     return {
         signInWithEmailAndPassword: fsSignInWithEmailAndPassword,
         createUserWithEmailAndPassword: fsCreateUserWithEmailAndPassword,
         signOut: fsSignOut,
-        ...toRefs(FirebaseAuth)
+        ...toRefs(payload.state['FirebaseAuth'])
     }
 }

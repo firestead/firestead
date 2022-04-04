@@ -1,5 +1,5 @@
 import { useNuxtApp } from '#app'
-import { onUnmounted, onBeforeMount, getCurrentInstance, toRefs, toRef, set, computed } from '@vue/composition-api'
+import { onUnmounted, onBeforeMount, getCurrentInstance, toRefs, toRef, computed } from 'vue'
 
 export const useFirestore = (key, firestoreOptions={}) => {
     if (typeof key !== 'string') {
@@ -8,36 +8,29 @@ export const useFirestore = (key, firestoreOptions={}) => {
     const { $fs, _asyncDataPromises, payload } = useNuxtApp()
 
     //hydrate and get store from global payload -> firestoreData
-    if (!(`${key}FirestoreResult` in payload.state)) {
-        set(payload.state, `${key}FirestoreResult`, payload.state[`${key}FirestoreResult`])
-    }
     const firestoreData = toRef(payload.state, `${key}FirestoreResult`)
 
     //hydrate and get store from global payload -> fetchState
     if (!(`${key}FirestoreState` in payload.state)) {
-        set(payload.state, `${key}FirestoreState`, {
+        payload.state[`${key}FirestoreState`] = {
             pending: false,
             fetching: false,
             creating: false,
             updating: false,
             deleting: false,
             error: false
-        })
+        }
     }
     const state = payload.state[`${key}FirestoreState`]
 
     //hydrate and get store from global payload -> fetchDetails
     if (!(`${key}FirestoreFetchDetails` in payload.state)){
-        if(payload.state[`${key}FirestoreFetchDetails`]){
-            set(payload.state, `${key}FirestoreFetchDetails`, payload.state[`${key}FirestoreFetchDetails`])
-        }else{
-            set(payload.state, `${key}FirestoreFetchDetails`, {
-                query: null,
-                lastUpdate: null,
-                subscription: null,
-                filter: false,
-                isHydrating: process.server
-            })
+        payload.state[`${key}FirestoreFetchDetails`]  = {
+            query: null,
+            lastUpdate: null,
+            subscription: null,
+            filter: false,
+            isHydrating: process.server
         }
     }
     const fetchDetails = payload.state[`${key}FirestoreFetchDetails`]

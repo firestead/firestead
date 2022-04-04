@@ -46,7 +46,7 @@ app.use('/signout', async (req, res) => {
         try {
             const decodedClaims = await getAuth().verifySessionCookie(session)
             await getAuth().revokeRefreshTokens(decodedClaims.sub)
-            const options = { maxAge: 0 }
+            const options = { maxAge: 0, httpOnly: true, secure: true,  path: '/' }
             setCookie(res, '__session', null, options)
         } catch (error) {
             return createError({statusCode: 500, statusMessage: 'INTERNAL SERVER ERROR', error: error})

@@ -8,13 +8,14 @@
         "firestead",
         "firebase"
     ],
-    "version": "0.0.72",
+    "version": "0.0.78",
     "type": "module",
     "license": "MIT",
     "files": [
-        "dist"
+        "dist",
+        "bin"
     ],
-    "bin": "@firestead/cli",
+    "bin": "./bin/firestead.mjs",
     "scripts": {
         "prepack": "unbuild"
     },

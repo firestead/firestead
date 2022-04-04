@@ -5986,7 +5986,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "firestead@workspace:packages/core"
   dependencies:
-    "@firestead/cli": ^0.0.24
+    "@firestead/cli": ^0.0.25
     "@firestead/kit": ^0.0.11
     "@rollup/plugin-alias": ^3.1.9
     "@rollup/plugin-commonjs": ^21.0.1
@@ -6012,7 +6012,7 @@ __metadata:
     rollup: ^2.63.0
     unbuild: latest
   bin:
-    firestead: "@firestead/cli"
+    firestead: ./bin/firestead.mjs
   languageName: unknown
   linkType: soft
 

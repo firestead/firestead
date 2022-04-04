@@ -1,5 +1,3 @@
-import { set } from '@vue/composition-api'
-
 let unsubscribeAuthStateListener = null
 let unsubscribeIdTokenListener = null
 
@@ -33,26 +31,23 @@ const getUserData = (authUser) => {
 
 export const clientAuth = async (nuxtApp, firebaseApp, options = {}) =>{
     //init and hydrate auth state
-    if(nuxtApp.payload.state['FirebaseAuth']){
-      set(nuxtApp.payload.state, 'FirebaseAuth', nuxtApp.payload.state['FirebaseAuth'])
-    }else{
-      set(nuxtApp.payload.state, 'FirebaseAuth', {
+    if(!nuxtApp.payload.state['FirebaseAuth']){
+      nuxtApp.payload.state = {
         isAuthenticated: false,
         user: null,
         claims: null
-      })
+      }
     }
-    const { FirebaseAuth } = nuxtApp.payload.state
     const {getAuth, onAuthStateChanged, onIdTokenChanged  } = await import('@firebase/auth')
     const promises = []
     if (!unsubscribeAuthStateListener) {
       promises.push(new Promise(resolve => {
         unsubscribeAuthStateListener = onAuthStateChanged(getAuth(firebaseApp), async authUser => {
             const claims = authUser ? (await authUser.getIdTokenResult(true)).claims : null
-            FirebaseAuth.isAuthenticated = authUser ? true : false
+            nuxtApp.payload.state.FirebaseAuth.isAuthenticated = authUser ? true : false
             if(authUser){
-              FirebaseAuth.user = getUserData(authUser)
-              FirebaseAuth.claims = claims
+              nuxtApp.payload.state.FirebaseAuth.user = getUserData(authUser)
+              nuxtApp.payload.state.FirebaseAuth.claims = claims
             }
             resolve()
         })
@@ -63,10 +58,10 @@ export const clientAuth = async (nuxtApp, firebaseApp, options = {}) =>{
       promises.push(new Promise(resolve => {
         unsubscribeIdTokenListener = onIdTokenChanged(getAuth(firebaseApp), async authUser => {
             const claims = authUser ? (await authUser.getIdTokenResult(true)).claims : null
-            FirebaseAuth.isAuthenticated = authUser ? true : false
+            nuxtApp.payload.state.FirebaseAuth.isAuthenticated = authUser ? true : false
             if(authUser){
-              FirebaseAuth.user = getUserData(authUser)
-              FirebaseAuth.claims = claims
+              nuxtApp.payload.state.FirebaseAuth.user = getUserData(authUser)
+              nuxtApp.payload.state.FirebaseAuth.claims = claims
             }
             resolve()
         })
@@ -78,11 +73,11 @@ export const clientAuth = async (nuxtApp, firebaseApp, options = {}) =>{
   export const serverAuth = async (nuxtApp, options = {}) =>{
     const { req, res } = nuxtApp.ssrContext
     //set initial auth state
-    set(nuxtApp.payload.state, 'FirebaseAuth', {
+    nuxtApp.payload.state['FirebaseAuth'] = {
       isAuthenticated: false,
       user: null,
       claims: null
-    })
+    }
     const { FirebaseAuth } = nuxtApp.payload.state
     const { useCookie, setCookie } = await import('h3')
     const session = useCookie(req, '__session')
