@@ -938,17 +938,18 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@firestead/nuxt@workspace:packages/nuxt"
   dependencies:
-    "@nuxt/design": latest
     "@nuxt/kit": "npm:@nuxt/kit-edge@latest"
+    "@nuxt/ui-templates": "npm:@nuxt/ui-templates-edge@latest"
     chokidar: ^3.3.1
     defu: ^5.0.1
     firebase: ^9.6.8
     firebase-admin: ^10.0.2
-    listhen: ^0.2.6
+    listhen: ^0.2.9
     nuxt3: latest
-    p-debounce: ^4.0.0
     pathe: ^0.2.0
+    perfect-debounce: ^0.1.3
     rimraf: ^3.0.2
+    ufo: 0.8.3
     unbuild: latest
   languageName: unknown
   linkType: soft
@@ -2038,13 +2039,6 @@ __metadata:
     node-gyp: ^7.1.0
     read-package-json-fast: ^2.0.1
   checksum: 41924e7925452ac8e78d78bef5d65b3d58f86eea4481a453e11e3a9099504bfbfcf1f65d7f75d92170b846fa347d05424e58e617fb9c17b3efd87db599a0f46e
-  languageName: node
-  linkType: hard
-
-"@nuxt/design@npm:latest":
-  version: 0.1.5
-  resolution: "@nuxt/design@npm:0.1.5"
-  checksum: 1e75ba0c7e9519754d185133e1bc97d2056201b2c6ad99a9196ffb94e787a4ee9fa2a64b1dd868febece5b3370c8a50388033b65455edc939fe67bcc1f4bbe8b
   languageName: node
   linkType: hard
 
@@ -4800,6 +4794,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"defu@npm:^6.0.0":
+  version: 6.0.0
+  resolution: "defu@npm:6.0.0"
+  checksum: 3c24ef0009b796e32a1655a23fc1f11a79b42012255b6bc88889242da77b7e45bfa4293d9661d28f3f6c12c931309e18f5047efa492670585a3da768887cea74
+  languageName: node
+  linkType: hard
+
 "delayed-stream@npm:~1.0.0":
   version: 1.0.0
   resolution: "delayed-stream@npm:1.0.0"
@@ -6309,6 +6310,15 @@ __metadata:
   dependencies:
     fs-memo: ^1.2.0
   checksum: ad29938ddafab5dc9d100e9c7dc9348bc81dd5c8f0dc9e1c45c41abd452654c9fb69cc6ff77f9f31e448567216479770cedfa96e17f54796222bc17145d2f228
+  languageName: node
+  linkType: hard
+
+"get-port-please@npm:^2.5.0":
+  version: 2.5.0
+  resolution: "get-port-please@npm:2.5.0"
+  dependencies:
+    fs-memo: ^1.2.0
+  checksum: c54ffe32f3f04e3ca1978abe032b2a14ba9f128c96c014f0c13bfa77331b6fcff674684a112e496223d716ed81602035454e1badc8ef121026c983ae9908a07c
   languageName: node
   linkType: hard
 
@@ -7828,6 +7838,20 @@ __metadata:
   languageName: node
   linkType: hard
 
+"listhen@npm:^0.2.9":
+  version: 0.2.10
+  resolution: "listhen@npm:0.2.10"
+  dependencies:
+    clipboardy: ^3.0.0
+    colorette: ^2.0.16
+    defu: ^6.0.0
+    get-port-please: ^2.5.0
+    http-shutdown: ^1.2.2
+    selfsigned: ^2.0.1
+  checksum: fbbebba2b685d767fc51b30662b21e212850a931d9f8b71410a2fc774d6504b8d536601210e0deb60fd8f60d39176144d12df6188b7ba984f49886597d2c953a
+  languageName: node
+  linkType: hard
+
 "load-json-file@npm:^4.0.0":
   version: 4.0.0
   resolution: "load-json-file@npm:4.0.0"
@@ -8806,6 +8830,13 @@ __metadata:
     fetch-blob: ^3.1.4
     formdata-polyfill: ^4.0.10
   checksum: 6f702b2683d6e1c097e99888bedaac4625d6895f2a8a60573a2bc04916f5577ea61d274f26e308c08cfb724b23d45de7d3514c14b59e0293e9809c66c88ac12c
+  languageName: node
+  linkType: hard
+
+"node-forge@npm:^1":
+  version: 1.3.1
+  resolution: "node-forge@npm:1.3.1"
+  checksum: 08fb072d3d670599c89a1704b3e9c649ff1b998256737f0e06fbd1a5bf41cae4457ccaee32d95052d80bbafd9ffe01284e078c8071f0267dc9744e51c5ed42a9
   languageName: node
   linkType: hard
 
@@ -11068,6 +11099,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"selfsigned@npm:^2.0.1":
+  version: 2.0.1
+  resolution: "selfsigned@npm:2.0.1"
+  dependencies:
+    node-forge: ^1
+  checksum: 864e65c2f31ca877bce3ccdaa3bdef5e1e992b63b2a03641e00c24cd305bf2acce093431d1fed2e5ae9f526558db4be5e90baa2b3474c0428fcf7e25cc86ac93
+  languageName: node
+  linkType: hard
+
 "semver@npm:2 || 3 || 4 || 5, semver@npm:^5.3.0, semver@npm:^5.6.0, semver@npm:^5.7.1":
   version: 5.7.1
   resolution: "semver@npm:5.7.1"
@@ -12176,6 +12216,13 @@ __metadata:
     tsc: bin/tsc
     tsserver: bin/tsserver
   checksum: efb83260a22ee49d4c8bdc59b3cefe54fdf51d6f563f5c3a35aa3d5e46fb12f3f1d33a36d6f9f64171e567ead1847e99cb612d0a9a74e7d44e16cad9d0bbc937
+  languageName: node
+  linkType: hard
+
+"ufo@npm:0.8.3":
+  version: 0.8.3
+  resolution: "ufo@npm:0.8.3"
+  checksum: 7ea20e9d0fbd92b3310de4b020919f0a0542db60a6787ccecf232285d55795ddc0ea482b04d6c07cac60367a294aee705d888999867a5c3c69e47ed8d0ae3009
   languageName: node
   linkType: hard
 

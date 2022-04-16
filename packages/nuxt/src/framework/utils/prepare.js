@@ -9,6 +9,7 @@ export const writeTypes = async (nuxt) => {
 
   const tsConfig = defu(nuxt.options.typescript?.tsConfig, {
     compilerOptions: {
+      jsx: 'preserve',
       target: 'ESNext',
       module: 'ESNext',
       moduleResolution: 'Node',
@@ -31,11 +32,7 @@ export const writeTypes = async (nuxt) => {
 
   const aliases = {
     ...nuxt.options.alias,
-    '#build': nuxt.options.buildDir,
-    // The `@nuxt/nitro` types will be overwritten by packages/nitro/types/shims.d.ts
-    '#config': '@nuxt/nitro',
-    '#storage': '@nuxt/nitro',
-    '#assets': '@nuxt/nitro'
+    '#build': nuxt.options.buildDir
   }
 
   // Exclude bridge alias types to support Volar
@@ -65,6 +62,10 @@ export const writeTypes = async (nuxt) => {
   ]
     .filter(f => typeof f === 'string')
     .map(id => ({ types: getNearestPackage(id, modulePaths)?.name || id }))
+
+  if (nuxt.options.experimental?.reactivityTransform) {
+    references.push({ types: 'vue/macros-global' })
+  }
 
   const declarations = []
 

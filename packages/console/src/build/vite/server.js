@@ -32,14 +32,13 @@ export async function createServer({ contextPath, buildConfig }){
             resolvers: [
               /*
               * Auto import @firestead/ui
-              * TODO: Add support for datetime-picker
               */
               (name) => {
                 if (name.startsWith('Fs')){
                   return { 
                     importName: name,
                     path: '@firestead/ui',
-                    sideEffects: '@firestead/ui/assets/styles.css'
+                    sideEffects: '@firestead/ui/style.css'
                   }
                 }
               }

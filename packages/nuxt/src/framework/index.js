@@ -1,21 +1,36 @@
 import { clearDir } from './utils/fs'
 import { writeTypes } from './utils/prepare'
 import { getRuntimeConfig } from './utils/config'
-import debounce from 'p-debounce'
+import { importModule } from './utils/cjs'
+import { debounce } from 'perfect-debounce'
+import { withTrailingSlash } from 'ufo'
+import { relative, normalize } from 'pathe'
 import chokidar from 'chokidar'
-import { createServer as nuxtServer, createLoadingHandler } from './utils/server'
 import { loadNuxt, buildNuxt, extendViteConfig } from '@nuxt/kit'
-import { relative } from 'pathe'
 
 export const createServer =  async function(args, firesteadContext){
     const { options, hooks } = firesteadContext
+
+    const { listen } = await import('listhen')
+
+    let currentHandler
+    let loadingMessage = 'Nuxt is starting...'
+    const loadingHandler = async (_req, res) => {
+      const { loading: loadingTemplate } = await importModule('@nuxt/ui-templates')
+      res.setHeader('Content-Type', 'text/html; charset=UTF-8')
+      res.statusCode = 503 // Service Unavailable
+      res.end(loadingTemplate({ loading: loadingMessage }))
+    }
+    const serverHandler = (req, res) => {
+      return currentHandler ? currentHandler(req, res) : loadingHandler(req, res)
+    }
+
     //create server
-    const server = nuxtServer()
-    const listener = await server.listen({
+    const listener = await listen(serverHandler,{
       clipboard: args.clipboard,
       open: args.open || args.o,
-      port: args.port || args.p,
-      hostname: args.host || args.h,
+      port: args.port || args.p || process.env.NUXT_PORT,
+      hostname: args.host || args.h || process.env.NUXT_HOST,
       https: Boolean(args.https),
       certificate: (args['ssl-cert'] && args['ssl-key']) && {
         cert: args['ssl-cert'],
@@ -27,81 +42,73 @@ export const createServer =  async function(args, firesteadContext){
 
     const load = async (isRestart, reason = false) => {
       try {
-        const message = `${reason ? reason + '. ' : ''}${isRestart ? 'Restarting' : 'Starting'} nuxt...`
-        server.setApp(createLoadingHandler(message))
+        loadingMessage = `${reason ? reason + '. ' : ''}${isRestart ? 'Restarting' : 'Starting'} nuxt...`
+        currentHandler = null
         if (isRestart) {
-          consola.info(message)
+          consola.info(loadingMessage)
         }
         if (currentNuxt) {
           await currentNuxt.close()
         }
-        const newNuxt = await loadNuxt({ rootDir: options.rootPath, dev: true, ready: false })
-
+        currentNuxt = await loadNuxt({ rootDir: options.rootPath, dev: true, ready: false })
         //firestead nuxt module
-        if(newNuxt.options.buildModules.indexOf('@firestead/nuxt/module') === -1){
-          newNuxt.options.buildModules.push('@firestead/nuxt/module')
+        if(currentNuxt.options.modules.indexOf('@firestead/nuxt/module') === -1){
+          currentNuxt.options.modules.push('@firestead/nuxt/module')
         }
         /*
         * set framework updated hook
         * all details of framework should be passed to context
         */
         hooks.callHook('framework:update', {
-          version: newNuxt._version,
+          version: currentNuxt._version,
           details: {
-            ssr: newNuxt.options.ssr,
-            mode: newNuxt.options.mode,
-            target: newNuxt.options.target,
-            modules: newNuxt.options.buildModules,
-            features: newNuxt.options.features
+            ssr: currentNuxt.options.ssr,
+            mode: currentNuxt.options.mode,
+            target: currentNuxt.options.target,
+            modules: currentNuxt.options.modules,
+            features: currentNuxt.options.features
           }
         })
         /*
         *   add firestead's current env variables to nuxt config
         */
-        const envVariables = firesteadContext.options.environments.envs[firesteadContext.options.environments.current].envVariables
-        newNuxt.options.privateRuntimeConfig = {
-          ...newNuxt.options.privateRuntimeConfig,
+        const envVariables = options.environments.envs[options.environments.current].envVariables
+        currentNuxt.options.privateRuntimeConfig = {
+          ...currentNuxt.options.privateRuntimeConfig,
           ...getRuntimeConfig('private', envVariables)
         }
-        newNuxt.options.publicRuntimeConfig = {
-          ...newNuxt.options.publicRuntimeConfig,
+        currentNuxt.options.publicRuntimeConfig = {
+          ...currentNuxt.options.publicRuntimeConfig,
           ...getRuntimeConfig('public', envVariables)
         }
-        await clearDir(newNuxt.options.buildDir)
-        currentNuxt = newNuxt
+
         await currentNuxt.ready()
-        writeTypes(currentNuxt).catch(console.error)
-        await buildNuxt(currentNuxt)
-        server.setApp(currentNuxt.server.app)
+        await currentNuxt.hooks.callHook('listen', listener.server, listener)
+        await Promise.all([
+          writeTypes(currentNuxt).catch(console.error),
+          buildNuxt(currentNuxt)
+        ])
+        currentHandler = currentNuxt.server.app
         if (isRestart && args.clear !== false) {
+          console.log(`Nuxt3 v${currentNuxt._version}`)
           listener.showURL()
         }
       } catch (err) {
         consola.error(`Cannot ${isRestart ? 'restart' : 'start'} nuxt: `, err)
-        server.setApp(createLoadingHandler(
-          'Error while loading nuxt. Please check console and fix errors.'
-        ))
+        currentHandler = null
+        loadingMessage = 'Error while loading nuxt. Please check console and fix errors.'
       }
     }
 
-    await load(false)
-    //set framework ready hook
-    hooks.callHook('framework:ready', currentNuxt.server)
-    if (currentNuxt) {
-      await currentNuxt.hooks.callHook('listen', listener.server, listener)
-    }
-
-    const dLoad = debounce(load, 250)
-
-    const reload = () => {
-      dLoad(true, 'Manual triggered reload')
-    }
+    // Watch for config changes
+    // TODO: Watcher service, modules, and requireTree
+    const dLoad = debounce(load)
 
     const watcher = chokidar.watch([options.rootPath], { ignoreInitial: true, depth: 1 })
-    watcher.on('all', async (event, file) => {
+    watcher.on('all', (event, file) => {
       if (!currentNuxt) { return }
-      if (file.startsWith(currentNuxt.options.buildDir)) { return }
-      if (file.match(/nuxt\.config\.(js|ts|mjs|cjs)$/)) {
+      if (normalize(file).startsWith(withTrailingSlash(normalize(currentNuxt.options.buildDir)))) { return }
+      if (file.match(/(nuxt\.config\.(js|ts|mjs|cjs)|\.nuxtignore|\.env|\.nuxtrc)$/)) {
         dLoad(true, `${relative(options.rootPath, file)} updated`)
       }
 
@@ -115,11 +122,20 @@ export const createServer =  async function(args, firesteadContext){
           dLoad(true, `Directory \`${dir}/\` ${event === 'addDir' ? 'created' : 'removed'}`)
         }
       } else if (isFileChange) {
-        if (file.match(/app\.(js|ts|mjs|jsx|tsx|vue)$/)) {
+        if (file.match(/(app|error)\.(js|ts|mjs|jsx|tsx|vue)$/)) {
           dLoad(true, `\`${relative(options.rootPath, file)}\` ${event === 'add' ? 'created' : 'removed'}`)
         }
       }
     })
+
+    await load(false)
+
+    //set framework ready hook
+    hooks.callHook('framework:ready', currentNuxt.server)
+
+    const reload = () => {
+      dLoad(true, 'Manual triggered reload')
+    }
     
     return {
       reload
@@ -127,9 +143,17 @@ export const createServer =  async function(args, firesteadContext){
 }
 
 export const build = async ({ rootPath, buildConfig, environments }) => {
+
   process.env.NITRO_PRESET = 'node'
   process.env.NODE_ENV = process.env.NODE_ENV || 'production'
-  const nuxt = await loadNuxt({ rootDir: rootPath, ready: false })
+
+  const nuxt = await loadNuxt({ 
+    rootDir: rootPath, 
+    ready: false,
+    overrides: {
+      _generate: true
+    }
+  })
   // set firestead config in nuxt context
   nuxt.options['firestead'] = {
     config: environments.envs[environments.current].config
@@ -158,6 +182,7 @@ export const build = async ({ rootPath, buildConfig, environments }) => {
       nuxt.options.buildModules.push('@firestead/nuxt/module')
     }
   })
+
   await nuxt.ready()
 
   extendViteConfig((config)=>{
