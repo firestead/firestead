@@ -20,7 +20,7 @@ export default defineFiresteadCommand({
           // init framework
           const frameworkInstance = await initFramework(firesteadContext.options)
           // build framework
-          await frameworkInstance.build.call(null, firesteadContext.options)
+          await frameworkInstance.build.call(null, args, firesteadContext.options)
           //build for firestead
           await build(firesteadContext)
         } catch (error) {

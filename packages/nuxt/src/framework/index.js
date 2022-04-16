@@ -142,16 +142,16 @@ export const createServer =  async function(args, firesteadContext){
     }
 }
 
-export const build = async ({ rootPath, buildConfig, environments }) => {
+export const build = async (args, { rootPath, buildConfig, environments }) => {
 
   process.env.NITRO_PRESET = 'node'
   process.env.NODE_ENV = process.env.NODE_ENV || 'production'
 
   const nuxt = await loadNuxt({ 
-    rootDir: rootPath, 
-    ready: false,
+    rootDir: rootPath,
+    ready: false, 
     overrides: {
-      _generate: true
+      _generate: args.prerender
     }
   })
   // set firestead config in nuxt context
@@ -159,7 +159,19 @@ export const build = async ({ rootPath, buildConfig, environments }) => {
     config: environments.envs[environments.current].config
   }
   const envVariables = environments.envs[environments.current].envVariables
+
   //add firestead runtime config to nuxt config
+  //TODO:
+  /*
+  * export default {
+  *  runtimeConfig: {
+  *     apiKey: '' // Default to an empty string, automatically loaded at runtime using process.env.NUXT_API_SECRET
+  *     public: {
+  *        baseURL: '' // Exposed to the frontend as well.
+  *     }
+  *   }
+  * }
+  * */
   nuxt.options.privateRuntimeConfig = {
     ...nuxt.options.privateRuntimeConfig,
     ...getRuntimeConfig('private', envVariables)
@@ -170,16 +182,16 @@ export const build = async ({ rootPath, buildConfig, environments }) => {
   }
 
   //nitro context -> add firestead output dir
-  nuxt.hooks.hook('nitro:context',(nitroContext)=>{
-    nitroContext.output.dir = `${rootPath}/${buildConfig.dir}/build/functions/framework`
-    nitroContext.output.serverDir = `${rootPath}/${buildConfig.dir}/build/functions/framework/server`
-    nitroContext.output.publicDir = `${rootPath}/${buildConfig.dir}/build/functions/framework/public`
+  nuxt.hooks.hook('nitro:init',(nitroContext)=>{
+    nitroContext.options.output.dir = `${rootPath}/${buildConfig.dir}/build/functions/framework`
+    nitroContext.options.output.serverDir = `${rootPath}/${buildConfig.dir}/build/functions/framework/server`
+    nitroContext.options.output.publicDir = `${rootPath}/${buildConfig.dir}/build/functions/framework/public`
   })
 
   //add firestead nuxt module
   nuxt.hooks.hook('modules:before',({nuxt})=>{
-    if(nuxt.options.buildModules.indexOf('@firestead/nuxt/module') === -1){
-      nuxt.options.buildModules.push('@firestead/nuxt/module')
+    if(nuxt.options.modules.indexOf('@firestead/nuxt/module') === -1){
+      nuxt.options.modules.push('@firestead/nuxt/module')
     }
   })
 

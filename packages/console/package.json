@@ -8,7 +8,7 @@
         "firestead",
         "firebase"
     ],
-    "version": "0.0.17",
+    "version": "0.0.19",
     "type": "module",
     "license": "MIT",
     "files": [
@@ -23,7 +23,7 @@
     },
     "dependencies": {
         "@firestead/kit": "latest",
-        "@firestead/ui": "^0.0.26",
+        "@firestead/ui": "^0.0.28",
         "@headlessui/vue": "^1.5.0",
         "@vitejs/plugin-vue": "^2.2.4",
         "chalk": "^5.0.1",
@@ -35,9 +35,9 @@
         "ufo": "^0.7.9",
         "unplugin-auto-import": "^0.6.4",
         "unplugin-vue-components": "^0.18.1",
-        "vite": "^2.8.6",
-        "vite-plugin-windicss": "^1.8.3",
-        "vue": "^3.2.31",
+        "vite": "^2.9.5",
+        "vite-plugin-windicss": "^1.8.4",
+        "vue": "^3.2.33",
         "vue-router": "^4.0.14",
         "windicss": "^3.5.1"
     },
