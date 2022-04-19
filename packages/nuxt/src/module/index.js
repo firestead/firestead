@@ -23,7 +23,7 @@ const firesteadModule = defineNuxtModule({
         nuxt.options.build.transpile.push(runtimeDir)
         
         addServerMiddleware({
-          route: '/api/auth',
+          route: '/fs/auth',
           handle: resolve(runtimeDir, 'middleware/auth.js')
         })
 

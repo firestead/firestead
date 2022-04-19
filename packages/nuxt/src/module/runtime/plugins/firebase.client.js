@@ -92,8 +92,8 @@ export default defineNuxtPlugin(async (nuxtApp) => {
                 return (await import('@firebase/auth')).getAuth(firebaseApp)
             },
             options: {
-                sessionUrl: '/api/auth/session',
-                signOutUrl: '/api/auth/signout'
+                sessionUrl: '/fs/auth/session',
+                signOutUrl: '/fs/auth/signout'
             },
             lib: async () => await import('@firebase/auth')
         },

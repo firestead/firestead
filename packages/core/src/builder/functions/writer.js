@@ -62,15 +62,15 @@ export async function writeEntryFile({ dev, buildConfig, functions, environments
 }
 
   /*
-  * adds framework handle to built file
+  * adds framework handler to built file
   */
 export async function injectFrameworkHandle({ buildConfig }){
   const filePath = `${buildConfig.path}/build/functions/index.mjs`
   try {
     await fse.ensureFile(filePath)
     let bundledFile = await fse.readFile(`${buildConfig.path}/build/functions/index.mjs`, 'utf-8')
-    bundledFile = bundledFile.replace (/^/,`import { handle as frameworkHandle } from  './framework/server/index.mjs';\n`)
-    bundledFile = bundledFile.concat(`export const frameworkApp = functions.https.onRequest(frameworkHandle);`)
+    bundledFile = bundledFile.replace (/^/,`import { handler as frameworkHandler } from  './framework/server/index.mjs';\n`)
+    bundledFile = bundledFile.concat(`export const frameworkApp = functions.https.onRequest(frameworkHandler);`)
     await fse.writeFile(filePath, bundledFile, 'utf-8')
   } catch (err) {
     console.error(err)

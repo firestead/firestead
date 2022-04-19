@@ -25,7 +25,7 @@
     },
     "dependencies": {
         "@nuxt/kit": "npm:@nuxt/kit-edge@latest",
-        "@nuxt/ui-templates": "npm:@nuxt/ui-templates-edge@latest",
+        "@nuxt/ui-templates": "^0.1.0",
         "chokidar": "^3.3.1",
         "defu": "^6.0.0",
         "firebase": "^9.6.11",
