@@ -1,5 +1,5 @@
 import { loadConfig } from 'c12'
-import defu from 'defu'
+import { createDefu } from 'defu'
 import { writeFile } from './utils'
 import { debounce } from 'perfect-debounce'
 import { resolve } from 'pathe'
@@ -45,12 +45,13 @@ export async function useEnvironment(firesteadContext, environment){
       * merge environment object with latest state
       * delete object if property is set to '__DELETE__'
       */
-      const mergeEnvironments = defu.extend((obj, key, value) => {
+      const mergeEnvironments = createDefu((obj, key, value) => {
         if(value === '__DELETE__'){
           delete obj[key]
           return true
         }
       })
+
       firesteadContext.options.environments = mergeEnvironments(updatedEnvironmentObj,firesteadContext.options.environments)
       /* 
       * TODO: check if framework or firebase env vars can be updated on runtime

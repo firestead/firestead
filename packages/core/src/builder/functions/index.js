@@ -11,7 +11,7 @@ export async function prepareFunctions(firesteadContext){
     if(firesteadContext.options.dev){
       if(firesteadDir){
           await fse.emptyDir(`${firesteadContext.options.buildConfig.path}/firebase`)
-          await fse.emptyDir(`${firesteadContext.options.buildConfig.path}/console`)
+          await fse.emptyDir(`${firesteadContext.options.buildConfig.path}/admin`)
       }
       await fse.mkdirp(`${firesteadContext.options.buildConfig.path}/firebase/functions`)
       await fse.mkdirp(`${firesteadContext.options.buildConfig.path}/firebase/runtime`)

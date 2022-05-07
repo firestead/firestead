@@ -1,6 +1,6 @@
 // Inspired by nuxt3 kit https://github.com/nuxt/framework/tree/main/packages/kit (MIT)
-import { addPagesPath } from '../console/pages'
-import { addNavbarEntry } from '../console/navigation'
+import { addPagesPath } from '../admin/pages'
+import { addNavbarEntry } from '../admin/navigation'
 
 export function defineFsAddon(definition){
     if (typeof definition !== 'object') {
@@ -11,14 +11,14 @@ export function defineFsAddon(definition){
     }
     async function initAddon(firesteadCtx) {
         //add pages to firestead context
-        if(definition.console?.pages){
+        if(definition.admin?.pages){
             let routePrefix = definition.name
-            if(definition.console.routePrefix !== undefined) routePrefix = definition.console.routePrefix 
-            addPagesPath(definition.console.pages, routePrefix , firesteadCtx)
+            if(definition.admin.routePrefix !== undefined) routePrefix = definition.admin.routePrefix 
+            addPagesPath(definition.admin.pages, routePrefix , firesteadCtx)
         }
         //add navigation to firestead context
-        if(definition.console?.navigation){
-            addNavbarEntry(definition.console.navigation, firesteadCtx)
+        if(definition.admin?.navigation){
+            addNavbarEntry(definition.admin.navigation, firesteadCtx)
         }
 
         //call setup function

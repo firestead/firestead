@@ -1,5 +1,5 @@
 <template>
-    <div class="console">
+    <div class="admin">
         <header>
             <div class="flex justify-between border-b-1 h-12 border-gray-300 bg-gray-100 px-1 md:px-6">
                 <div class="p-1">

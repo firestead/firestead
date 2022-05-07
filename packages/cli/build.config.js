@@ -11,6 +11,6 @@ export default defineBuildConfig({
   ],
   externals: [
     '@firestead/nuxt',
-    '@firestead/console'
+    '@firestead/admin'
   ]
 })

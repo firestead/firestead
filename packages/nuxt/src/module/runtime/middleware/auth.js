@@ -14,7 +14,7 @@ app.use((req, res, next) => {
     next()
 })
 
-app.use('/session', async (req, res) => {
+app.use('/fs/auth/session', async (req, res) => {
     if(req.method==='POST'){
         const {idToken } = await useBody(req)
         //TODO: add csrf token
@@ -40,7 +40,7 @@ app.use('/session', async (req, res) => {
     }
 })
 
-app.use('/signout', async (req, res) => {
+app.use('/fs/auth/signout', async (req, res) => {
     if(req.method==='POST'){
         const session = useCookie(req, '__session')
         try {

@@ -18,14 +18,14 @@
     "resolutions": {
         "firestead": "workspace:./packages/core",
         "@firestead/kit": "workspace:./packages/kit",
-        "@firestead/console": "workspace:./packages/console",
+        "@firestead/admin": "workspace:./packages/admin",
         "@firestead/cli": "workspace:./packages/cli",
         "@firestead/nuxt": "workspace:./packages/nuxt",
         "@firestead/ui": "link:../firestead-ui",
-        "unbuild": "^0.6.8",
-        "jiti": "^1.12.14",
+        "unbuild": "^0.7.4",
+        "jiti": "^1.13.0",
         "rollup": "^2.63.0",
-        "firebase-admin": "^10.0.2"
+        "firebase-admin": "^10.2.0"
     },
     "devDependencies": {
         "jiti": "^1.12.14",

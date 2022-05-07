@@ -1,4 +1,4 @@
-import defu from 'defu'
+import { createDefu } from 'defu'
 
 export function registerFrameworkHook(firesteadContext){
     /*
@@ -10,7 +10,7 @@ export function registerFrameworkHook(firesteadContext){
         * merge framework object with latest state
         * arrays should be overwritten
         */
-        const mergeFramework = defu.extend((obj, key, value) => {
+        const mergeFramework = createDefu((obj, key, value) => {
             if(Array.isArray(obj[key])){
                 obj[key] = value
                 return true

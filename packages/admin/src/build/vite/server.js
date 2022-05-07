@@ -16,7 +16,7 @@ export async function createServer({ contextPath, buildConfig }){
               'vue',
               'vue-router',
               {
-                '#console/composables':[
+                '#admin/composables':[
                   'useFirestead'
                 ]
               }
@@ -59,7 +59,7 @@ export async function createServer({ contextPath, buildConfig }){
       ],
       resolve: {
           alias: {
-            '#console': resolve(contextPath, 'app'),
+            '#admin': resolve(contextPath, 'app'),
             '#assets': resolve(contextPath, 'app/assets'),
             '#runtime': buildConfig.runtimePath
           },

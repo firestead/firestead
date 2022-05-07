@@ -33,11 +33,11 @@
         "firestead": "latest",
         "fs-extra": "^10.0.0",
         "mri": "^1.2.0",
-        "pathe": "^0.2.0",
+        "pathe": "^0.3.0",
         "requireg": "^0.2.2",
         "superb": "^4.0.0",
         "tiged": "^2.11.1",
-        "ws": "^8.5.0"
+        "ws": "^8.6.0"
     },
     "devDependencies": {
         "unbuild": "latest"

@@ -50,16 +50,17 @@ export default defineFiresteadCommand({
       })
 
       /*
-      * Firestead Console is an admin portal for Firestead.
+      * Firestead Admin is an admin portal for Firestead.
       * It is not necessary to run Firestead, so we try to import it
       * if it is not installed we just skip it
       */
-      const firesteadConsole = await tryImportModule('@firestead/console')
-      if (firesteadConsole) {
+      const firesteadAdmin = await tryImportModule('@firestead/admin')
+      console.log(firesteadAdmin)
+      if (firesteadAdmin) {
         /*
         * start vite server and bundle process
         */
-        await firesteadConsole.start(firesteadContext)
+        await firesteadAdmin.start(firesteadContext)
         /*
         * start the web socket server
         */

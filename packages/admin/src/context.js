@@ -1,13 +1,13 @@
 import { dirname } from 'pathe'
 import { fileURLToPath } from 'url'
 
-export function addConsoleContext(firesteadContext){
+export function addAdminContext(firesteadContext){
     //add UI context
-    firesteadContext.console = {
+    firesteadContext.options.admin = {
         contextPath: dirname(fileURLToPath(import.meta.url)),
         rollupConfig: undefined,
         buildConfig:{
-            runtimePath: `${firesteadContext.options.buildConfig.path}/console`,
+            runtimePath: `${firesteadContext.options.buildConfig.path}/admin`,
             runtimeDir: 'runtime'
         },
         pages: [],

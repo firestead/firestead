@@ -1,7 +1,7 @@
 // Based on https://github.com/nuxt/framework/blob/main/packages/nuxi/src/utils/prepare.ts
 import { promises as fsp } from 'fs'
 import { isAbsolute, join, relative, resolve } from 'pathe'
-import defu from 'defu'
+import { defu } from 'defu'
 import { getModulePaths, getNearestPackage } from './cjs'
 
 export const writeTypes = async (nuxt) => {

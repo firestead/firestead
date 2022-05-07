@@ -1,10 +1,11 @@
 {
-    "name": "@firestead/console",
-    "description": "firestead console - Console for firestead",
+    "name": "@firestead/admin",
+    "description": "Firestead Admin - Developer and Admin Portal for Firestead",
     "repository": "firestead/firestead",
     "keywords": [
         "nuxt",
         "nuxt-module",
+        "admin",
         "firestead",
         "firebase"
     ],
@@ -23,8 +24,8 @@
     },
     "dependencies": {
         "@firestead/kit": "latest",
-        "@firestead/ui": "^0.0.28",
-        "@headlessui/vue": "^1.5.0",
+        "@firestead/ui": "^0.0.32",
+        "@headlessui/vue": "^1.6.1",
         "@vitejs/plugin-vue": "^2.2.4",
         "chalk": "^5.0.1",
         "consola": "^2.15.3",

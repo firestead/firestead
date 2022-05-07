@@ -8,7 +8,7 @@ let fileWatcher = {
 
 export function watch(firesteadContext){
     fileWatcher.callHook = firesteadContext.hooks.callHook
-    const watchFolder = firesteadContext.console.pages.map(({ path }) => path)
+    const watchFolder = firesteadContext.options.admin.pages.map(({ path }) => path)
     const watcher = chokidar.watch(watchFolder, {
         ignoreInitial: true, 
         depth: 3,
@@ -40,15 +40,15 @@ async function addToQueue(path, event){
 
 async function watchEffect(path, event){
     if(event === 'add'){
-        console.log(`${chalk.bold.green('✔')} ${chalk.bold.yellow('Firestead Console:')} ${chalk.bold.green('Added new file: ' + path )}`)
+        console.log(`${chalk.bold.green('✔')} ${chalk.bold.yellow('Firestead Admin:')} ${chalk.bold.green('Added new file: ' + path )}`)
     }
     if(event === 'unlink'){
-        console.log(`${chalk.bold.green('✔')} ${chalk.bold.yellow('Firestead Console:')} ${chalk.bold.red('Removed file: ' + path )}`)
+        console.log(`${chalk.bold.green('✔')} ${chalk.bold.yellow('Firestead Admin:')} ${chalk.bold.red('Removed file: ' + path )}`)
     }
     if(event === 'change'){
-        console.log(`${chalk.bold.green('✔')} ${chalk.bold.yellow('Firestead Console:')} ${chalk.bold.green('Updated file: ' + path )}`)
+        console.log(`${chalk.bold.green('✔')} ${chalk.bold.yellow('Firestead Admin:')} ${chalk.bold.green('Updated file: ' + path )}`)
     }
-    await fileWatcher.callHook('console:pages:updated')
+    await fileWatcher.callHook('admin:pages:updated')
     //everything done -> run next queue item
     if(fileWatcher.queue.length>=1){
       const scanParams = fileWatcher.queue.shift()

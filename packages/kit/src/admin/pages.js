@@ -11,7 +11,7 @@ export function addPagesPath(pagesPath, routePrefix = false, firesteadContext = 
     if(!fse.existsSync(pagesPath)){
         throw new Error(`pagesPath ${pagesPath} does not exist`)
     }
-    firesteadContext.options.console.pages.push({
+    firesteadContext.options.admin.pages.push({
         path: pagesPath,
         prefix: routePrefix
     })

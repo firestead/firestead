@@ -2,7 +2,7 @@ import { dirname, resolve } from 'pathe'
 import { fileURLToPath } from 'url'
 import { firesteadCtx, resolveModule } from '@firestead/kit'
 import { createHooks } from 'hookable'
-import defu from 'defu'
+import { defu } from 'defu'
 
 export function createFiresteadContext(ctxOptions = { rootPath: process.cwd() }){
 
@@ -11,7 +11,6 @@ export function createFiresteadContext(ctxOptions = { rootPath: process.cwd() })
 
     const ctx = {
         hooks: createHooks(),
-        console: false,
         options: defu(ctxOptions,{
             _version: null,
             dev: true,
@@ -59,7 +58,8 @@ export function createFiresteadContext(ctxOptions = { rootPath: process.cwd() })
                 services: ['functions', 'storage', 'auth', 'firestore', 'pubsub'],
                 exportDir: 'emulator',
                 exportPath: undefined,
-            }
+            },
+            admin: false
         })
     }
 
