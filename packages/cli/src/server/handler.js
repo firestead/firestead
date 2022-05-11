@@ -1,15 +1,15 @@
 /*
 *   Register all the server handles
 */
-const contextHandles = []
+const contextHandler = []
 
 /*
 *   environment subscription are handled here
 */
-contextHandles.push({
+contextHandler.push({
     method: 'get',
     context: 'environments',
-    handle: (fsCtxOptions) => {
+    handler: (fsCtxOptions) => {
         return {
             current: fsCtxOptions.environments.current,
             envs: fsCtxOptions.environments.envs,
@@ -20,18 +20,18 @@ contextHandles.push({
 /*
 *   Post environment updates
 */
-contextHandles.push({
+contextHandler.push({
     method: 'post',
     context: 'environments',
-    handle: (fsCtx, payload) => {
+    handler: (fsCtx, payload) => {
         fsCtx.hooks.callHook('environments:update', payload)
     }
 })
 // add framework handle 
-contextHandles.push({
+contextHandler.push({
     method: 'get',
     context: 'framework',
-    handle: (fsCtxOptions) => {
+    handler: (fsCtxOptions) => {
         return {
             ...fsCtxOptions.framework
         }  
@@ -39,4 +39,4 @@ contextHandles.push({
     hook: 'framework:updated'
 })
 
-export default contextHandles
+export default contextHandler

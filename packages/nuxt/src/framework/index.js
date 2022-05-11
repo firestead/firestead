@@ -11,6 +11,8 @@ import { loadNuxt, buildNuxt, extendViteConfig } from '@nuxt/kit'
 export const createServer =  async function(args, firesteadContext){
     const { options, hooks } = firesteadContext
 
+    const frameworkConfig = options.hosting.targets[options.hosting.activeTarget]
+
     const { listen } = await import('listhen')
 
     let currentHandler
@@ -50,7 +52,7 @@ export const createServer =  async function(args, firesteadContext){
         if (currentNuxt) {
           await currentNuxt.close()
         }
-        currentNuxt = await loadNuxt({ rootDir: options.rootPath, dev: true, ready: false })
+        currentNuxt = await loadNuxt({ rootDir: frameworkConfig.path, dev: true, ready: false })
         //firestead nuxt module
         if(currentNuxt.options.modules.indexOf('@firestead/nuxt/module') === -1){
           currentNuxt.options.modules.push('@firestead/nuxt/module')
@@ -104,12 +106,12 @@ export const createServer =  async function(args, firesteadContext){
     // TODO: Watcher service, modules, and requireTree
     const dLoad = debounce(load)
 
-    const watcher = chokidar.watch([options.rootPath], { ignoreInitial: true, depth: 1 })
+    const watcher = chokidar.watch([frameworkConfig.path], { ignoreInitial: true, depth: 1 })
     watcher.on('all', (event, file) => {
       if (!currentNuxt) { return }
       if (normalize(file).startsWith(withTrailingSlash(normalize(currentNuxt.options.buildDir)))) { return }
       if (file.match(/(nuxt\.config\.(js|ts|mjs|cjs)|\.nuxtignore|\.env|\.nuxtrc)$/)) {
-        dLoad(true, `${relative(options.rootPath, file)} updated`)
+        dLoad(true, `${relative(frameworkConfig.path, file)} updated`)
       }
 
       const isDirChange = ['addDir', 'unlinkDir'].includes(event)
@@ -123,7 +125,7 @@ export const createServer =  async function(args, firesteadContext){
         }
       } else if (isFileChange) {
         if (file.match(/(app|error)\.(js|ts|mjs|jsx|tsx|vue)$/)) {
-          dLoad(true, `\`${relative(options.rootPath, file)}\` ${event === 'add' ? 'created' : 'removed'}`)
+          dLoad(true, `\`${relative(frameworkConfig.path, file)}\` ${event === 'add' ? 'created' : 'removed'}`)
         }
       }
     })
@@ -142,13 +144,15 @@ export const createServer =  async function(args, firesteadContext){
     }
 }
 
-export const build = async (args, { rootPath, buildConfig, environments }) => {
+export const build = async (args, { rootPath, buildConfig, environments, hosting }) => {
+
+  const frameworkConfig = hosting.targets[hosting.activeTarget]
 
   process.env.NITRO_PRESET = 'node'
   process.env.NODE_ENV = process.env.NODE_ENV || 'production'
 
   const nuxt = await loadNuxt({ 
-    rootDir: rootPath,
+    rootDir: frameworkConfig.path,
     ready: false, 
     overrides: {
       _generate: args.prerender

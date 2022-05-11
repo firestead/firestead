@@ -2,9 +2,8 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "nuxi dev",
-    "build": "nuxi build",
-    "start": "node .output/server/index.mjs"
+    "dev": "firestead dev",
+    "build": "firestead build"
   },
   "devDependencies": {
     "@faker-js/faker": "^6.3.1",

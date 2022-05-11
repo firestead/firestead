@@ -1,26 +1,32 @@
+import { loadFramework } from './firestead'
 import { prepareFunctions, watchFunctions, createFirebaseConfig, buildFunctions } from './functions'
-import { registerFrameworkHook } from './framework'
+import { prepareHosting } from './hosting'
 
 export { useEnvironment } from './environment'
 
 /*
 *   Main function to run firestead
-*   returns two functions build/watch
+*   @param {Object} firesteadContext
+*   
+*   returns two functions that can build firebase functions and watch functions folder for changes
+*   @returns { buildFunctions, watchFunctions }
 */
 
 export async function loadFirestead(firesteadContext){
 
 
-    //prepare build for firestead
+    //prepare firebase functions
     await prepareFunctions(firesteadContext)
 
-    registerFrameworkHook(firesteadContext)
+    //prepare hosting
+    await prepareHosting(firesteadContext)
 
     // create firebase configuration
     await createFirebaseConfig(firesteadContext)
 
 
     return {
+        loadFramework: loadFramework,
         build: buildFunctions,
         watch: watchFunctions
     }

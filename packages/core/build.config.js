@@ -12,5 +12,6 @@ export default defineBuildConfig({
     'firebase-functions'
   ],
   externals: [
+    '@firestead/nuxt'
   ]
 })

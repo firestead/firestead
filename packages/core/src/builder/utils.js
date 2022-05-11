@@ -21,6 +21,20 @@ export async function isDirectory (path) {
   }
 }
 
+export async function getDirectories(path) {
+  const directories = await fse.readdir(path)
+  return await directories.filter((file) => {
+    return fse.statSync(resolve(path, file)).isDirectory()
+  })
+}
+
+export async function getFiles(path){
+  const files = await fse.readdir(path)
+  return await files.filter((file) => {
+    return !fse.statSync(resolve(path, file)).isDirectory()
+  })
+}
+
 export async function writeFile (file, contents, log = false) {
   await fse.mkdirp(dirname(file))
   await fse.writeFile(file, contents, 'utf-8')

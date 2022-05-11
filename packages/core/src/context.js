@@ -23,10 +23,10 @@ export function createFiresteadContext(ctxOptions = { rootPath: process.cwd() })
             rollupConfig: undefined,
             functions: {
                 version: 1,
-                dir: 'firebase',
+                dir: 'functions',
                 path: undefined,
                 runtimePath: resolve(contextPath, 'runtime'),
-                watchDirs: ['functions', 'http', 'schedule', 'firestore', 'database', 'remoteConfig', 'storage', 'auth', 'analytics', 'pubsub', 'testLab'],
+                watchDirs: ['onCall', 'http', 'schedule', 'firestore', 'database', 'remoteConfig', 'storage', 'auth', 'analytics', 'pubsub', 'testLab'],
                 handler: []
             },
             modulePath: modulePath,
@@ -49,6 +49,12 @@ export function createFiresteadContext(ctxOptions = { rootPath: process.cwd() })
                     }
                 }
             },
+            hosting: {
+                dir: 'hosting',
+                path: undefined,
+                activeTarget: null,
+                targets: {}
+            },
             framework: {
                 name: null,
                 version: null,
@@ -67,6 +73,7 @@ export function createFiresteadContext(ctxOptions = { rootPath: process.cwd() })
     ctx.options.buildConfig.path = resolve(ctx.options.rootPath, ctx.options.buildConfig.dir)
     ctx.options.emulator.exportPath = resolve(ctx.options.buildConfig.path, ctx.options.emulator.exportDir)
     ctx.options.functions.path = resolve(ctx.options.rootPath, ctx.options.functions.dir)
+    ctx.options.hosting.path = resolve(ctx.options.rootPath, ctx.options.hosting.dir)
 
     //create global firestead context
     firesteadCtx.set(ctx)

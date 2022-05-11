@@ -3,17 +3,15 @@
     "type": "module",
     "license": "MIT",
     "workspaces": [
-        "packages/*",
-        "examples/*"
+        "example",
+        "packages/*"
     ],
     "scripts": {
+        "dev": "yarn run firestead dev example",
         "build": "FORCE_COLOR=1 lerna run prepack --stream --no-prefix",
         "stub": "lerna run prepack -- --stub",
         "release": "FORCE_COLOR=1 lerna run prepack -- --release && sh ./scripts/release.sh",
-        "firestead": "./node_modules/.bin/firestead",
-        "examples:nuxt": "yarn run firestead dev examples/nuxt",
-        "examples:nuxt:build": "yarn run firestead build examples/nuxt",
-        "examples:nuxt:deploy": "yarn run firestead deploy examples/nuxt"
+        "firestead": "./node_modules/.bin/firestead"
     },
     "resolutions": {
         "firestead": "workspace:./packages/core",

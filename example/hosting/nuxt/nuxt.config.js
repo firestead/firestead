@@ -1,7 +1,10 @@
-import { defineNuxtConfig } from 'nuxt3'
+import { defineNuxtConfig } from 'nuxt'
 
 export default defineNuxtConfig({
     ssr: true,
+    experimental: {
+        viteNode: true
+    },
     modules: [
         'nuxt-windicss'
     ],

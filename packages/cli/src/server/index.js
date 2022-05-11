@@ -1,5 +1,5 @@
 import { WebSocketServer } from 'ws'
-import contextHandles from './handles'
+import contextHandler from './handler'
 
 
 export function createWebsocketServer(firesteadContext){
@@ -16,12 +16,12 @@ export function createWebsocketServer(firesteadContext){
         */
         ws.on('message', function message(data) {
           const { context, payload, method } = JSON.parse(data)
-          const contextInstance = contextHandles.find((h) => (h.method === method && h.context === context))
+          const contextInstance = contextHandler.find((h) => (h.method === method && h.context === context))
           /*
           * handle get methods if context instance is found
           */
           if(contextInstance && method === 'get'){
-            const data = contextInstance.handle(firesteadContext.options)
+            const data = contextInstance.handler(firesteadContext.options)
             ws.send(JSON.stringify({
               context: context,
               payload: data
@@ -32,7 +32,7 @@ export function createWebsocketServer(firesteadContext){
           * in most cases handle calls a hook function, updates will be triggered with registered hook via getter
           */
           if(contextInstance && method === 'post'){
-            contextInstance.handle(firesteadContext, payload)
+            contextInstance.handler(firesteadContext, payload)
           }
         })
 
@@ -40,10 +40,10 @@ export function createWebsocketServer(firesteadContext){
         * register hooks for all getters
         * 
         */
-        for(const contextInstance of contextHandles){
+        for(const contextInstance of contextHandler){
           if(contextInstance.hook && contextInstance.method === 'get'){
             firesteadContext.hooks.hook(contextInstance.hook, ()=>{
-              const data = contextInstance.handle(firesteadContext.options)
+              const data = contextInstance.handler(firesteadContext.options)
               ws.send(JSON.stringify({
                 context: contextInstance.context,
                 payload: data

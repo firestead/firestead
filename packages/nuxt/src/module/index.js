@@ -1,6 +1,6 @@
 import { resolve } from 'pathe'
 import { fileURLToPath } from 'url'
-import { addAutoImport, addPluginTemplate, addServerMiddleware, addTemplate, defineNuxtModule, isNuxt2 } from '@nuxt/kit'
+import { addAutoImport, addPluginTemplate, addServerHandler, addTemplate, defineNuxtModule, isNuxt2 } from '@nuxt/kit'
 
 const firesteadModule = defineNuxtModule({
     meta: {
@@ -21,9 +21,9 @@ const firesteadModule = defineNuxtModule({
         // Transpile runtime
         const runtimeDir = fileURLToPath(new URL('./runtime', import.meta.url))
         nuxt.options.build.transpile.push(runtimeDir)
-        
-        addServerMiddleware({
-          path: '/fs/auth/**',
+
+        addServerHandler({
+          route: '/fs/auth/**',
           handler: resolve(runtimeDir, 'middleware/auth.js')
         })
 

@@ -2,7 +2,6 @@ import { defineFiresteadCommand } from "./index"
 import requireg from "requireg"
 import { resolve } from 'pathe'
 import chalk from 'chalk'
-import { initFramework } from '../utils/framwork'
 import { createWebsocketServer } from '../server'
 import { registerLogger, progressBar, logOutput } from '../utils/logger'
 import { waitUntilEmulatorReady } from '../utils/wait'
@@ -40,11 +39,14 @@ export default defineFiresteadCommand({
       * Load firestead in dev environment, prepares firestead functions for dev mode
       * -> watch firebase functions afterwards
       */
-      const { watch } = await loadFirestead(firesteadContext)
+      const { watch, loadFramework } = await loadFirestead(firesteadContext)
       await watch(firesteadContext)
 
-      // init framework
-      const frameworkInstance = await initFramework(firesteadContext.options)
+      // load framework
+      const frameworkInstance = await loadFramework(firesteadContext.options)
+      //const frameworkInstance = await initFramework(firesteadContext.options)
+
+
       progress.increment({
         msg: 'Framework initialized',
       })
@@ -55,7 +57,7 @@ export default defineFiresteadCommand({
       * if it is not installed we just skip it
       */
       const firesteadAdmin = await tryImportModule('@firestead/admin')
-      console.log(firesteadAdmin)
+
       if (firesteadAdmin) {
         /*
         * start vite server and bundle process
