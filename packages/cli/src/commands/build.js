@@ -1,6 +1,5 @@
 import { defineFiresteadCommand } from "./index"
-import { createFiresteadContext, useEnvironment, loadFirestead } from 'firestead'
-import { initFramework } from '../utils/framwork'
+import { createFiresteadContext, useEnvironment, loadFirestead, loadFramework } from 'firestead'
 import { resolve } from 'pathe'
 
 export default defineFiresteadCommand({
@@ -16,13 +15,13 @@ export default defineFiresteadCommand({
         // init runtime enviroment
         await useEnvironment(firesteadContext, 'prod')
         try {
-          const { build } = await loadFirestead(firesteadContext)
+          const { build : buildFirestead } = await loadFirestead(firesteadContext)
           // init framework
-          const frameworkInstance = await initFramework(firesteadContext.options)
+          const { build : buildFramework } = await loadFramework(firesteadContext.options)
           // build framework
-          await frameworkInstance.build.call(null, args, firesteadContext.options)
+          await buildFramework.call(null, args, firesteadContext.options)
           //build for firestead
-          await build(firesteadContext)
+          await buildFirestead(firesteadContext)
         } catch (error) {
           console.error(error)
         }

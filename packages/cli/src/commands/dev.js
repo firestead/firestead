@@ -6,7 +6,7 @@ import { createWebsocketServer } from '../server'
 import { registerLogger, progressBar, logOutput } from '../utils/logger'
 import { waitUntilEmulatorReady } from '../utils/wait'
 import { isDir, tryImportModule } from '../utils/helper'
-import { createFiresteadContext, useEnvironment, loadFirestead } from 'firestead'
+import { createFiresteadContext, useEnvironment, loadFirestead, loadFramework } from 'firestead'
 
 export default defineFiresteadCommand({
     meta: {
@@ -39,7 +39,7 @@ export default defineFiresteadCommand({
       * Load firestead in dev environment, prepares firestead functions for dev mode
       * -> watch firebase functions afterwards
       */
-      const { watch, loadFramework } = await loadFirestead(firesteadContext)
+      const { watch } = await loadFirestead(firesteadContext)
       await watch(firesteadContext)
 
       // load framework

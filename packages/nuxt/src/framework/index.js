@@ -11,7 +11,7 @@ import { loadNuxt, buildNuxt, extendViteConfig } from '@nuxt/kit'
 export const createServer =  async function(args, firesteadContext){
     const { options, hooks } = firesteadContext
 
-    const frameworkConfig = options.hosting.targets[options.hosting.activeTarget]
+    const frameworkConfig = options.hosting.targets[options.hosting.current]
 
     const { listen } = await import('listhen')
 
@@ -146,7 +146,7 @@ export const createServer =  async function(args, firesteadContext){
 
 export const build = async (args, { rootPath, buildConfig, environments, hosting }) => {
 
-  const frameworkConfig = hosting.targets[hosting.activeTarget]
+  const frameworkConfig = hosting.targets[hosting.current]
 
   process.env.NITRO_PRESET = 'node'
   process.env.NODE_ENV = process.env.NODE_ENV || 'production'

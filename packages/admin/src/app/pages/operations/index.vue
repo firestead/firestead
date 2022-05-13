@@ -68,5 +68,5 @@
     import Vueuse from '#assets/modules/vueuse.svg'
     const { result: framework, subscribe } = useFirestead('getFramework')
 
-    subscribe('framework')
+    //subscribe('framework')
 </script>

@@ -52,7 +52,7 @@ export function createFiresteadContext(ctxOptions = { rootPath: process.cwd() })
             hosting: {
                 dir: 'hosting',
                 path: undefined,
-                activeTarget: null,
+                current: null,
                 targets: {}
             },
             framework: {

@@ -1,5 +1,4 @@
 import chokidar from 'chokidar'
-import { getFrameworkInstance } from './hosting/framework'
 
 export async function build(target = null) {}
 
@@ -32,25 +31,8 @@ export async function watch({hooks, options}){
                 }
             }
             else if(path.includes(options.hosting.dir)){
-                
+
             }
         }
       })
-}
-
-/*
-* Function to import a framework instance by a given target
-*
-* params {Object} firesteadContext.options
-* target {String} target name
-* returns {Object} framework instance
-*/
-export async function loadFramework({ hosting }, target = null) {
-    if(!target && hosting.activeTarget){
-        target = hosting.activeTarget
-    }else{
-        throw new Error('No target provided and no active target found.')
-    }
-    const frameworkInstance = await getFrameworkInstance(hosting.targets[target])
-    return frameworkInstance
 }

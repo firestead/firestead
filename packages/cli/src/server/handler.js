@@ -9,13 +9,13 @@ const contextHandler = []
 contextHandler.push({
     method: 'get',
     context: 'environments',
+    hook: 'environments:updated',
     handler: (fsCtxOptions) => {
         return {
             current: fsCtxOptions.environments.current,
             envs: fsCtxOptions.environments.envs,
         }  
-    },
-    hook: 'environments:updated'
+    }
 })
 /*
 *   Post environment updates
@@ -27,16 +27,18 @@ contextHandler.push({
         fsCtx.hooks.callHook('environments:update', payload)
     }
 })
-// add framework handle 
+
+// add hosting target handler
 contextHandler.push({
     method: 'get',
-    context: 'framework',
+    context: 'hosting',
+    hook: 'hosting:targets:updated',
     handler: (fsCtxOptions) => {
         return {
-            ...fsCtxOptions.framework
+            current: fsCtxOptions.hosting.current,
+            targets: fsCtxOptions.hosting.targets
         }  
-    },
-    hook: 'framework:updated'
+    }
 })
 
 export default contextHandler

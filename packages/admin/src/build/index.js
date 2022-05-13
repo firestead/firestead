@@ -36,6 +36,10 @@ export function registerCoreOptions(firesteadContext){
           path: '/operations',
           label: 'Overview'
       },{
+        name: 'hosting',
+        path: '/operations/hosting',
+        label: 'Hosting'
+      },{
           name: 'functions',
           path: '/operations/functions',
           label: 'Functions'

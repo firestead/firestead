@@ -24,7 +24,7 @@ export async function prepareHosting(firesteadContext){
     * leave it empty if no target is available or if there are multiple targets
     */
     if(Object.keys(firesteadContext.options.hosting.targets).length === 1){
-        firesteadContext.options.hosting.activeTarget = Object.keys(firesteadContext.options.hosting.targets)[0]
+        firesteadContext.options.hosting.current = Object.keys(firesteadContext.options.hosting.targets)[0]
     }
     
     console.log(firesteadContext.options.hosting)

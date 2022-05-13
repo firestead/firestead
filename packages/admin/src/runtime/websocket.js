@@ -3,7 +3,7 @@ import { reactive } from 'vue'
 
 const subscriptions = {
     'environments': {},
-    'framework': {}
+    'hosting': {}
 }
 
 function callHandle(data){

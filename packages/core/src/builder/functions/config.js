@@ -5,6 +5,9 @@ export function getDefaultFirebaseRc(){
 export function getFirebaseConfig({ dev, environments }){
     const firebaseConfig = {}
     //TODO make it more configurable
+    /*firebaseConfig.extensions = {
+        "my-image-resizer": "firebase/storage-resize-images@^0.1.22"
+    }*/
     firebaseConfig.functions = {
       source: "functions",
       predeploy: []

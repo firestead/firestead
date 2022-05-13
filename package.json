@@ -7,7 +7,8 @@
         "packages/*"
     ],
     "scripts": {
-        "dev": "yarn run firestead dev example",
+        "example": "yarn run firestead dev example",
+        "example:build": "yarn run firestead build example",
         "build": "FORCE_COLOR=1 lerna run prepack --stream --no-prefix",
         "stub": "lerna run prepack -- --stub",
         "release": "FORCE_COLOR=1 lerna run prepack -- --release && sh ./scripts/release.sh",
