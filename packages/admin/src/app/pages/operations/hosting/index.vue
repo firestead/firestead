@@ -10,7 +10,7 @@
                     v-for="(target, id) in result.targets"
                     v-bind:key="id"
                     >
-                    <router-link :to="`/operations/environments/${id}`" class="block hover:bg-gray-50">
+                    <router-link :to="`/operations/hosting/${id}`" class="block hover:bg-gray-50">
                         <div class="relative px-4 py-4 sm:px-6">
                             <div class="flex items-center justify-between">
                                 <p class="text-sm font-medium text-gray-600 truncate">{{target.name}}</p>
@@ -20,7 +20,13 @@
                             </div>
                             <div class="mt-2 sm:flex sm:justify-between">
                                 <div class="text-xs ">
-                                    <span class="text-gray-500">Project: </span>
+                                    <div v-if="target.framework === 'nuxt'" class="flex items-center"> 
+                                        <span class="text-gray-500">Framework:</span>
+                                        <div class="flex items-center ml-2">
+                                            <NuxtLogo class="h-4 w-4"></NuxtLogo>
+                                            <span class="ml-1">Nuxt</span>
+                                        </div>
+                                    </div>
                                     <span class="font-thin"></span>
                                 </div>
                             </div>
@@ -32,7 +38,8 @@
     </div>
 </template>
 <script setup>
-    const { result, subscribe, post } = useFirestead('getHostingTargets')
+    import NuxtLogo from '#assets/frameworks/nuxt-logo.svg'
+    const { result, subscribe } = useFirestead('getHostingTargets')
 
     subscribe('hosting')
 </script>

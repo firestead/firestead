@@ -3,7 +3,7 @@
         <div class="pb-4 border-b border-gray-200">
             <h3 class="text-lg leading-6 font-medium text-gray-900">Functions</h3>
         </div>
-        <!-- 3 column wrapper -->
+        <!-- 2 column wrapper -->
         <div class="flex-grow w-full max-w-7xl mx-auto lg:flex">
             <!-- Left sidebar & main wrapper -->
             <div class="flex-1 min-w-0 bg-white xl:flex">

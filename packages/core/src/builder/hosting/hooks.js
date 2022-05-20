@@ -16,7 +16,7 @@ export function registerHostingHooks(firesteadContext){
                 return true
             }
         })
-        firesteadContext.options.hosting.targets = mergeHostingTargets(targets,firesteadContext.options.hosting.targets[name])
+        firesteadContext.options.hosting.targets = mergeHostingTargets(targets,firesteadContext.options.hosting.targets)
         firesteadContext.hooks.callHook('hosting:targets:updated', firesteadContext.options.hosting.targets)
     })
 }

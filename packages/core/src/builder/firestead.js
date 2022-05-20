@@ -1,9 +1,17 @@
 import chokidar from 'chokidar'
 
+/*
+* build entire project with firestead
+* 
+*/
 export async function build(target = null) {}
 
 
-
+/*
+*   Watch all firestead related folders in dev mode, including:
+*  - functions -> any changes in functions will trigger a rebuild
+*  - hosting -> create/remove new folders
+*/
 export async function watch({hooks, options}){
     //add chokidar watcher for functions and hosting targets
     const watcher = chokidar.watch([

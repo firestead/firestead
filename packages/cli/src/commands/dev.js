@@ -69,33 +69,36 @@ export default defineFiresteadCommand({
         createWebsocketServer(firesteadContext)
       }
       /*
-      * Start Firebase emulator 
+      * Start Firebase emulator if runEmulator is true 
       */
-      const { projectId } = firesteadContext.options.environments.envs.dev.config 
-      //change path to firebase runtime path
-      const firebaseRuntimePath = `${firesteadContext.options.buildConfig.path}/firebase`
-      process.chdir(firebaseRuntimePath)
-      //set process envs for firebase dev
-      //process.env.GOOGLE_APPLICATION_CREDENTIALS = `${rootPath}/service-account.json`
-      process.env.FIREBASE_AUTH_EMULATOR_HOST = 'localhost:9099'
-      process.env.GCLOUD_PROJECT = projectId   
+      if(firesteadContext.options.emulator.runEmulator){
+        const { projectId } = firesteadContext.options.environments.envs.dev.config 
+        //change path to firebase runtime path
+        const firebaseRuntimePath = `${firesteadContext.options.buildConfig.path}/firebase`
+        process.chdir(firebaseRuntimePath)
+        //set process envs for firebase dev
+        //process.env.GOOGLE_APPLICATION_CREDENTIALS = `${rootPath}/service-account.json`
+        process.env.FIREBASE_AUTH_EMULATOR_HOST = 'localhost:9099'
+        process.env.GCLOUD_PROJECT = projectId   
 
-      const emulatorOptions = {
-        project: projectId, 
-        exportOnExit: firesteadContext.options.emulator.exportPath,
-        only: firesteadContext.options.emulator.services.join(',')
+        const emulatorOptions = {
+          project: projectId, 
+          exportOnExit: firesteadContext.options.emulator.exportPath,
+          only: firesteadContext.options.emulator.services.join(',')
+        }
+        //if export exists add import to emulator options
+        if(isDir(firesteadContext.options.emulator.exportPath)){
+          emulatorOptions.import = firesteadContext.options.emulator.exportPath
+        }
+        progress.increment()
+        firebaseClient.emulators.start(emulatorOptions)
+        //change dir back to cli command path -> this will output firebase emulator logs to root project path ???
+        //process.chdir(`${process.env.INIT_CWD}`)
+        //await emulator ready
+        await waitUntilEmulatorReady(firebaseClient, firesteadContext.hooks, progress)
+        progress.update(14)
       }
-      //if export exists add import to emulator options
-      if(isDir(firesteadContext.options.emulator.exportPath)){
-        emulatorOptions.import = firesteadContext.options.emulator.exportPath
-      }
-      progress.increment()
-      firebaseClient.emulators.start(emulatorOptions)
-      //change dir back to cli command path -> this will output firebase emulator logs to root project path ???
-      //process.chdir(`${process.env.INIT_CWD}`)
-      //await emulator ready
-      await waitUntilEmulatorReady(firebaseClient, firesteadContext.hooks, progress)
-      progress.update(14)
+      progress.stop()
       try {
         // start framework server
         console.log('info', `${chalk.yellow('i Firestead')} Starting dev server for framework '${firesteadContext.options.framework.name}'`)

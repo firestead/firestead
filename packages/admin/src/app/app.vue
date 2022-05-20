@@ -62,7 +62,7 @@
                       </svg>
                       <span class="ml-1 text-xs font-medium text-gray-500 hover:text-gray-700">{{current.topbar.label}}</span>
                     </a>
-                    <div v-if="mobileSidebar" class="origin-top-left absolute left-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 focus:outline-none" role="menu" aria-orientation="vertical" aria-labelledby="menu-button" tabindex="-1">
+                    <div v-if="mobileSidebar" class="z-10 origin-top-left absolute left-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 focus:outline-none" role="menu" aria-orientation="vertical" aria-labelledby="menu-button" tabindex="-1">
                       <div class="flex flex-col py-1" role="none">
                         <sidebar-link v-for="entry in current.topbar.sidebar" :to="entry.path" :name="entry.name">{{entry.label}}</sidebar-link>
                       </div>

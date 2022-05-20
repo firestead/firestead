@@ -61,16 +61,18 @@ export const createServer =  async function(args, firesteadContext){
         * set framework updated hook
         * all details of framework should be passed to context
         */
-        hooks.callHook('framework:update', {
+       const targetFramework = {}
+       targetFramework[options.hosting.current] = {
+         details: {
           version: currentNuxt._version,
-          details: {
-            ssr: currentNuxt.options.ssr,
-            mode: currentNuxt.options.mode,
-            target: currentNuxt.options.target,
-            modules: currentNuxt.options.modules,
-            features: currentNuxt.options.features
-          }
-        })
+          ssr: currentNuxt.options.ssr,
+          mode: currentNuxt.options.mode,
+          target: currentNuxt.options.target,
+          modules: currentNuxt.options.modules,
+          features: currentNuxt.options.features
+         }
+       }
+        hooks.callHook('hosting:targets:update', targetFramework)
         /*
         *   add firestead's current env variables to nuxt config
         */

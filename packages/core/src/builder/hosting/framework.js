@@ -21,6 +21,7 @@ export async function detectFramework(hostingPath, targetFolderName){
                 targetConfig.framework = framework.name
                 targetConfig.package = framework.package
                 targetConfig.path = `${hostingPath}/${targetFolderName}`
+                targetConfig.details = {}
             }
         })
     }

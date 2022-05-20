@@ -36,6 +36,10 @@ export function registerCoreOptions(firesteadContext){
           path: '/operations',
           label: 'Overview'
       },{
+        name: 'emulator',
+        path: '/operations/emulator',
+        label: 'Emulator'
+    },{
         name: 'hosting',
         path: '/operations/hosting',
         label: 'Hosting'

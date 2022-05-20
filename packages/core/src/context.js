@@ -61,7 +61,9 @@ export function createFiresteadContext(ctxOptions = { rootPath: process.cwd() })
                 details: {} 
             },
             emulator: {
-                services: ['functions', 'storage', 'auth', 'firestore', 'pubsub'],
+                runEmulator: true,
+                //services: ['functions', 'storage', 'auth', 'firestore', 'pubsub'],
+                services: ['functions'],
                 exportDir: 'emulator',
                 exportPath: undefined,
             },
