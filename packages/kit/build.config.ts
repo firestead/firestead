@@ -1,8 +1,7 @@
 import { defineBuildConfig } from 'unbuild'
 
 export default defineBuildConfig({
-  declaration: false,
-  emitCJS: false,
+  declaration: true,
   entries: [
     'src/index'
   ],
@@ -10,5 +9,6 @@ export default defineBuildConfig({
   dependencies: [
   ],
   externals: [
+    '@firestead/schema',
   ]
 })

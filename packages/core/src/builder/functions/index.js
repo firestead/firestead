@@ -1,5 +1,5 @@
 import fse from 'fs-extra'
-import { isDirectory } from '../utils'
+import { isDirectory } from '../../utils'
 import { scanDirs, watchFunctionsFolder } from './watcher'
 import { writeEntryFile, injectFrameworkHandle, writeFirebaseEnvVariables, writeFirebaseConfigs, writePackageJson } from './writer'
 import { watchRollupEntry, buildRollup } from '../rollup/bundler'

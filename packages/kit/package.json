@@ -11,6 +11,8 @@
     "version": "0.0.11",
     "type": "module",
     "license": "MIT",
+    "main": "./dist/index.mjs",
+    "types": "./dist/index.d.ts",
     "files": [
         "dist"
     ],
@@ -22,6 +24,7 @@
         "./package.json": "./package.json"
     },
     "dependencies": {
+        "@firestead/schema": "0.0.1",
         "fs-extra": "^10.0.0",
         "jiti": "^1.13.x",
         "mlly": "^0.5.2",

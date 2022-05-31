@@ -1,7 +1,7 @@
 import fse from 'fs-extra'
 import { join } from 'pathe'
 import chalk from 'chalk'
-import { isDirectory } from '../utils'
+import { isDirectory } from '../../utils'
 import chokidar from 'chokidar'
 import { analyzeFunction } from './analyzer'
 

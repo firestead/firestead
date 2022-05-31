@@ -1,0 +1,31 @@
+{
+  "rootDir": "/<rootDir>",
+  "dev": false,
+  "configFile": "/<rootDir>/firestead.config.json",
+  "buildConfig": {
+    "dir": "/<rootDir>/_firestead",
+    "rollup": {},
+    "skip": false
+  },
+  "emulator": {
+    "runEmulator": true,
+    "services": [
+      "functions",
+      "storage",
+      "auth",
+      "firestore",
+      "pubsub"
+    ],
+    "exportDir": "/<rootDir>/_firestead/emulator"
+  },
+  "hosting": {
+    "dir": "/<rootDir>/hosting",
+    "current": "",
+    "targets": null
+  },
+  "environments": {
+    "configFile": "/<rootDir>/.firestead.env.json",
+    "activeRuntime": "",
+    "runtimes": null
+  }
+}

@@ -1,0 +1,224 @@
+{
+  "id": "#",
+  "properties": {
+    "rootDir": {
+      "title": "The path to the firestead root directory.",
+      "description": "",
+      "tags": [],
+      "type": "string",
+      "tsType": "string",
+      "id": "#rootDir",
+      "default": "/<rootDir>"
+    },
+    "dev": {
+      "title": "Whether Firestead is running in development mode.",
+      "description": "Normally you should not need to set this.",
+      "tags": [],
+      "type": "boolean",
+      "tsType": "boolean",
+      "id": "#dev",
+      "default": false
+    },
+    "configFile": {
+      "title": "Firestead config file",
+      "description": "",
+      "tags": [],
+      "id": "#configFile",
+      "default": "/<rootDir>/firestead.config.json",
+      "type": "string"
+    },
+    "buildConfig": {
+      "id": "#buildConfig",
+      "properties": {
+        "dir": {
+          "title": "The path to the firestead build directory",
+          "description": "",
+          "tags": [],
+          "id": "#buildConfig/dir",
+          "default": "/<rootDir>/_firestead",
+          "type": "string"
+        },
+        "rollup": {
+          "title": "Rollup config",
+          "description": "",
+          "tags": [],
+          "id": "#buildConfig/rollup",
+          "default": {},
+          "type": "any"
+        },
+        "skip": {
+          "title": "Defines if firestead build process should be skipped",
+          "description": "",
+          "tags": [],
+          "id": "#buildConfig/skip",
+          "default": false,
+          "type": "boolean"
+        }
+      },
+      "default": {
+        "dir": "/<rootDir>/_firestead",
+        "rollup": {},
+        "skip": false
+      },
+      "type": "object"
+    },
+    "emulator": {
+      "id": "#emulator",
+      "properties": {
+        "runEmulator": {
+          "title": "enable/disable Firebase emulator",
+          "description": "",
+          "tags": [],
+          "id": "#emulator/runEmulator",
+          "default": true,
+          "type": "boolean"
+        },
+        "services": {
+          "title": "Emulator services that should be enabled",
+          "description": "",
+          "tags": [],
+          "id": "#emulator/services",
+          "default": [
+            "functions",
+            "storage",
+            "auth",
+            "firestore",
+            "pubsub"
+          ],
+          "type": "array",
+          "items": {
+            "type": [
+              "string"
+            ]
+          }
+        },
+        "exportDir": {
+          "title": "Emulator export path",
+          "description": "",
+          "tags": [],
+          "id": "#emulator/exportDir",
+          "default": "/<rootDir>/_firestead/emulator",
+          "type": "string"
+        }
+      },
+      "default": {
+        "runEmulator": true,
+        "services": [
+          "functions",
+          "storage",
+          "auth",
+          "firestore",
+          "pubsub"
+        ],
+        "exportDir": "/<rootDir>/_firestead/emulator"
+      },
+      "type": "object"
+    },
+    "hosting": {
+      "id": "#hosting",
+      "properties": {
+        "dir": {
+          "title": "hosting directory, where all hosting targets are located",
+          "description": "",
+          "tags": [],
+          "id": "#hosting/dir",
+          "default": "/<rootDir>/hosting",
+          "type": "string"
+        },
+        "current": {
+          "title": "current active target",
+          "description": "",
+          "tags": [],
+          "id": "#hosting/current",
+          "default": "",
+          "type": "string"
+        },
+        "targets": {
+          "title": "hosting targets",
+          "description": "",
+          "tags": [],
+          "tsType": "Record <string, typeof import('../src/types/hostingTarget').HostingTarget>",
+          "markdownType": "Record <string, SrcTypesHostingTargetHostingTarget>",
+          "id": "#hosting/targets",
+          "default": null,
+          "type": "any"
+        }
+      },
+      "default": {
+        "dir": "/<rootDir>/hosting",
+        "current": "",
+        "targets": null
+      },
+      "type": "object"
+    },
+    "environments": {
+      "id": "#environments",
+      "properties": {
+        "configFile": {
+          "title": "Firestead env file",
+          "description": "",
+          "tags": [],
+          "id": "#environments/configFile",
+          "default": "/<rootDir>/.firestead.env.json",
+          "type": "string"
+        },
+        "activeRuntime": {
+          "title": "Current active environment runtime",
+          "description": "",
+          "tags": [],
+          "id": "#environments/activeRuntime",
+          "default": "",
+          "type": "string"
+        },
+        "runtimes": {
+          "title": "Defines environments like dev, staging, prod with Firebase config and env variables",
+          "description": "",
+          "tags": [],
+          "tsType": "Record <string, typeof import('../src/types/environmentRuntime').EnvironmentRuntime>",
+          "markdownType": "Record <string, SrcTypesEnvironmentRuntimeEnvironmentRuntime>",
+          "id": "#environments/runtimes",
+          "default": null,
+          "type": "any"
+        }
+      },
+      "default": {
+        "configFile": "/<rootDir>/.firestead.env.json",
+        "activeRuntime": "",
+        "runtimes": null
+      },
+      "type": "object"
+    }
+  },
+  "default": {
+    "rootDir": "/<rootDir>",
+    "dev": false,
+    "configFile": "/<rootDir>/firestead.config.json",
+    "buildConfig": {
+      "dir": "/<rootDir>/_firestead",
+      "rollup": {},
+      "skip": false
+    },
+    "emulator": {
+      "runEmulator": true,
+      "services": [
+        "functions",
+        "storage",
+        "auth",
+        "firestore",
+        "pubsub"
+      ],
+      "exportDir": "/<rootDir>/_firestead/emulator"
+    },
+    "hosting": {
+      "dir": "/<rootDir>/hosting",
+      "current": "",
+      "targets": null
+    },
+    "environments": {
+      "configFile": "/<rootDir>/.firestead.env.json",
+      "activeRuntime": "",
+      "runtimes": null
+    }
+  },
+  "type": "object"
+}

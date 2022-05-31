@@ -1,7 +1,7 @@
 // Based on https://github.com/nuxt/framework/blob/main/packages/nitro/src/rollup/plugins/externals.ts (MIT)
 import fse from 'fs-extra'
 import { resolve, dirname } from 'pathe'
-import { isFile } from '../../utils'
+import { isFile } from '../../../utils'
 import { nodeFileTrace } from '@vercel/nft'
 
 export function externals (opts){

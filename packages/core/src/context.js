@@ -15,6 +15,7 @@ export function createFiresteadContext(ctxOptions = { rootPath: process.cwd() })
             _version: null,
             dev: true,
             rootPath: undefined,
+            configFileName: 'firestead.config.json',
             buildConfig: {
                 dir: '_firestead',
                 path: undefined,
@@ -62,8 +63,8 @@ export function createFiresteadContext(ctxOptions = { rootPath: process.cwd() })
             },
             emulator: {
                 runEmulator: true,
-                //services: ['functions', 'storage', 'auth', 'firestore', 'pubsub'],
-                services: ['functions'],
+                services: ['functions', 'storage', 'auth', 'firestore', 'pubsub'],
+                //services: ['functions'],
                 exportDir: 'emulator',
                 exportPath: undefined,
             },

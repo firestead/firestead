@@ -1,4 +1,40 @@
 import chokidar from 'chokidar'
+import { prepareFunctions, createFirebaseConfig } from './functions'
+import { firesteadCtx } from '@firestead/kit'
+import { prepareHosting } from './hosting'
+
+import type { FiresteadOptions, FiresteadContext } from '@firestead/schema'
+
+/*
+*   Main function to run firestead
+*   @param {Object} firesteadOptions - firestead options
+*   
+*   returns two functions that can build firebase functions and watch functions folder for changes
+*   @returns { buildFunctions, watchFunctions }
+*/
+
+export async function loadFirestead(firesteadOptions : FiresteadOptions): Promise<FiresteadContext> {
+
+    //TODO: load config file firestead.config.json and firestead.config.js/ts
+
+    const firesteadContext : FiresteadContext = {}
+
+    //prepare firebase functions
+    await prepareFunctions(firesteadContext)
+
+    //prepare hosting
+    await prepareHosting(firesteadContext)
+
+    // create firebase configuration
+    await createFirebaseConfig(firesteadContext)
+
+    /**
+     * Set context for firestead kit
+    */
+   firesteadCtx.set(firesteadContext)
+
+    return firesteadContext
+}
 
 /*
 * build entire project with firestead

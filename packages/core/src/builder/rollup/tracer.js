@@ -1,6 +1,6 @@
 import fse from 'fs-extra'
 import { resolve, dirname } from 'pathe'
-import { isFile } from '../utils'
+import { isFile } from '../../utils'
 import { nodeFileTrace } from '@vercel/nft'
 
 export async function traceFiles(modules = [], opts = {}){

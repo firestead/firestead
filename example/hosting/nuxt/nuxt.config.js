@@ -1,7 +1,6 @@
 import { defineNuxtConfig } from 'nuxt'
 
 export default defineNuxtConfig({
-    ssr: true,
     experimental: {
         viteNode: true
     },

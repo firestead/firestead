@@ -12,11 +12,13 @@
         "build": "FORCE_COLOR=1 lerna run prepack --stream --no-prefix",
         "stub": "lerna run prepack -- --stub",
         "release": "FORCE_COLOR=1 lerna run prepack -- --release && sh ./scripts/release.sh",
-        "firestead": "./node_modules/.bin/firestead"
+        "firestead": "./node_modules/.bin/firestead",
+        "typecheck": "tsc --noEmit"
     },
     "resolutions": {
         "firestead": "workspace:./packages/core",
         "@firestead/kit": "workspace:./packages/kit",
+        "@firestead/schema": "workspace:./packages/schema",
         "@firestead/admin": "workspace:./packages/admin",
         "@firestead/cli": "workspace:./packages/cli",
         "@firestead/nuxt": "workspace:./packages/nuxt",
@@ -29,10 +31,11 @@
     "devDependencies": {
         "jiti": "^1.12.14",
         "lerna": "^4.0.0",
-        "unbuild": "^0.6.8"
+        "unbuild": "^0.6.8",
+        "vue-tsc": "^0.34.15"
     },
-    "packageManager": "yarn@3.1.1",
+    "packageManager": "yarn@3.2.1",
     "engines": {
-        "node": "^14.16.0 || ^16.11.0 || ^17.0.0"
+        "node": "^14.16.0 || ^16.11.0 || ^17.0.0 || ^18.0.0"
     }
 }

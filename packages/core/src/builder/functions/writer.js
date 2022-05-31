@@ -3,7 +3,7 @@ import fse from 'fs-extra'
 import { globby } from 'globby'
 import { createRequire } from 'module'
 import { join, resolve } from 'pathe'
-import { mergeDirs, writeFile } from '../utils'
+import { mergeDirs, writeFile } from '../../utils'
 import { readPackageJSON } from 'pkg-types'
 import {
   getFirebaseConfig, 

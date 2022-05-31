@@ -1,4 +1,4 @@
-import { getFiles } from "../utils"
+import { getFiles } from "../../utils"
 
 /*
 * look into folder to find target config files e.g. nuxt.config.js, nuxt.config.ts, nitro.config.js etc
@@ -32,6 +32,23 @@ export async function detectFramework(hostingPath, targetFolderName){
         return null
     }
     return targetConfig
+}
+
+/*
+* Function to import a framework instance by a given target
+*
+* params {Object} firesteadContext.options
+* target {String} target name
+* returns {Object} framework instance
+*/
+export async function loadFramework({ hosting }, target = null) {
+    if(!target && hosting.current){
+        target = hosting.current
+    }else{
+        throw new Error('No target provided and no active target found.')
+    }
+    const frameworkInstance = await getFrameworkInstance(hosting.targets[target])
+    return frameworkInstance
 }
 
 /*

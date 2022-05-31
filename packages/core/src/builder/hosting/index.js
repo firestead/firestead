@@ -1,4 +1,4 @@
-import { getDirectories } from "../utils"
+import { getDirectories } from "../../utils"
 import { detectFramework } from "./framework"
 import { registerHostingHooks } from "./hooks"
 
