@@ -24,7 +24,7 @@
       "description": "",
       "tags": [],
       "id": "#configFile",
-      "default": "/<rootDir>/firestead.config.json",
+      "default": "/<rootDir>/firestead.data.json",
       "type": "string"
     },
     "buildConfig": {
@@ -140,14 +140,14 @@
           "tsType": "Record <string, typeof import('../src/types/hostingTarget').HostingTarget>",
           "markdownType": "Record <string, SrcTypesHostingTargetHostingTarget>",
           "id": "#hosting/targets",
-          "default": null,
+          "default": {},
           "type": "any"
         }
       },
       "default": {
         "dir": "/<rootDir>/hosting",
         "current": "",
-        "targets": null
+        "targets": {}
       },
       "type": "object"
     },
@@ -159,7 +159,7 @@
           "description": "",
           "tags": [],
           "id": "#environments/configFile",
-          "default": "/<rootDir>/.firestead.env.json",
+          "default": "/<rootDir>/_firestead/firestead.env.json",
           "type": "string"
         },
         "activeRuntime": {
@@ -182,7 +182,7 @@
         }
       },
       "default": {
-        "configFile": "/<rootDir>/.firestead.env.json",
+        "configFile": "/<rootDir>/_firestead/firestead.env.json",
         "activeRuntime": "",
         "runtimes": null
       },
@@ -192,7 +192,7 @@
   "default": {
     "rootDir": "/<rootDir>",
     "dev": false,
-    "configFile": "/<rootDir>/firestead.config.json",
+    "configFile": "/<rootDir>/firestead.data.json",
     "buildConfig": {
       "dir": "/<rootDir>/_firestead",
       "rollup": {},
@@ -212,10 +212,10 @@
     "hosting": {
       "dir": "/<rootDir>/hosting",
       "current": "",
-      "targets": null
+      "targets": {}
     },
     "environments": {
-      "configFile": "/<rootDir>/.firestead.env.json",
+      "configFile": "/<rootDir>/_firestead/firestead.env.json",
       "activeRuntime": "",
       "runtimes": null
     }

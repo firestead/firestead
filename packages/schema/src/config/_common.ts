@@ -21,7 +21,7 @@ export default {
      */
      configFile: {
         $resolve: (val, get) => {
-            const fileName = val || 'firestead.config.json'
+            const fileName = val || 'firestead.data.json'
             const rootDir = get('rootDir')
             return resolve(rootDir, fileName)
         }

@@ -1,32 +1,53 @@
-import chokidar from 'chokidar'
-import { prepareFunctions, createFirebaseConfig } from './functions'
+import { createHooks } from 'hookable'
+import { applyDefaults } from 'untyped'
+import { version } from '../../package.json'
 import { firesteadCtx } from '@firestead/kit'
 import { prepareHosting } from './hosting'
+import { FiresteadConfigSchema } from '@firestead/schema'
 
 import type { FiresteadOptions, FiresteadContext } from '@firestead/schema'
+import { loadEnvironmentConfig } from './config/environment'
+
+export interface InitFiresteadOptions  {
+    /** Load firestead with development mode */
+    dev?: boolean
+  
+    /** root dir of firestead project */
+    rootDir?: string
+  
+}
 
 /*
-*   Main function to run firestead
-*   @param {Object} firesteadOptions - firestead options
+*   Initialize firestead and return firestead context 
+*   @param {InitFiresteadOptions} - firestead options
 *   
-*   returns two functions that can build firebase functions and watch functions folder for changes
-*   @returns { buildFunctions, watchFunctions }
+*   returns firestead context
+*   @returns Promise<FiresteadContext>
 */
+export async function initFirestead(opts : InitFiresteadOptions): Promise<FiresteadContext> {
 
-export async function loadFirestead(firesteadOptions : FiresteadOptions): Promise<FiresteadContext> {
+    const firesteadContext : FiresteadContext = {
+        _version: version,
+        hooks: createHooks()
+    }
+    //TODO: load config file firestead.config.js/ts if available
+    firesteadContext.options = applyDefaults(FiresteadConfigSchema, {
+        rootDir: opts.rootDir || process.cwd(),
+    }) as FiresteadOptions
 
-    //TODO: load config file firestead.config.json and firestead.config.js/ts
-
-    const firesteadContext : FiresteadContext = {}
+    /**
+     * load environment configurations
+     */
+    await loadEnvironmentConfig(firesteadContext)
 
     //prepare firebase functions
-    await prepareFunctions(firesteadContext)
+    //await prepareFunctions(firesteadContext)
 
     //prepare hosting
     await prepareHosting(firesteadContext)
 
     // create firebase configuration
-    await createFirebaseConfig(firesteadContext)
+    //await createFirebaseConfig(firesteadContext)
 
     /**
      * Set context for firestead kit
@@ -48,7 +69,8 @@ export async function build(target = null) {}
 *  - functions -> any changes in functions will trigger a rebuild
 *  - hosting -> create/remove new folders
 */
-export async function watch({hooks, options}){
+export async function runDev({hooks, options}){
+    /*
     //add chokidar watcher for functions and hosting targets
     const watcher = chokidar.watch([
         options.functions.path,
@@ -79,4 +101,5 @@ export async function watch({hooks, options}){
             }
         }
       })
+      */
 }

@@ -1,16 +1,19 @@
 {
   "private": true,
   "type": "module",
+  "workspaces": [
+    "hosting/*"
+  ],
   "scripts": {
-    "dev": "firestead dev",
+    "dev": "node ./firestead.mjs dev",
     "build": "firestead build"
   },
   "devDependencies": {
     "@faker-js/faker": "^6.3.1",
-    "@firestead/admin": "latest",
-    "@firestead/nuxt": "latest",
-    "firestead": "latest",
-    "nuxt-windicss": "latest"
+    "@firestead/admin": "link:../packages/admin",
+    "@firestead/cli": "link:../packages/cli",
+    "@firestead/nuxt": "link:../packages/nuxt",
+    "firestead": "link:../packages/core"
   },
   "engines": {
     "node": "^16.11.0"

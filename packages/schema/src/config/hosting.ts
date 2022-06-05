@@ -18,5 +18,5 @@ export default {
      * hosting targets
      * @type {Record <string, typeof import('../src/types/hostingTarget').HostingTarget>}
      */
-    targets: null
+    targets: {}
 }

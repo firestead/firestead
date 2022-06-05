@@ -1,30 +1,33 @@
-export interface NuxtFirebasePlugins {
-    firestore: boolean,
-    firestoreLite: boolean,
-    auth: boolean,
-    storage: boolean,
-    functions: boolean
-}
-
-export interface NuxtOptions {
+export interface NuxtConfig {
     version: string,
     modules: Array<string>,
-    firebasePlugins: NuxtFirebasePlugins,
+    ssr: boolean,
+    mode: string,
+    target: string
 }
-
-export interface HostingConfig {
-
-}
-
-export interface RemixOptions {
+export interface RemixConfig {
     version: string
 }
 
-type Framework = 'nuxt' //TODO: | 'remix' | 'nitro'
+export interface HostingTargetServer {
+    port: number,
+    hostname: string,
+    reload?: Function
+}
+
+export interface HostingTargetConfig {
+
+}
+
+export type Framework = 'nuxt' | 'remix' | 'nitro'
+export type FrameworkConfig = NuxtConfig | RemixConfig | {}
 
 export interface HostingTarget {
     name: string,
+    rootDir: string,
     framework?: Framework,
-    options?: NuxtOptions | RemixOptions | null,
-    config?: HostingConfig
+    package?: string,
+    server?: HostingTargetServer,
+    frameworkConfig?: FrameworkConfig,
+    hostingConfig?: HostingTargetConfig | {}
 }

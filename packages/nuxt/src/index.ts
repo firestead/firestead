@@ -6,12 +6,16 @@ import { debounce } from 'perfect-debounce'
 import { withTrailingSlash } from 'ufo'
 import { relative, normalize } from 'pathe'
 import chokidar from 'chokidar'
-import { loadNuxt, buildNuxt, extendViteConfig } from '@nuxt/kit'
+import { loadNuxt, buildNuxt } from '@nuxt/kit'
+import { addFrameworkConfig } from '@firestead/kit'
 
-export const createServer =  async function(args, firesteadContext){
-    const { options, hooks } = firesteadContext
+import type { HostingTarget, NuxtConfig } from '@firestead/schema'
 
-    const frameworkConfig = options.hosting.targets[options.hosting.current]
+interface NuxtServer {
+  reload: Function
+}
+
+export const createServer =  async function(targetKey: string ,target : HostingTarget): Promise<NuxtServer>  {
 
     const { listen } = await import('listhen')
 
@@ -29,52 +33,40 @@ export const createServer =  async function(args, firesteadContext){
 
     //create server
     const listener = await listen(serverHandler,{
-      clipboard: args.clipboard,
-      open: args.open || args.o,
-      port: args.port || args.p || process.env.NUXT_PORT,
-      hostname: args.host || args.h || process.env.NUXT_HOST,
-      https: Boolean(args.https),
-      certificate: (args['ssl-cert'] && args['ssl-key']) && {
-        cert: args['ssl-cert'],
-        key: args['ssl-key']
-      }
+      port: target.server.port,
+      hostname: target.server.hostname
     })
 
     let currentNuxt = null
 
-    const load = async (isRestart, reason = false) => {
+    const load = async (isRestart: Boolean, reason?: string) => {
       try {
         loadingMessage = `${reason ? reason + '. ' : ''}${isRestart ? 'Restarting' : 'Starting'} nuxt...`
         currentHandler = null
         if (isRestart) {
-          consola.info(loadingMessage)
+          console.info(loadingMessage)
         }
         if (currentNuxt) {
           await currentNuxt.close()
         }
-        currentNuxt = await loadNuxt({ rootDir: frameworkConfig.path, dev: true, ready: false })
-        //firestead nuxt module
-        if(currentNuxt.options.modules.indexOf('@firestead/nuxt/module') === -1){
-          currentNuxt.options.modules.push('@firestead/nuxt/module')
-        }
+        currentNuxt = await loadNuxt({ rootDir: target.rootDir, dev: true, ready: false })
+
         /*
-        * set framework updated hook
+        * set framework config
         * all details of framework should be passed to context
         */
-       const targetFramework = {}
-       targetFramework[options.hosting.current] = {
-         details: {
-          version: currentNuxt._version,
-          ssr: currentNuxt.options.ssr,
-          mode: currentNuxt.options.mode,
-          target: currentNuxt.options.target,
-          modules: currentNuxt.options.modules
-         }
-       }
-        hooks.callHook('hosting:targets:update', targetFramework)
-        /*
+        const frameworkConfig: NuxtConfig = {
+            version: currentNuxt.options.version,
+            modules: currentNuxt.options.modules,
+            ssr: currentNuxt.options.ssr,
+            mode: currentNuxt.options.mode,
+            target: currentNuxt.options.target
+        }
+        addFrameworkConfig(targetKey, frameworkConfig)
+        /**
         *   add firestead's current env variables to nuxt config
-        */
+        *
+       /*
         const envVariables = options.environments.envs[options.environments.current].envVariables
         currentNuxt.options.privateRuntimeConfig = {
           ...currentNuxt.options.privateRuntimeConfig,
@@ -84,7 +76,7 @@ export const createServer =  async function(args, firesteadContext){
           ...currentNuxt.options.publicRuntimeConfig,
           ...getRuntimeConfig('public', envVariables)
         }
-
+*/
         await currentNuxt.ready()
         await currentNuxt.hooks.callHook('listen', listener.server, listener)
         await Promise.all([
@@ -92,12 +84,12 @@ export const createServer =  async function(args, firesteadContext){
           buildNuxt(currentNuxt)
         ])
         currentHandler = currentNuxt.server.app
-        if (isRestart && args.clear !== false) {
+        if (isRestart !== false) {
           console.log(`Nuxt3 v${currentNuxt._version}`)
           listener.showURL()
         }
       } catch (err) {
-        consola.error(`Cannot ${isRestart ? 'restart' : 'start'} nuxt: `, err)
+        console.error(`Cannot ${isRestart ? 'restart' : 'start'} nuxt: `, err)
         currentHandler = null
         loadingMessage = 'Error while loading nuxt. Please check console and fix errors.'
       }
@@ -107,12 +99,12 @@ export const createServer =  async function(args, firesteadContext){
     // TODO: Watcher service, modules, and requireTree
     const dLoad = debounce(load)
 
-    const watcher = chokidar.watch([frameworkConfig.path], { ignoreInitial: true, depth: 1 })
+    const watcher = chokidar.watch([target.rootDir], { ignoreInitial: true, depth: 1 })
     watcher.on('all', (event, file) => {
       if (!currentNuxt) { return }
       if (normalize(file).startsWith(withTrailingSlash(normalize(currentNuxt.options.buildDir)))) { return }
       if (file.match(/(nuxt\.config\.(js|ts|mjs|cjs)|\.nuxtignore|\.env|\.nuxtrc)$/)) {
-        dLoad(true, `${relative(frameworkConfig.path, file)} updated`)
+        dLoad(true, `${relative(target.rootDir, file)} updated`)
       }
 
       const isDirChange = ['addDir', 'unlinkDir'].includes(event)
@@ -126,7 +118,7 @@ export const createServer =  async function(args, firesteadContext){
         }
       } else if (isFileChange) {
         if (file.match(/(app|error)\.(js|ts|mjs|jsx|tsx|vue)$/)) {
-          dLoad(true, `\`${relative(frameworkConfig.path, file)}\` ${event === 'add' ? 'created' : 'removed'}`)
+          dLoad(true, `\`${relative(target.rootDir, file)}\` ${event === 'add' ? 'created' : 'removed'}`)
         }
       }
     })
@@ -134,7 +126,7 @@ export const createServer =  async function(args, firesteadContext){
     await load(false)
 
     //set framework ready hook
-    hooks.callHook('framework:ready', currentNuxt.server)
+    //hooks.callHook('framework:ready', currentNuxt.server)
 
     const reload = () => {
       dLoad(true, 'Manual triggered reload')
@@ -201,7 +193,7 @@ export const build = async (args, { rootPath, buildConfig, environments, hosting
   })
 
   await nuxt.ready()
-
+  /*
   extendViteConfig((config)=>{
     if(!config.ssr){
       config.ssr = {
@@ -211,13 +203,13 @@ export const build = async (args, { rootPath, buildConfig, environments, hosting
     if(!config.ssr.external) config.ssr.external = []
     config.ssr.external.push('firebase-admin')
   })
-
+  */
   // clean .nuxt build dir
   await clearDir(nuxt.options.buildDir)
   await writeTypes(nuxt)
 
   nuxt.hook('build:error', (err) => {
-    consola.error('Nuxt Build Error:', err)
+    console.error('Nuxt Build Error:', err)
     process.exit(1)
   })
   

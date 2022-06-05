@@ -2,7 +2,7 @@
 import mri from 'mri'
 import consola from 'consola'
 import chalk from 'chalk'
-import { commands } from './commands/index.js'
+import { commands, FiresteadCommand } from './commands/index'
 import { showHelp } from './utils/help.js'
 
 async function _main () {
@@ -12,7 +12,7 @@ async function _main () {
       'no-clear'
     ]
   })
-
+  // @ts-ignore
   const command = args._.shift() || 'usage'
 
   if (!(command in commands)) {
@@ -21,22 +21,14 @@ async function _main () {
     await commands.usage().then(r => r.invoke())
     process.exit(1)
   }
-
-  try {
-    const cmd = await commands[command]()
-    if (args.h || args.help) {
-      showHelp(cmd.meta)
-    } else {
-      await cmd.invoke(args)
-    }
-  } catch (err) {
-    onFatalError(err)
+  // @ts-ignore
+  const cmd = await commands[command as FiresteadCommand]() as FiresteadCommand
+  if (args.h || args.help) {
+    showHelp(cmd.meta)
+  } else {
+    const result = await cmd.invoke(args)
+    return result
   }
-}
-
-function onFatalError (err) {
-  consola.error(err)
-  process.exit(1)
 }
 
 //consola.wrapConsole()
@@ -45,6 +37,16 @@ process.on('unhandledRejection', err => consola.error('[unhandledRejection]', er
 process.on('uncaughtException', err => consola.error('[uncaughtException]', err))
 
 export function main () {
-    console.log(chalk.yellow('\n' + 'Welcome to the Firestead CLI') + '\n')
-    _main().catch(onFatalError)
-  }
+  _main()
+    .then((result) => {
+      if (result === 'error') {
+        process.exit(1)
+      } else if (result !== 'wait') {
+        process.exit(0)
+      }
+    })
+    .catch((error) => {
+      consola.error(error)
+      process.exit(1)
+    })
+}

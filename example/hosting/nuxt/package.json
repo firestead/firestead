@@ -1,0 +1,18 @@
+{
+    "name": "@firestead/example-nuxt",
+    "description": "firestead example nuxt project",
+    "repository": "firestead/firestead",
+    "keywords": [
+        "nuxt",
+        "nuxt-module",
+        "firestead",
+        "firebase"
+    ],
+    "version": "0.0.1",
+    "type": "module",
+    "license": "MIT",
+    "dependencies": {
+        "nuxt": "^3.0.0-rc.3",
+        "nuxt-windicss": "latest"
+    }
+}

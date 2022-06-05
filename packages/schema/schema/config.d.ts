@@ -16,7 +16,7 @@ export interface ConfigSchema {
 
   /**
    * Firestead config file
-   * @default "/<rootDir>/firestead.config.json"
+   * @default "/<rootDir>/firestead.data.json"
   */
   configFile: string,
 
@@ -77,7 +77,7 @@ export interface ConfigSchema {
   environments: {
     /**
      * Firestead env file
-     * @default "/<rootDir>/.firestead.env.json"
+     * @default "/<rootDir>/_firestead/firestead.env.json"
     */
     configFile: string,
 

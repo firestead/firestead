@@ -3,10 +3,10 @@ import type { FiresteadHooks } from './hooks'
 import { ConfigSchema } from '../../schema/config'
 
 export interface FiresteadOptions extends ConfigSchema {
-    _version: string,
 }
 
 export interface FiresteadContext {
+    _version: string,
     hooks: Hookable<FiresteadHooks>,
-    options: FiresteadOptions
+    options?: FiresteadOptions
 }

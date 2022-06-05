@@ -1,11 +1,9 @@
 import { defineBuildConfig } from 'unbuild'
 
 export default defineBuildConfig({
-  declaration: false,
-  emitCJS: false,
+  declaration: true,
   entries: [
-    'src/index',
-    { input: 'src/module/', outDir: 'dist/module', ext: 'js' }
+    'src/index'
   ],
   devDependencies: [],
   dependencies: [

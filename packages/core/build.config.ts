@@ -1,7 +1,7 @@
 import { defineBuildConfig } from 'unbuild'
 
 export default defineBuildConfig({
-  declaration: false,
+  declaration: true,
   entries: [
     'src/index',
     { input: 'src/runtime/', outDir: 'dist/runtime', ext: 'js' }
@@ -12,6 +12,7 @@ export default defineBuildConfig({
     'firebase-functions'
   ],
   externals: [
+    'untyped',
     '@firestead/nuxt'
   ]
 })

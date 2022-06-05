@@ -3,7 +3,6 @@
     "type": "module",
     "license": "MIT",
     "workspaces": [
-        "example",
         "packages/*"
     ],
     "scripts": {

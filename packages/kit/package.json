@@ -25,6 +25,7 @@
     },
     "dependencies": {
         "@firestead/schema": "0.0.1",
+        "defu": "^6.0.0",
         "fs-extra": "^10.0.0",
         "jiti": "^1.13.x",
         "mlly": "^0.5.2",

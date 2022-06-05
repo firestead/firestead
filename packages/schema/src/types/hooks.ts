@@ -8,8 +8,7 @@ export type EnvironmentRuntimes = Record <string, EnvironmentRuntime>
 
 export interface FiresteadHooks {
     //Hosting hooks
-    'hosting:targets:update': (targets: HostingTargets) => HookResult,
-    'hosting:targets:updated': (targets: HostingTargets) => HookResult,
+    'hosting:targetsUpdate': (targets: HostingTargets) => HookResult,
     //Environment hooks
     'environments:runtimesUpdate': (runtimes: EnvironmentRuntimes) => HookResult
 }

@@ -19,7 +19,7 @@ Normally you should not need to set this.
 
 # `configFile`
 - **Type**: `string`
-- **Default**: `"/<rootDir>/firestead.config.json"`
+- **Default**: `"/<rootDir>/firestead.data.json"`
 
 > Firestead config file
 
@@ -88,7 +88,7 @@ Normally you should not need to set this.
 
 ## `targets`
 - **Type**: `Record <string, SrcTypesHostingTargetHostingTarget>`
-- **Default**: `null`
+- **Default**: `{}`
 
 > hosting targets
 
@@ -97,7 +97,7 @@ Normally you should not need to set this.
 
 ## `configFile`
 - **Type**: `string`
-- **Default**: `"/<rootDir>/.firestead.env.json"`
+- **Default**: `"/<rootDir>/_firestead/firestead.env.json"`
 
 > Firestead env file
 

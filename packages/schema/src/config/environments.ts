@@ -6,9 +6,9 @@ export default {
      */
     configFile: {
         $resolve: (val, get) => {
-            const fileName = val || '.firestead.env.json'
-            const rootDir = get('rootDir')
-            return resolve(rootDir, fileName)
+            const fileName = val || 'firestead.env.json'
+            const buildDir = get('buildConfig.dir')
+            return resolve(buildDir, fileName)
         }
     },
     /**
