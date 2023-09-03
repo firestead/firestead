@@ -1,0 +1,33 @@
+{
+    "base": {
+        "container": "pointer-events-none fixed inset-0 flex px-4 py-6 sm:p-6",
+        "group": "flex w-full flex-col space-y-4",
+        "transitionEnterActive": "transform ease-out duration-300 transition",
+        "transitionEnterFrom": "translate-y-2 opacity-0 sm:translate-y-0 sm:translate-x-2",
+        "transitionEnterTo": "translate-y-0 opacity-100 sm:translate-x-0",
+        "transitionLeaveActive": "transform ease-in duration-200 transition",
+        "transitionLeaveFrom": "translate-y-0 opacity-100",
+        "transitionLeaveTo": "translate-y-2 opacity-0",
+        "messageContainer": "pointer-events-auto w-full max-w-sm overflow-hidden rounded-lg bg-white shadow-lg ring-1 ring-black ring-opacity-5"
+    },
+    "defaults": {},
+    "variants": {},
+    "options": {
+        "positionContainer": {
+            "topRight": "items-start sm:items-start",
+            "topLeft": "items-start sm:items-start",
+            "bottomRight": "items-end sm:items-end",
+            "bottomLeft": "items-end sm:items-end",
+            "topCenter": "items-start sm:items-start",
+            "bottomCenter": "items-end sm:items-end"
+        },
+        "positionGroup": {
+            "topRight": "items-center sm:items-end",
+            "topLeft": "items-center sm:items-start",
+            "bottomRight": "items-center sm:items-end",
+            "bottomLeft": "items-center sm:items-start",
+            "topCenter": "items-center",
+            "bottomCenter": "items-center"
+        }
+    }
+}

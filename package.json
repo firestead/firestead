@@ -1,0 +1,26 @@
+{
+    "name": "firestead-monorepo",
+    "private": true,
+    "repository": "disedia/firestead",
+    "type": "module",
+    "scripts": {
+        "build": "FORCE_COLOR=1 pnpm --filter './packages/**' prepack",
+        "build:stub": "pnpm --filter './packages/**' prepack --stub",
+        "cleanup": "rimraf 'packages/core/node_modules' 'playground/node_modules' 'node_modules'",
+        "dev": "pnpm play",
+        "play": "nuxi dev playground",
+        "play:build": "nuxi build playground",
+        "play:preview": "nuxi preview playground"
+    },
+    "resolutions": {
+        "firestead": "workspace:*",
+        "nuxt": "^3.7.0",
+        "@nuxt/kit": "^3.7.0"
+    },
+    "devDependencies": {
+        "nuxt": "^3.7.0",
+        "vitest": "^0.34.3",
+        "rimraf": "^5.0.1"
+    },
+    "packageManager": "pnpm@8.7.1"
+}

@@ -1,0 +1,48 @@
+{
+  "name": "firestead",
+  "private": true,
+  "version": "0.0.1",
+  "description": "Core module for Firestead",
+  "repository": "disedia/firestead",
+  "license": "MIT",
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./dist/types.d.ts",
+      "import": "./dist/module.mjs",
+      "require": "./dist/module.cjs"
+    }
+  },
+  "main": "./dist/module.cjs",
+  "types": "./dist/types.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "prepack": "nuxt-module-build"
+  },
+  "dependencies": {
+    "@nuxt/kit": "^3.7.0",
+    "@nuxt/devtools": "^0.8.2",
+    "nuxt-theming": "^0.0.14",
+    "nuxt-forms": "^0.2.0",
+    "@nuxtjs/color-mode": "^3.3.0",
+    "tailwindcss": "^3.3.3",
+    "@nuxtjs/tailwindcss": "^6.8.0",
+    "@tailwindcss/aspect-ratio": "^0.4.2",
+    "@tailwindcss/forms": "^0.5.6",
+    "@tailwindcss/typography": "^0.5.9",
+    "@tailwindcss/container-queries": "^0.1.1",
+    "tailwind-merge": "^1.14.0",
+    "@vueuse/core": "^10.4.1",
+    "@egoist/tailwindcss-icons": "^1.1.0",
+    "@iconify-json/heroicons": "^1.1.12",
+    "lodash-es": "^4.17.21"
+  },
+  "devDependencies": {
+    "@types/node": "^18",
+    "@nuxt/module-builder": "^0.5.1",
+    "@nuxt/schema": "^3.7.0",
+    "nuxt": "^3.7.0"
+  }
+}
