@@ -7,6 +7,12 @@ type Options = {
 const components = [{
     name: 'Button',
     path: 'components/elements/button.vue'
+},{
+    name: 'Link',
+    path: 'components/elements/link.vue'
+},{
+    name: 'Icon',
+    path: 'components/elements/icon.vue'
 }, {
     name: 'FieldErrors',
     path: 'components/forms/field/errors.vue'

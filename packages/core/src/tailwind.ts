@@ -122,7 +122,7 @@ export function initTailwind(nuxt: Nuxt, options: any, tailwindConfig: Partial<C
 
       tailwindConfig.plugins = tailwindConfig.plugins || []
       tailwindConfig.plugins.push(iconsPlugin({ 
-        collections: getIconCollections(options.icons as any[]) 
+        collections: getIconCollections(options.ui.icons as any[]) 
       }))
 }
 

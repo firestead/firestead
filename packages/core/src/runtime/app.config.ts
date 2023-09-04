@@ -9,7 +9,9 @@ export default defineAppConfig({
     availableColors: [],
     defaults: {
       button: {
-        loadingIcon: 'i-heroicons-arrow-path-20-solid'
+        color: 'primary',
+        loadingIcon: 'i-heroicons-arrow-path-20-solid',
+        size: 'md'
       }
     }
   }
@@ -23,6 +25,7 @@ type Ui = {
   defaults?: {
     button?: {
       loadingIcon?: string
+      size?: string
     }
   }
 }

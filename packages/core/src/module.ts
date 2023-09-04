@@ -11,6 +11,7 @@ export interface ModuleOptions {
     global: boolean
     prefix: string
     safelistColors: string[]
+    icons: string[] | string
   }
 }
 
@@ -24,7 +25,8 @@ export default defineNuxtModule<ModuleOptions>({
     ui: {
       global: false,
       prefix: 'Fs',
-      safelistColors: ['primary']
+      safelistColors: ['primary'],
+      icons: ['heroicons']
     }
   },
   async setup (options, nuxt) {

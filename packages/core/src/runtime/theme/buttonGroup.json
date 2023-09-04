@@ -1,0 +1,11 @@
+{
+    "base": {
+        "wrapper": "inline-flex -space-x-px"
+    },
+    "options": {
+        "shadow": {
+            "true": "shadow-md",
+            "false": ""
+        }
+    }
+}
