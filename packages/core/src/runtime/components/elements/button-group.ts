@@ -3,6 +3,7 @@ import type { PropType } from 'vue'
 import { omit } from 'lodash-es'
 import { twMerge } from 'tailwind-merge'
 import { getSlotsChildren } from '../../utils/getSlotsChildren'
+import type { ButtonGroup, ButtonGroupConfig, ButtonConfig } from '#theme'
 import { useAppConfig, buttonGroupTheme } from '#imports'
 // TODO: Remove
 // @ts-expect-error
@@ -14,14 +15,28 @@ export default defineComponent({
   inheritAttrs: false,
   props: {
     size: {
-      type: String,
-      default: null,
+      type: String as PropType<keyof ButtonConfig['options']['size']>,
+      default: appConfig.ui.defaults.buttonGroup.size,
       validator (value: string) {
-        return Object.keys(appConfig.ui.button.size).includes(value)
+        return Object.keys(buttonTheme.default.options.size).includes(value)
+      }
+    },
+    shadow: {
+      type: String as PropType<keyof ButtonGroupConfig['options']['shadow']>,
+      default: () => appConfig.ui.defaults.buttonGroup.shadow,
+      validator (value: string) {
+        return Object.keys(buttonTheme.default.options.shadow).includes(value)
+      }
+    },
+    rounded: {
+      type: String as PropType<keyof ButtonConfig['options']['rounded']>,
+      default: () => appConfig.ui.defaults.buttonGroup.rounded,
+      validator (value: string) {
+        return Object.keys(buttonTheme.default.options.rounded).includes(value)
       }
     },
     ui: {
-      type: Object as PropType<Partial<typeof appConfig.ui.buttonGroup>>,
+      type: Object as PropType<Partial<ButtonGroupConfig['base']>>,
       default: () => ({})
     }
   },
@@ -29,23 +44,14 @@ export default defineComponent({
     // TODO: Remove
     const appConfig = useAppConfig()
 
-    const ui = computed<Partial<typeof appConfig.ui.buttonGroup>>(() => defuTwMerge({}, props.ui, appConfig.ui.buttonGroup))
+    const theme = computed(() => createTheme<ButtonGroup>(buttonGroupTheme, {
+      overwrite: props.ui,
+      merge: twMerge
+    }))
 
     const children = computed(() => getSlotsChildren(slots))
 
-    const rounded = computed(() => ({
-      'rounded-none': { left: 'rounded-s-none', right: 'rounded-e-none' },
-      'rounded-sm': { left: 'rounded-s-sm', right: 'rounded-e-sm' },
-      rounded: { left: 'rounded-s', right: 'rounded-e' },
-      'rounded-md': { left: 'rounded-s-md', right: 'rounded-e-md' },
-      'rounded-lg': { left: 'rounded-s-lg', right: 'rounded-e-lg' },
-      'rounded-xl': { left: 'rounded-s-xl', right: 'rounded-e-xl' },
-      'rounded-2xl': { left: 'rounded-s-2xl', right: 'rounded-e-2xl' },
-      'rounded-3xl': { left: 'rounded-s-3xl', right: 'rounded-e-3xl' },
-      'rounded-full': { left: 'rounded-s-full', right: 'rounded-e-full' }
-    }[ui.value.rounded]))
-
-    const clones = computed(() => children.value.map((node, index) => {
+    const clones = computed(() => children.value.map((node: any, index: any) => {
       const vProps: any = {}
 
       if (props.size) {
@@ -53,22 +59,25 @@ export default defineComponent({
       }
 
       vProps.ui = node.props?.ui || {}
-      vProps.ui.rounded = 'rounded-none'
-      vProps.ui.base = '!shadow-none'
+      vProps.ui.button = 'shadow-none'
 
       if (index === 0) {
-        vProps.ui.rounded += ` ${rounded.value.left}`
+        vProps.roundedStart = true
+        vProps.rounded = props.rounded
       }
 
       if (index === children.value.length - 1) {
-        vProps.ui.rounded += ` ${rounded.value.right}`
+        vProps.roundedEnd = true
+        vProps.rounded = props.rounded
       }
 
       return cloneVNode(node, vProps)
     }))
 
     return () => h('div', { 
-      class: twMerge(twJoin(ui.value.wrapper, ui.value.rounded, ui.value.shadow), attrs.class as string), ...omit(attrs, ['class']) 
+      class: theme.value('wrapper',{
+        shadow: props.shadow
+      }), ...omit(attrs, ['class']) 
     }, clones.value)
   }
 })

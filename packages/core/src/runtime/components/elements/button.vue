@@ -5,6 +5,9 @@
     :class="theme('button', {
       size: size,
       gap: size,
+      rounded: (!roundedStart && !roundedEnd) ? rounded : 'none',
+      roundedStart: roundedStart ? rounded : 'none',
+      roundedEnd: roundedEnd ? rounded : 'none',
       padding: props.padded ? size : undefined,
       square: isSquare ? size : undefined,
       loading: transformBoolean(loading),
@@ -79,6 +82,28 @@
       default: true
     },
     focusOnMount: {
+      type: Boolean,
+      default: false
+    },
+    shadow: {
+      type: String as PropType<keyof ButtonConfig['options']['shadow']>,
+      default: () => appConfig.ui.defaults.button.shadow,
+      validator (value: string) {
+        return Object.keys(buttonTheme.default.options.shadow).includes(value)
+      }
+    },
+    rounded: {
+      type: String as PropType<keyof ButtonConfig['options']['rounded']>,
+      default: () => appConfig.ui.defaults.button.rounded,
+      validator (value: string) {
+        return Object.keys(buttonTheme.default.options.rounded).includes(value)
+      }
+    },
+    roundedStart: {
+      type: Boolean,
+      default: false
+    },
+    roundedEnd: {
       type: Boolean,
       default: false
     },

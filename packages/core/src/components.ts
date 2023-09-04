@@ -8,6 +8,9 @@ const components = [{
     name: 'Button',
     path: 'components/elements/button.vue'
 },{
+    name: 'ButtonGroup',
+    path: 'components/elements/button-group.ts'
+},{
     name: 'Link',
     path: 'components/elements/link.vue'
 },{

@@ -29,6 +29,9 @@ const safelistByComponent = {
     pattern: new RegExp(`bg-(${colorsAsRegex})-100`),
     variants: ['hover']
   }, {
+    pattern: new RegExp(`bg-(${colorsAsRegex})-200`),
+    variants: ['hover']
+  }, {
     pattern: new RegExp(`bg-(${colorsAsRegex})-400`),
     variants: ['dark', 'dark:disabled']
   }, {
@@ -38,8 +41,11 @@ const safelistByComponent = {
     pattern: new RegExp(`bg-(${colorsAsRegex})-600`),
     variants: ['hover']
   }, {
-    pattern: new RegExp(`bg-(${colorsAsRegex})-900`),
+    pattern: new RegExp(`bg-(${colorsAsRegex})-800`),
     variants: ['dark:hover']
+  }, {
+    pattern: new RegExp(`bg-(${colorsAsRegex})-900`),
+    variants: ['dark:hover','dark']
   }, {
     pattern: new RegExp(`bg-(${colorsAsRegex})-950`),
     variants: ['dark', 'dark:hover', 'dark:disabled']
