@@ -1,41 +1,104 @@
 {
     "base": {
-        "input": "text-sm appearance-none w-full focus:outline-none shadow disabled:opacity-50 disabled:cursor-not-allowed border-0",
         "wrapper": "relative",
-        "addonBefore": "absolute inset-y-0 left-0 pl-3 flex items-center cursor-pointer",
-        "addonAfter": "absolute inset-y-0 right-0 pr-3 flex items-center cursor-pointer",
-        "addonClasses": "w-5 h-5"
+        "input": "relative block w-full disabled:cursor-not-allowed disabled:opacity-75 focus:outline-none border-0 placeholder-gray-400 dark:placeholder-gray-500",
+        "wrapperIcon": "absolute inset-y-0 start-0 flex items-center pointer-events-none",
+        "icon": "flex-shrink-0 text-gray-400 dark:text-gray-500 text-{color}-500 dark:text-{color}-400"
     },
     "defaults": {
-        "input": "text-gray-700 dark:text-white placeholder-gray-500/60 bg-white dark:bg-gray-900 ring-1 ring-inset focus:ring-inset focus:ring-2 ring-gray-300 focus:ring-primary-600 dark:ring-white/20 dark:focus:ring-primary-600 focus-visible:ring-primary-600 px-4 py-3 !autofill:bg-white !dark:autofill:bg-gray-900",
-        "addonClasses": "text-gray-300 dark:text-gray-600"
+        "input": "shadow-sm bg-transparent text-gray-900 dark:text-white ring-1 ring-inset ring-{color}-500 dark:ring-{color}-400 focus:ring-2 focus:ring-{color}-500 dark:focus:ring-{color}-400"
     },
     "variants": {
 
     },
     "options": {
+        "size": {
+            "2xs": "text-xs",
+            "xs": "text-xs",
+            "sm": "text-sm",
+            "md": "text-sm",
+            "lg": "text-sm",
+            "xl": "text-base"
+        },
+        "iconSize": {
+            "2xs": "h-4 w-4",
+            "xs": "h-4 w-4",
+            "sm": "h-5 w-5",
+            "md": "h-5 w-5",
+            "lg": "h-5 w-5",
+            "xl": "h-6 w-6"
+        },
+        "gap": {
+            "2xs": "gap-x-1",
+            "xs": "gap-x-1.5",
+            "sm": "gap-x-1.5",
+            "md": "gap-x-2",
+            "lg": "gap-x-2.5",
+            "xl": "gap-x-2.5"
+        },
+        "padding": {
+            "2xs": "px-2 py-1",
+            "xs": "px-2.5 py-1.5",
+            "sm": "px-2.5 py-1.5",
+            "md": "px-3 py-2",
+            "lg": "px-3.5 py-2.5",
+            "xl": "px-3.5 py-2.5",
+            "none": "p-0"
+        },
         "rounded": {
-            "full": "rounded-lg",
-            "top": "rounded-t-lg",
-            "right": "rounded-r-lg",
-            "bottom": "rounded-b-lg",
-            "left": "rounded-l-lg",
-            "topRight": "rounded-tr-lg",
-            "topLeft": "rounded-tl-lg",
-            "bottomRight": "rounded-br-lg",
-            "bottomLeft": "rounded-bl-lg"
+            "none": "rounded-none",
+            "2xs": "rounded-2xs",
+            "xs": "rounded-xs",
+            "sm": "rounded-sm",
+            "md": "rounded-md",
+            "lg": "rounded-lg",
+            "xl": "rounded-xl"
         },
-        "disabled": {
-            "true": "opacity-60 select-none cursor-not-allowed",
-            "false": ""
+        "leadingPadding": {
+            "none": "",
+            "2xs": "ps-7",
+            "xs": "ps-8",
+            "sm": "ps-9",
+            "md": "ps-10",
+            "lg": "ps-11",
+            "xl": "ps-12"
         },
-        "addonBeforeInput": {
-            "true": "pl-10",
-            "false": ""
+        "leadingPaddingIcon": {
+            "none": "",
+            "2xs": "ps-2",
+            "xs": "ps-2.5",
+            "sm": "ps-2.5",
+            "md": "ps-3",
+            "lg": "ps-3.5",
+            "xl": "ps-3.5"
         },
-        "addonAfterInput": {
-            "true": "pr-10",
+        "trailingPadding": {
+            "none": "",
+            "2xs": "pe-7",
+            "xs": "pe-8",
+            "sm": "pe-9",
+            "md": "pe-10",
+            "lg": "pe-11",
+            "xl": "pe-12"
+        },
+        "trailingPaddingIcon": {
+            "none": "",
+            "2xs": "pe-2",
+            "xs": "pe-2.5",
+            "sm": "pe-2.5",
+            "md": "pe-3",
+            "lg": "pe-3.5",
+            "xl": "pe-3.5"
+        },
+        "loading": {
+            "true": "animate-spin",
             "false": ""
         }
+    },
+    "presets": {
+        "loadingIcon": "i-heroicons-arrow-path-20-solid",
+        "size": "sm",
+        "color": "primary",
+        "rounded": "md"
     }
 }

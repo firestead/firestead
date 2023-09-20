@@ -44,6 +44,10 @@ const components = [
 }, {
     name: 'FieldLabel',
     path: 'components/forms/field/label.vue'
+},
+{
+    name: 'Input',
+    path: 'components/forms/input.vue'
 }
 ]
 

@@ -27,6 +27,9 @@ export function getDependencyModules(config: DependencyConfig): DependencyModule
         name: 'nuxt-theming',
     },{
       name: 'nuxt-forms',
+      options: {
+        registerComponents: false
+      }
     },{
       name: '@nuxtjs/color-mode',
       options: {

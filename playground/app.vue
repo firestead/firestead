@@ -17,6 +17,9 @@
     </header>
       <main class="mx-auto max-w-7xl sm:px-6 lg:px-8">
           <Block label="Dropdown">
+            <FsInput loading icon="i-heroicons-magnifying-glass-20-solid" placeholder="Suche" color="green"></FsInput>
+          </Block>
+          <Block label="Dropdown">
             <FsDropdown :items="items" :popper="{ placement: 'bottom-start' }">
                 <FsButton trailing-icon="i-heroicons-chevron-down-20-solid">Dropdown</FsButton>
             </FsDropdown>
