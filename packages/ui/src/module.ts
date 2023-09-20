@@ -32,8 +32,10 @@ export default defineNuxtModule<ModuleOptions>({
   async setup (options, nuxt) {
     const { resolve } = createResolver(import.meta.url)
 
+    // Transpile runtime
     const runtimeDir = resolve('./runtime')
     nuxt.options.build.transpile.push(runtimeDir)
+    nuxt.options.build.transpile.push('@popperjs/core', '@headlessui/vue')
 
     nuxt.options.nitro.preset = resolve('runtime/nitro.preset')
 

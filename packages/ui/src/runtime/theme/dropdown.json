@@ -1,0 +1,26 @@
+{
+    "base": {
+        "wrapper": "relative inline-flex text-left rtl:text-right",
+        "container": "z-20 w-48",
+        "menu": "relative focus:outline-none overflow-y-auto scroll-py-1 divide-y divide-gray-200 dark:divide-gray-700 ring-1 ring-gray-200 dark:ring-gray-700 rounded-md shadow-lg bg-white dark:bg-gray-800",
+        "itemContainer": "p-1",
+        "item": "group flex items-center gap-2 w-full px-2 py-1.5 text-sm rounded-md",
+        "icon": "flex-shrink-0 h-4 w-4",
+        "avatar": "flex-shrink-0",
+        "shortcuts": "hidden md:inline-flex flex-shrink-0 gap-0.5 ms-auto"
+    },
+    "options": {
+        "itemActive": {
+            "true": "bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-white",
+            "false": "text-gray-700 dark:text-gray-200"
+        },
+        "itemDisabled": {
+            "true": "cursor-not-allowed opacity-50",
+            "false": ""
+        },
+        "iconActive": {
+            "true": "text-gray-500 dark:text-gray-400",
+            "false": "text-gray-400 dark:text-gray-500"
+        }
+    }
+}

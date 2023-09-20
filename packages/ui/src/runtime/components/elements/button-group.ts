@@ -1,8 +1,8 @@
 import { h, cloneVNode, computed, defineComponent } from 'vue'
 import type { PropType } from 'vue'
-import { omit } from 'lodash-es'
 import { twMerge } from 'tailwind-merge'
 import { getSlotsChildren } from '../../utils/getSlotsChildren'
+import { omit } from '../../utils/omit'
 import type { ButtonGroup, ButtonGroupConfig, ButtonConfig } from '#theme'
 import { useAppConfig, buttonGroupTheme } from '#imports'
 // TODO: Remove
@@ -77,7 +77,7 @@ export default defineComponent({
     return () => h('div', { 
       class: theme.value('wrapper',{
         shadow: props.shadow
-      }), ...omit(attrs, ['class']) 
+      }),  ...omit(attrs, ['class'])
     }, clones.value)
   }
 })

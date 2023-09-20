@@ -23,7 +23,7 @@
     </NuxtLink>
 </template>
 <script setup lang="ts">
-    import { isEqual } from 'lodash-es'
+    import { isEqual } from 'ohash'
     import { NuxtLink } from '#components'
 
     defineOptions({

@@ -1,7 +1,7 @@
 <template>
   <FsLink 
-    :type="type" 
     v-bind="omit($attrs, ['class'])"
+    :type="type" 
     :class="theme('button', {
       size: size,
       gap: size,
@@ -45,14 +45,15 @@
   import type { ComponentPublicInstance, Ref } from 'vue'
   import { onMounted, ref, computed, useSlots } from 'vue'
   import { transformBoolean } from '../../utils/transformBoolean'
-  import { omit } from 'lodash-es'
+  import { omit } from '../../utils/omit'
   import FsIcon from './icon.vue'
   import FsLink from './link.vue'
   import { twMerge } from 'tailwind-merge'
   import { createTheme, buttonTheme, PropType } from '#imports'
   import type { ButtonConfig, Button  } from '#theme'
   import type { TailwindColors } from '../../types'
-  // TODO: Remove
+  // TODO: Remove, nuxt-theming should support presets and overwrite by app.config
+  // @ts-ignore
   import appConfig from '#build/app.config'
 
 

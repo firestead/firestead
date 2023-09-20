@@ -4,19 +4,38 @@ type Options = {
     global?: boolean
 }
 
-const components = [{
+const components = [
+//Elements    
+{
+    name: 'Avatar',
+    path: 'components/elements/avatar.vue'
+},{
+    name: 'AvatarGroup',
+    path: 'components/elements/avatar-group.ts'
+},{
+    name: 'Badge',
+    path: 'components/elements/badge.vue'
+},{
     name: 'Button',
     path: 'components/elements/button.vue'
 },{
     name: 'ButtonGroup',
     path: 'components/elements/button-group.ts'
 },{
+    name: 'Dropdown',
+    path: 'components/elements/dropdown.vue'
+},{
+    name: 'Kbd',
+    path: 'components/elements/kbd.vue'
+},{
     name: 'Link',
     path: 'components/elements/link.vue'
 },{
     name: 'Icon',
     path: 'components/elements/icon.vue'
-}, {
+}, 
+//Forms
+{
     name: 'FieldErrors',
     path: 'components/forms/field/errors.vue'
 }, {
@@ -25,7 +44,8 @@ const components = [{
 }, {
     name: 'FieldLabel',
     path: 'components/forms/field/label.vue'
-}]
+}
+]
 
 
 export function getComponents(options: Options = {

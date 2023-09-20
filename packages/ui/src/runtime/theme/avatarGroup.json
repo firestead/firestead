@@ -1,0 +1,7 @@
+{
+    "base": {
+        "wrapper": "flex flex-row-reverse justify-end",
+        "children": "ring-2 ring-white dark:ring-gray-900 -me-1.5 first:me-0"
+    },
+    "options": {}
+}

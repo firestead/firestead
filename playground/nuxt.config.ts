@@ -1,6 +1,6 @@
 export default defineNuxtConfig({
     modules: [
-        'firestead'
+        '@firestead/ui'
     ],
     colorMode: {
         preference: 'light'

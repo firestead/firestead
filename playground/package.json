@@ -8,6 +8,6 @@
     },
     "dependencies": {
       "nuxt": "^3.7.0",
-      "firestead": "workspace:*"
+      "@firestead/ui": "workspace:*"
     }
 }

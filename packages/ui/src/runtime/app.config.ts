@@ -9,6 +9,18 @@ export default defineAppConfig({
     },
     availableColors: [],
     defaults: {
+      avatar: {
+        size: 'md',
+        rounded: 'full',
+        icon: '',
+        chipColor: null,
+        chipPosition: 'top-right'
+      },
+      badge: {
+        size: 'md',
+        rounded: 'md',
+        color: 'primary'
+      },
       button: {
         color: 'primary',
         loadingIcon: 'i-heroicons-arrow-path-20-solid',
@@ -20,6 +32,9 @@ export default defineAppConfig({
         size: 'md',
         rounded: 'md',
         shadow: 'none'
+      },
+      kbd: {
+        size: 'md'
       }
     }
   }

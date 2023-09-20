@@ -50,7 +50,8 @@ export function getDependencyModules(config: DependencyConfig): DependencyModule
               content: {
                 files: [
                   resolve(config.cwd, 'components/**/*.{vue,mjs,ts}'),
-                  resolve(config.cwd, 'theme/**/*.{json,mjs,js,ts}')
+                  resolve(config.cwd, 'theme/**/*.{json,mjs,js,ts}'),
+                  resolve(config.cwd, 'app.config.ts')
                 ],
                 transform: {
                   vue: (content: string) => {

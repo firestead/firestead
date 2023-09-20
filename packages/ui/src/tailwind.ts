@@ -22,6 +22,34 @@ const colorsToExclude = [
 ]
 
 const safelistByComponent = {
+  avatar: (colorsAsRegex: string) => [{
+    pattern: new RegExp(`bg-(${colorsAsRegex})-400`),
+    variants: ['dark']
+  }, {
+    pattern: new RegExp(`bg-(${colorsAsRegex})-500`)
+  }],
+  badge: (colorsAsRegex: string) => [{
+    pattern: new RegExp(`bg-(${colorsAsRegex})-50`),
+    variants: []
+  },{
+    pattern: new RegExp(`bg-(${colorsAsRegex})-500`),
+    variants: []
+  },{
+    pattern: new RegExp(`bg-(${colorsAsRegex})-400`),
+    variants: ['dark']
+  },{
+    pattern: new RegExp(`text-(${colorsAsRegex})-500`),
+    variants: []
+  },{
+    pattern: new RegExp(`text-(${colorsAsRegex})-400`),
+    variants: ['dark']
+  },{
+    pattern: new RegExp(`ring-(${colorsAsRegex})-500`),
+    variants: []
+  },{
+    pattern: new RegExp(`ring-(${colorsAsRegex})-400`),
+    variants: ['dark']
+  }],
   button: (colorsAsRegex: string) => [{
     pattern: new RegExp(`bg-(${colorsAsRegex})-50`),
     variants: ['hover', 'disabled']
