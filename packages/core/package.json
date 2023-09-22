@@ -1,0 +1,33 @@
+{
+    "name": "firestead",
+    "version": "0.0.1",
+    "description": "Firestead Core Module",
+    "repository": "disedia/firestead",
+    "license": "MIT",
+    "type": "module",
+    "exports": {
+      ".": {
+        "types": "./dist/types.d.ts",
+        "import": "./dist/module.mjs",
+        "require": "./dist/module.cjs"
+      }
+    },
+    "publishConfig": {
+      "access": "public"
+    },
+    "main": "./dist/module.cjs",
+    "types": "./dist/types.d.ts",
+    "files": [
+      "dist"
+    ],
+    "scripts": {
+      "prepack": "nuxt-module-build"
+    },
+    "dependencies": {
+        "@nuxt/kit": "^3.7.3",
+        "@firestead/ui": "workspace:*"
+    },
+    "devDependencies": {
+
+    }
+}

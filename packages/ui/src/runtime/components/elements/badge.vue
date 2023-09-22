@@ -9,11 +9,12 @@
   </template>
 <script setup lang="ts">
     import type { TailwindColors } from '../../types'
-    import { createTheme, badgeTheme, PropType } from '#imports'
+    import { createTheme, badgeTheme, type PropType, computed } from '#imports'
     import type { BadgeConfig, Badge  } from '#theme'
     import { twMerge } from 'tailwind-merge'
     import { omit } from '../../utils/omit'
       // TODO: Remove
+      // @ts-ignore
     import appConfig from '#build/app.config'
 
     defineOptions({

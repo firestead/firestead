@@ -12,7 +12,7 @@
       square: isSquare ? size : undefined,
       loading: transformBoolean(loading),
       block: transformBoolean(block),
-    })"
+    }, $attrs.class)"
     :disabled="disabled"
   >
     <slot name="leading" :disabled="disabled" :loading="loading">

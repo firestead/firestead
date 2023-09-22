@@ -7,27 +7,23 @@ import {
 
 // Module options TypeScript interface definition
 export interface ModuleOptions {
-  ui: {
-    global: boolean
-    prefix: string
-    safelistColors: string[]
-    icons: string[] | string
-  }
+  global: boolean
+  prefix: string
+  safelistColors: string[]
+  icons: string[] | string
 }
 
 export default defineNuxtModule<ModuleOptions>({
   meta: {
-    name: 'firestead',
-    configKey: 'firestead'
+    name: '@firestead/ui',
+    configKey: 'ui'
   },
   // Default configuration options of the Nuxt module
   defaults: {
-    ui: {
-      global: false,
-      prefix: 'Fs',
-      safelistColors: ['primary', 'red'],
-      icons: ['heroicons']
-    }
+    global: false,
+    prefix: 'Fs',
+    safelistColors: ['primary', 'red'],
+    icons: ['heroicons']
   },
   async setup (options, nuxt) {
     const { resolve } = createResolver(import.meta.url)
@@ -76,8 +72,8 @@ export default defineNuxtModule<ModuleOptions>({
     //Add global firestead components
     const components = getComponents({
       cwd: resolve('runtime'),
-      prefix: options.ui.prefix,
-      global: options.ui.global
+      prefix: options.prefix,
+      global: options.global
     })
     for(const component of components) {
       addComponent(component)

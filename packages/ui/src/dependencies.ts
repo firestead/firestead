@@ -65,7 +65,7 @@ export function getDependencyModules(config: DependencyConfig): DependencyModule
                   vue: (content: string) => {
                     return [
                       ...defaultExtractor(content),
-                      ...customSafelistExtractor(config.options.ui.prefix, content, config.nuxt.options.appConfig.ui.availableColors, config.options.ui.safelistColors)
+                      ...customSafelistExtractor(config.options.prefix, content, config.nuxt.options.appConfig.ui.availableColors, config.options.safelistColors)
                     ]
                   }
                 }

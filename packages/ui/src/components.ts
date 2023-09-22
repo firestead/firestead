@@ -33,6 +33,9 @@ const components = [
 },{
     name: 'Icon',
     path: 'components/elements/icon.vue'
+},{
+    name: 'Card', 
+    path: 'components/elements/card.vue'
 }, 
 //Forms
 {
@@ -49,11 +52,6 @@ const components = [
 },{
     name: 'Checkbox',
     path: 'components/forms/checkbox.vue'
-},
-//Layout
-{
-    name: 'Card', 
-    path: 'components/layout/card.vue'
 }
 ]
 

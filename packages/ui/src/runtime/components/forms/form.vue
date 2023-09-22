@@ -1,5 +1,5 @@
 <template>
-    <form @submit.prevent="onSubmit">
+    <form @submit.prevent="onSubmit" @reset="reset">
       <slot
         :reset="reset"
         :valid="valid"

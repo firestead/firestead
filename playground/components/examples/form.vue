@@ -11,7 +11,10 @@
                 <FsCheckbox name="remember" label="Remember me" class="pt-4"></FsCheckbox>
             </FsField>
             <template #footer>
-                <FsButton label="Submit" type="submit" :loading="formLoader" class="pt-4"/>
+                <div class="flex justify-end">
+                    <FsButton label="Cancel" type="reset" color="red" class="mr-2"/>
+                    <FsButton label="Submit" type="submit" :loading="formLoader"/>
+                </div>
             </template>
         </FsCard>
     </Block>

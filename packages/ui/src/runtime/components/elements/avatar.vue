@@ -33,7 +33,7 @@
     </span>
 </template>
 <script setup lang="ts">
-    import { createTheme, avatarTheme, PropType } from '#imports'
+    import { createTheme, avatarTheme, type PropType, computed } from '#imports'
     import type { AvatarConfig, Avatar as AvatarType  } from '#theme'
     import { twMerge } from 'tailwind-merge'
     import { transformBoolean } from '../../utils/transformBoolean'

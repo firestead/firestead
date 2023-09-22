@@ -176,11 +176,11 @@ export function initTailwind(nuxt: Nuxt, options: any, tailwindConfig: Partial<C
       }
 
       tailwindConfig.safelist = tailwindConfig.safelist || []
-      tailwindConfig.safelist.push(...generateSafelist(options?.ui?.safelistColors || [], colors))
+      tailwindConfig.safelist.push(...generateSafelist(options?.safelistColors || [], colors))
 
       tailwindConfig.plugins = tailwindConfig.plugins || []
       tailwindConfig.plugins.push(iconsPlugin({ 
-        collections: getIconCollections(options.ui.icons as any[]) 
+        collections: getIconCollections(options.icons as any[]) 
       }))
 }
 
