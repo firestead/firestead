@@ -22,6 +22,18 @@ const colorsToExclude = [
 ]
 
 const safelistByComponent = {
+  checkbox: (colorsAsRegex: string) => [{
+    pattern: new RegExp(`text-(${colorsAsRegex})-400`),
+    variants: ['dark']
+  }, {
+    pattern: new RegExp(`text-(${colorsAsRegex})-500`)
+  },{
+    pattern: new RegExp(`ring-(${colorsAsRegex})-500`),
+    variants: ['focus-visible']
+  },{
+    pattern: new RegExp(`ring-(${colorsAsRegex})-400`),
+    variants: ['focus-visible', 'dark']
+  }],
   input: (colorsAsRegex: string) => [{
     pattern: new RegExp(`text-(${colorsAsRegex})-400`),
     variants: ['dark']

@@ -25,7 +25,7 @@ export default defineNuxtModule<ModuleOptions>({
     ui: {
       global: false,
       prefix: 'Fs',
-      safelistColors: ['primary'],
+      safelistColors: ['primary', 'red'],
       icons: ['heroicons']
     }
   },

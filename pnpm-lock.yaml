@@ -82,7 +82,7 @@ importers:
     devDependencies:
       '@nuxt/module-builder':
         specifier: ^0.5.1
-        version: 0.5.1(@nuxt/kit@3.7.3)(nuxi@3.7.3)(typescript@5.2.2)
+        version: 0.5.1(@nuxt/kit@3.7.3)(nuxi@3.8.4)(typescript@5.2.2)
       '@nuxt/schema':
         specifier: ^3.7.3
         version: 3.7.3(rollup@3.29.0)
@@ -104,6 +104,9 @@ importers:
       nuxt:
         specifier: ^3.7.3
         version: 3.7.3(@types/node@18.17.14)(rollup@3.29.0)(typescript@5.2.2)
+      valibot:
+        specifier: ^0.17.0
+        version: 0.17.0
 
 packages:
 
@@ -1181,7 +1184,7 @@ packages:
       - rollup
       - supports-color
 
-  /@nuxt/module-builder@0.5.1(@nuxt/kit@3.7.3)(nuxi@3.7.3)(typescript@5.2.2):
+  /@nuxt/module-builder@0.5.1(@nuxt/kit@3.7.3)(nuxi@3.8.4)(typescript@5.2.2):
     resolution: {integrity: sha512-O39UrOFbNgL27urwDqeMgXeYiNIUvp73nsmtt7jm9JDcMVIWykuUzyBPYtHif7gq5ElzIjjmDw9zdRGgyMzo+w==}
     hasBin: true
     peerDependencies:
@@ -1192,7 +1195,7 @@ packages:
       consola: 3.2.3
       mlly: 1.4.2
       mri: 1.2.0
-      nuxi: 3.7.3
+      nuxi: 3.8.4
       pathe: 1.1.1
       unbuild: 2.0.0(typescript@5.2.2)
     transitivePeerDependencies:
@@ -5197,14 +5200,6 @@ packages:
     dependencies:
       boolbase: 1.0.0
 
-  /nuxi@3.7.3:
-    resolution: {integrity: sha512-Cg+ygRmhonE6PwAtDeKvKU/0VRqEyzmSSoJYfr0MzwIxQYrBSnLvw0z3UgJl/8MgFKjiZ5Y4wBUEiRsUw8O6uw==}
-    engines: {node: ^14.18.0 || >=16.10.0}
-    hasBin: true
-    optionalDependencies:
-      fsevents: 2.3.3
-    dev: true
-
   /nuxi@3.8.4:
     resolution: {integrity: sha512-YQAH2msfL1PeaDuk880jQAJdtF1hpuYaTQ7j8Ombl+SyyamcB9VTx0gbkNyZj7wmJQYxfiV6a42nlGQ7cJDO+g==}
     engines: {node: ^14.18.0 || >=16.10.0}
@@ -7236,6 +7231,10 @@ packages:
       is-generator-function: 1.0.10
       is-typed-array: 1.1.12
       which-typed-array: 1.1.11
+    dev: false
+
+  /valibot@0.17.0:
+    resolution: {integrity: sha512-ykoYfBc4HOH+osdWaFBmeL7yX35bFfKg1WdwHYZhNVuvGIRH5f2gtYT6cnU85XOsOE7R8la5RnVY6yAScWU9qg==}
     dev: false
 
   /validate-npm-package-license@3.0.4:

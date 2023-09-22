@@ -36,18 +36,24 @@ const components = [
 }, 
 //Forms
 {
-    name: 'FieldErrors',
-    path: 'components/forms/field/errors.vue'
-}, {
-    name: 'FieldFeedback',
-    path: 'components/forms/field/feedback.vue'
-}, {
-    name: 'FieldLabel',
-    path: 'components/forms/field/label.vue'
+    name: 'Form',
+    path: 'components/forms/form.vue'
+},
+{
+    name: 'Field',
+    path: 'components/forms/field.vue'
 },
 {
     name: 'Input',
     path: 'components/forms/input.vue'
+},{
+    name: 'Checkbox',
+    path: 'components/forms/checkbox.vue'
+},
+//Layout
+{
+    name: 'Card', 
+    path: 'components/layout/card.vue'
 }
 ]
 

@@ -1,0 +1,25 @@
+{
+    "base": {
+        "wrapper": "relative flex items-start",
+        "checkbox": "h-4 w-4 dark:checked:bg-current dark:checked:border-transparent dark:indeterminate:bg-current dark:indeterminate:border-transparent disabled:opacity-50 disabled:cursor-not-allowed focus:ring-0 focus:ring-transparent focus:ring-offset-transparent bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-700 focus-visible:ring-2 focus-visible:ring-{color}-500 dark:focus-visible:ring-{color}-400 focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:focus-visible:ring-offset-gray-900 text-{color}-500 dark:text-{color}-400",
+        "label": "font-medium text-gray-700 dark:text-gray-200",
+        "required": "text-red-500 dark:text-red-400",
+        "help": "text-gray-500 dark:text-gray-400"
+    },
+    "options": {
+        "rounded": {
+            "none": "rounded-none",
+            "rounded": "rounded",
+            "2xs": "rounded-2xs",
+            "xs": "rounded-xs",
+            "sm": "rounded-sm",
+            "md": "rounded-md",
+            "lg": "rounded-lg",
+            "xl": "rounded-xl"
+        }
+    },
+    "presets": {
+        "rounded": "rounded",
+        "color": "primary"
+    }
+}

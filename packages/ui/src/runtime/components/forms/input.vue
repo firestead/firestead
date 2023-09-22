@@ -2,8 +2,8 @@
   <div :class="theme('wrapper', {}, $attrs.class)">
     <input
       ref="input"
-      :name="name"
-      :value="modelValue"
+      :name="name || fieldContext?.name"
+      :value="modelValue || fieldContext?.value.value"
       :type="type"
       :required="required"
       :placeholder="placeholder"
@@ -52,11 +52,12 @@
 </template>
 <script setup lang="ts">
   import { twMerge } from 'tailwind-merge'
-  import { createTheme, inputTheme, PropType, computed } from '#imports'
+  import { createTheme, inputTheme, PropType, computed, inject, type Ref } from '#imports'
   import { omit } from '../../utils/omit'
   import FsIcon from '../elements/icon.vue'
   import type { InputConfig, Input  } from '#theme'
   import type { TailwindColors } from '../../types'
+  import type { FielContext, FieldEmits } from '../../types/field'
 
   // TODO: Remove, nuxt-theming should support presets and overwrite by app.config
   // @ts-ignore
@@ -171,12 +172,16 @@
   defineOptions({
     inheritAttrs: false
   })
+  
+  const emit = defineEmits<FieldEmits>()
+
+  const fieldContext = inject<FielContext | null>('fs-field-context', null)
 
   const theme = computed(() => createTheme<Input>(inputTheme, {
       variant: props.variant,
       overwrite: props.ui,
       params: {
-          color: props.color
+          color: fieldContext?.valid?.value ? props.color : 'red'
       },
       merge: twMerge
   }))
@@ -189,14 +194,16 @@
     }
   }
 
-  const onInput = (event: InputEvent) => {
-    //emit('update:modelValue', (event.target as HTMLInputElement).value)
-    //emitFormInput()
+  const onInput = (event: Event) => {
+    if(fieldContext){
+      fieldContext.updateValue((event.target as HTMLInputElement).value)
+    }
+    emit('update:modelValue', (event.target as HTMLInputElement).value)
   }
 
   const onBlur = (event: FocusEvent) => {
     //emitFormBlur()
-    //emit('blur', event)
+    emit('blur', event)
   }
 
   onMounted(() => {
