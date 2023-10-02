@@ -6,8 +6,11 @@ type Options = {
 
 const components = [
 {
-    name: 'LayoutDefault',
-    path: 'components/layouts/default.vue'
+    name: 'LayoutSidebar',
+    path: 'components/layouts/sidebar.vue'
+},{
+    name: 'LayoutStacked',
+    path: 'components/layouts/stacked.vue'
 },{
     name: 'Logo',
     prefix: false,

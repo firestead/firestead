@@ -3,7 +3,7 @@
       <!-- Static sidebar for desktop -->
       <div class="hidden lg:fixed lg:inset-y-0 lg:z-50 lg:flex lg:w-72 lg:flex-col">
         <!-- Sidebar component, swap this element with another sidebar if you like -->
-        <div class="flex grow flex-col gap-y-5 overflow-y-auto border-r border-gray-200 bg-white px-6 pb-4">
+        <div class="flex grow flex-col gap-y-5 overflow-y-auto border-r border-gray-200 bg-white pb-4">
           <div class="flex h-16 p-4 shrink-0 items-center">
             <Logo class="h-12 w-auto" alt="Firestead"></Logo>
           </div>
@@ -12,15 +12,13 @@
         </div>
       </div>
       <div class="lg:pl-72">
-        <div class="sticky top-0 z-40 flex h-16 shrink-0 items-center gap-x-4 border-b border-gray-200 bg-white px-4 shadow-sm sm:gap-x-6 sm:px-6 lg:px-8">
+        <div v-if="headerbar" class="sticky top-0 z-40 flex h-16 shrink-0 items-center gap-x-4 border-b border-gray-200 bg-white px-4 shadow-sm sm:gap-x-6 sm:px-6 lg:px-8">
           <button type="button" class="-m-2.5 p-2.5 text-gray-700 lg:hidden" @click="sidebarOpen = true">
             <span class="sr-only">Open sidebar</span>
             <FsIcon name="i-heroicons-bars-4" class="h-6 w-6" aria-hidden="true" />
           </button>
-
           <!-- Separator -->
           <div class="h-6 w-px bg-gray-200 lg:hidden" aria-hidden="true" />
-
           <slot name="headerbar">
             <div class="flex flex-1 gap-x-4 self-stretch lg:gap-x-6">
               <form class="relative flex flex-1" action="#" method="GET">
@@ -49,3 +47,20 @@
       </div>
   </div>
 </template>
+<script setup lang="ts">
+    const props = defineProps({
+        headerbar: {
+            type: Boolean,
+            default: true
+        }
+    })
+
+    useHead({
+        htmlAttrs: {
+            class: 'h-full'
+        },
+        bodyAttrs: {
+            class: 'h-full'
+        }
+    })
+</script>

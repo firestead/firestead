@@ -4,7 +4,9 @@ import {
     getComponents
 } from './components'
 
-export interface ModuleOptions {}
+export interface ModuleOptions {
+    defaultLayout?: 'stacked' | 'sidebar'
+}
 
 export default defineNuxtModule<ModuleOptions>({
     meta: {
@@ -13,6 +15,7 @@ export default defineNuxtModule<ModuleOptions>({
     },
     // Default configuration options of the Nuxt module
     defaults: {
+        defaultLayout: 'sidebar'
     },
     async setup (options, nuxt) {
         const { resolve } = createResolver(import.meta.url)
@@ -38,7 +41,7 @@ export default defineNuxtModule<ModuleOptions>({
 
         addLayout({
             filename: 'default.vue',
-            src: resolve('runtime/layouts/default.vue'),
+            src: resolve(`runtime/layouts/${options.defaultLayout}.vue`),
         })
 
         //Add global firestead components
