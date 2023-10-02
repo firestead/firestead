@@ -7,10 +7,10 @@
       "start": "nuxi preview"
     },
     "dependencies": {
-      "nuxt": "^3.7.0",
-      "valibot": "^0.17.0",
+      "nuxt": "^3.7.4",
+      "valibot": "^0.18.0",
       "firestead": "workspace:*",
       "@firestead/ui": "workspace:*",
-      "@nuxt/devtools": "^0.8.4"
+      "@nuxt/devtools": "^0.8.5"
     }
 }

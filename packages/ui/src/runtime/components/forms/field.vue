@@ -3,7 +3,7 @@
         :class="theme('wrapper', {}, $attrs.class)" 
         v-bind="omit($attrs, ['class'])">
         <div 
-            v-if="label" 
+            v-if="label || $slots.label" 
             :class="theme('labelWrapper', {
                 size: size
             })">
@@ -11,33 +11,46 @@
                 :for="name" 
                 :class="theme('label', {
                     required: transformBoolean(required)
-                })">{{ label }}</label>
+                })">
+                <slot v-if="$slots.label" name="label" v-bind="{ errors, label, name, hint, description, help }" />
+                <template v-else>{{ label }}</template>
+            </label>
             <span 
-            v-if="hint" 
-            :class="theme('hint')">{{ hint }}</span>
+                v-if="hint || $slots.hint" 
+                :class="theme('hint')">
+                <slot v-if="$slots.hint" name="hint" v-bind="{ errors, label, name, hint, description, help }" />
+                <template v-else>{{ hint }}</template>
+            </span>
         </div>
         <p 
-            v-if="description" 
+            v-if="description || $slots.description" 
             :class="theme('description', {
                 size: size
             })">
-            {{ description }}
+            <slot v-if="$slots.description" name="description" v-bind="{ errors, label, name, hint, description, help }" />
+            <template v-else>{{ description }}</template>
         </p>
         <div :class="[label ? theme('container') : '']">
             <slot :errors="errors" :valid="valid" :value="value" :update-value="updateValue" />
             <p 
-                v-if="errors.length > 0" 
+                v-if="errors.length > 0 || $slots.error" 
                 :class="theme('error', {
                     size: size
                 })">
-                {{ errors[0] }}
+                <slot v-if="$slots.error" name="error" v-bind="{ errors, label, name, hint, description, help }" />
+                <template v-else>
+                    {{ errors[0] }}
+                </template>
             </p>
             <p 
-                v-else-if="help" 
+                v-else-if="help || $slots.help" 
                 :class="theme('help', {
                     size: size
                 })">
-                {{ help }}
+                <slot v-if="$slots.help" name="help" v-bind="{ errors, label, name, hint, description, help }" />
+                <template v-else>
+                    {{ help }}
+                </template>
             </p>
         </div>
     </div>

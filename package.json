@@ -7,7 +7,7 @@
         "build": "FORCE_COLOR=1 pnpm --filter './packages/**' prepack",
         "build:stub": "pnpm --filter './packages/**' prepack --stub",
         "cleanup": "rimraf 'packages/core/node_modules' 'packages/ui/node_modules' 'playground/node_modules' 'node_modules'",
-        "dev": "pnpm play",
+        "dev": "pnpm build:stub && pnpm play",
         "play": "nuxi dev playground",
         "play:build": "nuxi build playground",
         "play:preview": "nuxi preview playground"
@@ -19,9 +19,9 @@
         "@nuxt/kit": "^3.7.3"
     },
     "devDependencies": {
-        "nuxt": "^3.7.3",
-        "vitest": "^0.34.3",
-        "rimraf": "^5.0.1"
+        "nuxt": "^3.7.4",
+        "vitest": "^0.34.6",
+        "rimraf": "^5.0.5"
     },
     "packageManager": "pnpm@8.7.1"
 }

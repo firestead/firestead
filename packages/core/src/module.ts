@@ -50,5 +50,21 @@ export default defineNuxtModule<ModuleOptions>({
         for(const component of components) {
             addComponent(component)
         }
+
+        // enabled only in development
+        if (nuxt.options.dev) {
+            //add firebase emulator ui to dev tools
+            nuxt.hook('devtools:customTabs', (tabs) => {
+                tabs.push({
+                title: 'Firebase Emulator',
+                name: 'firestead',
+                icon: 'logos-firebase',
+                view: {
+                    type: 'iframe',
+                    src: 'http://localhost:4000/'
+                }
+                })
+            })
+        }
     }
 })

@@ -24,7 +24,7 @@
       "prepack": "nuxt-module-build"
     },
     "dependencies": {
-        "@nuxt/kit": "^3.7.3",
+        "@nuxt/kit": "^3.7.4",
         "@firestead/ui": "workspace:*"
     },
     "devDependencies": {
