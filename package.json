@@ -9,6 +9,7 @@
         "cleanup": "rimraf 'packages/core/node_modules' 'packages/ui/node_modules' 'playground/node_modules' 'node_modules'",
         "dev": "pnpm build:stub && pnpm play",
         "play": "nuxi dev playground",
+        "play:firebase": "firebase emulators:start --project=default",
         "play:build": "nuxi build playground",
         "play:preview": "nuxi preview playground"
     },
