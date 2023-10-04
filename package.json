@@ -9,13 +9,14 @@
         "cleanup": "rimraf 'packages/core/node_modules' 'packages/ui/node_modules' 'playground/node_modules' 'node_modules'",
         "dev": "pnpm build:stub && pnpm play",
         "play": "nuxi dev playground",
-        "play:firebase": "firebase emulators:start --project=default",
+        "play:firebase": "firebase emulators:start --project trainings-planer --config ./playground/firebase.json",
         "play:build": "nuxi build playground",
         "play:preview": "nuxi preview playground"
     },
     "resolutions": {
         "firestead": "workspace:*",
         "@firestead/ui": "workspace:*",
+        "@firestead/auth": "workspace:*",
         "nuxt": "^3.7.3",
         "@nuxt/kit": "^3.7.3"
     },

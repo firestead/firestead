@@ -26,10 +26,15 @@ export default defineNuxtModule<ModuleOptions>({
 
         nuxt.hook('tailwindcss:config', (tailwindConfig)=>{
             // @ts-ignore
-            tailwindConfig.content?.files.push(resolve('runtime/**/*.vue'))
+            tailwindConfig.content?.files.push(resolve('runtime/**/*.{vue,mjs,ts}'))
         })
 
-            // Register dependencies
+        // check if auth module is enabled this needs to be installed before @firested/ui because of tailwind initialisation
+        const authModule = nuxt.options.modules.find((module) => module === '@firestead/auth')
+        if(authModule) {
+            await installModule('@firestead/auth', {}, nuxt)
+        }
+        // Register dependencies
         const dependencyModules = getDependencyModules({
             options: options,
             cwd: resolve('runtime')
@@ -42,6 +47,10 @@ export default defineNuxtModule<ModuleOptions>({
         addLayout({
             filename: 'default.vue',
             src: resolve(`runtime/layouts/${options.defaultLayout}.vue`),
+        })
+        addLayout({
+            filename: 'empty.vue',
+            src: resolve(`runtime/layouts/empty.vue`),
         })
 
         //Add global firestead components
