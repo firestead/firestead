@@ -13,8 +13,7 @@
         rounded: rounded,
         padding: padded ? size : 'none',
         leadingPadding: (isLeading || $slots.leading) ? size : 'none',
-        trailingPadding: (isTrailing || $slots.trailing) ? size : 'none',
-        inputStatus: fieldContext?.valid?.value === true ? 'none' : 'error'
+        trailingPadding: (isTrailing || $slots.trailing) ? size : 'none'
       }, props.inputClass)"
       v-bind="omit($attrs, ['class'])"
       @input="onInput"
@@ -182,7 +181,8 @@
       variant: props.variant,
       overwrite: props.ui,
       params: {
-          color: props.color
+          color: fieldContext?.valid?.value === true ? props.color : 'red',
+          colorDefault: fieldContext?.valid?.value === true ? 'gray' : 'red'
       },
       merge: twMerge
   }))

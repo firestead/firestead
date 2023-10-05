@@ -43,6 +43,11 @@ const safelistByComponent = {
     pattern: new RegExp(`ring-(${colorsAsRegex})-500`),
     variants: ['focus']
   },{
+    pattern: new RegExp(`ring-(${colorsAsRegex})-300`)
+  },{
+    pattern: new RegExp(`ring-(${colorsAsRegex})-700`),
+    variants: ['dark']
+  },{
     pattern: new RegExp(`ring-(${colorsAsRegex})-400`),
     variants: ['focus', 'dark']
   }],
