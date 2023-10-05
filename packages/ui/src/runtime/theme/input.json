@@ -3,13 +3,17 @@
         "wrapper": "relative",
         "input": "relative block w-full disabled:cursor-not-allowed disabled:opacity-75 focus:outline-none border-0 placeholder-gray-400 dark:placeholder-gray-500",
         "wrapperIcon": "absolute inset-y-0 start-0 flex items-center pointer-events-none",
-        "icon": "flex-shrink-0 text-gray-400 dark:text-gray-500 text-{color}-500 dark:text-{color}-400"
+        "icon": "flex-shrink-0"
     },
     "defaults": {
-        "input": "shadow-sm bg-transparent text-gray-900 dark:text-white ring-1 ring-inset ring-{color}-500 dark:ring-{color}-400 focus:ring-2 focus:ring-{color}-500 dark:focus:ring-{color}-400"
+        "input": "shadow-sm bg-white dark:bg-gray-900 text-gray-900 dark:text-white ring-1 ring-inset ring-gray-300 dark:ring-gray-700 focus:ring-2 focus:ring-{color}-500 dark:focus:ring-{color}-400",
+        "icon": "text-gray-400 dark:text-gray-500"
     },
     "variants": {
-
+        "outline": {
+            "input": "shadow-sm bg-transparent text-gray-900 dark:text-white ring-1 ring-inset ring-{color}-500 dark:ring-{color}-400 focus:ring-2 focus:ring-{color}-500 dark:focus:ring-{color}-400",
+            "icon": "text-gray-400 dark:text-gray-500 text-{color}-500 dark:text-{color}-400"
+        }
     },
     "options": {
         "size": {
@@ -93,6 +97,12 @@
         "loading": {
             "true": "animate-spin",
             "false": ""
+        },
+        "inputStatus": {
+            "none": "",
+            "error": "!ring-red-500 !dark:ring-red-400 !focus:ring-red-500 !dark:focus:ring-red-400",
+            "success": "!ring-green-500 !dark:ring-green-400 !focus:ring-green-500 !dark:focus:ring-green-400",
+            "warning": "!ring-yellow-500 !dark:ring-yellow-400 !focus:ring-yellow-500 !dark:focus:ring-yellow-400"
         }
     },
     "presets": {

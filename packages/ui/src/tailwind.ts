@@ -135,8 +135,16 @@ const excludeColors = (colors: object): string[] => {
     .map(([key]) => kebabCase(key))
 }
 
+/**
+ * 
+ * @param colors 
+ * @param globalColors 
+ * @returns 
+ * TODO: add other components
+ */
 const generateSafelist = (colors: string[], globalColors: any) => {
   return [
+    ...safelistByComponent['input'](colorsAsRegex(colors)),
     ...safelistByComponent['button'](colorsAsRegex(colors))
   ]
 }
@@ -170,7 +178,7 @@ export function initTailwind(nuxt: Nuxt, options: any, tailwindConfig: Partial<C
       nuxt.options.appConfig.ui = {
         ...nuxt.options.appConfig?.ui || {},
         colors: {
-          primary: 'yellow',
+          primary: 'orange',
         },
         availableColors: colors
       }

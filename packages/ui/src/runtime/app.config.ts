@@ -5,7 +5,7 @@ export default defineAppConfig({
   title: 'My Firestead App',
   ui: {
     colors: {
-      primary: 'stone',
+      primary: 'orange',
     },
     availableColors: [],
     defaults: {
