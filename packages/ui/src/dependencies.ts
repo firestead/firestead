@@ -23,8 +23,66 @@ type DependencyConfig = {
 }
 
 export function getDependencyModules(config: DependencyConfig): DependencyModules {
+    const prefix = 'Fs'
     const dependencyModules = [{
         name: 'nuxt-theming',
+        options: {
+          layers: {
+            priority: 100
+          },
+          config: [
+            {
+              name: 'avatar',
+              safelistExtractors:{ 
+                color: {
+                  component: `${prefix}Avatar`,
+                  safelistByProp: true,
+                  values: ['primary']
+                }
+              }
+            },
+            {
+              name: 'badge',
+              safelistExtractors:{ 
+                color: {
+                  component: `${prefix}Badge`,
+                  safelistByProp: true,
+                  values: ['primary']
+                }
+              }
+            },
+            {
+              name: 'button',
+              safelistExtractors:{ 
+                color: {
+                  component: `${prefix}Button`,
+                  safelistByProp: true,
+                  values: ['primary']
+                }
+              }
+            },
+            {
+              name: 'input',
+              safelistExtractors: { 
+                color: {
+                  component: `${prefix}Input`,
+                  safelistByProp: true,
+                  values: ['primary']
+                }
+              }
+            },
+            {
+              name: 'checkbox',
+              safelistExtractors: {
+                color: {
+                  component: `${prefix}Checkbox`,
+                  safelistByProp: true,
+                  values: ['primary']
+                }
+              }
+            }
+          ]
+        }
     },{
       name: 'nuxt-forms',
       options: {
@@ -55,20 +113,7 @@ export function getDependencyModules(config: DependencyConfig): DependencyModule
                   resolve(config.cwd, 'components/**/*.{vue,mjs,ts}'),
                   resolve(config.cwd, 'theme/**/*.{json,mjs,js,ts}'),
                   resolve(config.cwd, 'app.config.ts')
-                ],
-                transform: {
-                  vue: (content: string) => {
-                    return content.replaceAll(/(?:\r\n|\r|\n)/g, ' ')
-                  }
-                },
-                extract: {
-                  vue: (content: string) => {
-                    return [
-                      ...defaultExtractor(content),
-                      ...customSafelistExtractor(config.options.prefix, content, config.nuxt.options.appConfig.ui.availableColors, config.options.safelistColors)
-                    ]
-                  }
-                }
+                ]
               }
             }
         }

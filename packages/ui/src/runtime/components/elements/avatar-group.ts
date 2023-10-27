@@ -1,16 +1,10 @@
 import { h, cloneVNode, computed, defineComponent } from 'vue'
 import type { PropType } from 'vue'
-import { twMerge } from 'tailwind-merge'
 import { getSlotsChildren } from '../../utils/getSlotsChildren'
 import { omit } from '../../utils/omit'
 import type { AvatarConfig, AvatarGroup, AvatarGroupConfig } from '#theme'
 import Avatar from './Avatar.vue'
-import { useAppConfig, avatarTheme, avatarGroupTheme } from '#imports'
-// TODO: Remove
-// @ts-expect-error
-import appConfig from '#build/app.config'
-
-// const appConfig = useAppConfig()
+import { avatarTheme, avatarGroupTheme } from '#imports'
 
 export default defineComponent({
   inheritAttrs: false,
@@ -32,19 +26,16 @@ export default defineComponent({
     }
   },
   setup (props, { attrs, slots }) {
-    // TODO: Remove
-    const appConfig = useAppConfig()
 
     const theme = computed(() => createTheme<AvatarGroup>(avatarGroupTheme, {
-      overwrite: props.ui,
-      merge: twMerge
+      overwrite: props.ui
     }))
 
     const children = computed(() => getSlotsChildren(slots))
 
     const max = computed(() => typeof props.max === 'string' ? parseInt(props.max, 10) : props.max)
 
-    const clones = computed(() => children.value.map((node, index) => {
+    const clones = computed(() => children.value.map((node: any, index: number) => {
         const vProps: any = {}
   
         if (!props.max || (max.value && index < max.value)) {
@@ -60,7 +51,7 @@ export default defineComponent({
   
         if (max.value !== undefined && index === max.value) {
           return h(Avatar, {
-            size: props.size || appConfig.ui.defaults.avatar.size,
+            size: props.size || avatarTheme.default.presets.size,
             text: `+${children.value.length - max.value}`,
             class: theme.value('children')
           })

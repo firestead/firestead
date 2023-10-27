@@ -63,5 +63,12 @@
             "true": "bg-{color}-500 dark:bg-{color}-400",
             "false": ""
         }
+    },
+    "presets": {
+        "size": "md",
+        "rounded": "full",
+        "icon": "",
+        "chipColor": "",
+        "chipPosition": "top-right"
     }
 }

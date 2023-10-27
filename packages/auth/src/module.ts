@@ -1,4 +1,5 @@
-import { defineNuxtModule, extendPages, createResolver } from '@nuxt/kit'
+import { defineNuxtModule, extendPages, createResolver, addComponent } from '@nuxt/kit'
+import { getComponents } from './components'
 
 export interface ModuleOptions {
 }
@@ -39,5 +40,14 @@ export default defineNuxtModule<ModuleOptions>({
                 file:  resolve('runtime/pages/login.vue')
             })
         })
+            //Add global firestead components
+        const components = getComponents({
+            cwd: resolve('runtime'),
+            prefix: 'Fs',
+            global: true
+        })
+        for(const component of components) {
+            addComponent(component)
+        }
     }
 })

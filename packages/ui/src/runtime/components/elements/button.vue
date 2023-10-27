@@ -48,14 +48,8 @@
   import { omit } from '../../utils/omit'
   import FsIcon from './icon.vue'
   import FsLink from './link.vue'
-  import { twMerge } from 'tailwind-merge'
-  import { createTheme, buttonTheme, PropType } from '#imports'
-  import type { ButtonConfig, Button  } from '#theme'
-  import type { TailwindColors } from '../../types'
-  // TODO: Remove, nuxt-theming should support presets and overwrite by app.config
-  // @ts-ignore
-  import appConfig from '#build/app.config'
-
+  import { createTheme, buttonTheme, tailwindColors, type PropType } from '#imports'
+  import type { ButtonConfig, Button, TailwindColors } from '#theme'
 
   const props = defineProps({
     type: {
@@ -88,14 +82,14 @@
     },
     shadow: {
       type: String as PropType<keyof ButtonConfig['options']['shadow']>,
-      default: () => appConfig.ui.defaults.button.shadow,
+      default: () => buttonTheme.default.presets.shadow,
       validator (value: string) {
         return Object.keys(buttonTheme.default.options.shadow).includes(value)
       }
     },
     rounded: {
       type: String as PropType<keyof ButtonConfig['options']['rounded']>,
-      default: () => appConfig.ui.defaults.button.rounded,
+      default: () => buttonTheme.default.presets.rounded,
       validator (value: string) {
         return Object.keys(buttonTheme.default.options.rounded).includes(value)
       }
@@ -110,16 +104,16 @@
     },
     size: {
       type: String as PropType<keyof ButtonConfig['options']['size']>,
-      default: () => appConfig.ui.defaults.button.size,
+      default: () => buttonTheme.default.presets.size,
       validator (value: string) {
         return Object.keys(buttonTheme.default.options.size).includes(value)
       }
     },
     color: {
       type: String as PropType<TailwindColors>,
-      default: appConfig.ui.defaults.button.color,
+      default: buttonTheme.default.presets.color,
       validator (value: string) {
-        return [...appConfig.ui.availableColors].includes(value)
+        return [...tailwindColors].includes(value)
       }
     },
     variant: {
@@ -137,7 +131,7 @@
     },
     loadingIcon: {
       type: String,
-      default: () => appConfig.ui.defaults.button.loadingIcon
+      default: () => buttonTheme.default.presets.loadingIcon
     },
     leadingIcon: {
       type: String,
@@ -178,10 +172,9 @@
   const theme = computed(() => createTheme<Button>(buttonTheme, {
       variant: props.variant,
       overwrite: props.ui,
-      params: {
+      extractors: {
           color: props.color
-      },
-      merge: twMerge
+      }
   }))
 
   const slots = useSlots()

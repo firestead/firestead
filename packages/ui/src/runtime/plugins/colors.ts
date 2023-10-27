@@ -5,22 +5,21 @@
  */
 import { computed } from 'vue'
 import { hexToRgb } from '../utils/hexToRgb'
-import { defineNuxtPlugin, useAppConfig } from '#imports'
+import { defineNuxtPlugin, useAppConfig, useHead } from '#imports'
 import colors from '#tailwind-config/theme/colors'
 
 export default defineNuxtPlugin((nuxtApp) => {
   const appConfig = useAppConfig()
-  const head = nuxtApp.vueApp._context.provides.usehead
 
   const root = computed(() => {
-    const primary: Record<string, string> | undefined = colors[appConfig.ui.colors.primary]
+    const primary: Record<string, string> | undefined = colors[appConfig.ui.color]
 
     if (!primary) {
-      console.warn(`[firestead] Primary color '${appConfig.ui.colors.primary}' not found in Tailwind config`)
+      console.warn(`[firestead] Primary color '${appConfig.ui.color}' not found in Tailwind config`)
     }
 
     return `:root {
-${Object.entries(primary || colors.yellow).map(([key, value]) => `--color-primary-${key}: ${hexToRgb(value)};`).join('\n')}
+${Object.entries(primary || colors.orange).map(([key, value]) => `--color-primary-${key}: ${hexToRgb(value)};`).join('\n')}
 --color-primary-DEFAULT: var(--color-primary-500);
 }
 
@@ -52,6 +51,5 @@ ${Object.entries(primary || colors.yellow).map(([key, value]) => `--color-primar
     }]
   }
 
-  // Workaround for https://github.com/nuxt/nuxt/issues/22763
-  head.push(headData)
+  useHead(headData)
 })

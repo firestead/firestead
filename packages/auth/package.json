@@ -24,9 +24,9 @@
       "prepack": "nuxt-module-build"
     },
     "dependencies": {
-        "@nuxt/kit": "^3.7.4",
+        "@nuxt/kit": "^3.8.0",
         "firestead": "workspace:*",
-        "valibot": "^0.18.0"
+        "valibot": "^0.19.0"
     },
     "devDependencies": {
 

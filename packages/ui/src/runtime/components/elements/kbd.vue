@@ -10,14 +10,8 @@
 <script setup lang="ts">
   import { computed } from 'vue'
   import { omit } from '../../utils/omit'
-  import { twMerge } from 'tailwind-merge'
-  import { createTheme, kbdTheme, PropType } from '#imports'
+  import { createTheme, kbdTheme, type PropType } from '#imports'
   import type { KbdConfig, Kbd  } from '#theme'
-  // TODO: Remove
-  // @ts-expect-error
-  import appConfig from '#build/app.config'
-  
-  // const appConfig = useAppConfig()
 
   const props = defineProps({
     value: {
@@ -26,7 +20,7 @@
       },
       size: {
         type: String as PropType<keyof KbdConfig['options']['size']>,
-        default: () => appConfig.ui.defaults.kbd.size,
+        default: () => kbdTheme.default.presets.size,
         validator (value: string) {
           return Object.keys(kbdTheme.default.options.size).includes(value)
         }
@@ -38,7 +32,6 @@
   })
 
   const theme = computed(() => createTheme<Kbd>(kbdTheme, {
-      overwrite: props.ui,
-      merge: twMerge
+      overwrite: props.ui
   }))
 </script>

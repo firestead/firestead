@@ -8,5 +8,8 @@
             "sm": "h-5 min-w-[20px] text-[11px]",
             "md": "h-6 min-w-[24px] text-[12px]"
         }
+    },
+    "presets": {
+        "size": "md"
     }
 }

@@ -28,7 +28,7 @@ import {
 } from 'firebase/database'
 import { ref } from 'vue'
 import { useDatabase, useDatabaseList } from 'vuefire'
-import { Todo } from '../todo-item.vue'
+import type { Todo } from '../todo-item.vue'
 
 const db = useDatabase()
 const todosRef = dbRef(db, 'todos')

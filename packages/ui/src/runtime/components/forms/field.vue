@@ -56,7 +56,6 @@
     </div>
   </template>
   <script setup lang="ts">
-    import { twMerge } from 'tailwind-merge'
     import { useField, useFormContext, onBeforeUnmount, provide, createTheme, fieldTheme } from '#imports'
     import { omit } from '../../utils/omit'
     import { transformBoolean } from '../../utils/transformBoolean'
@@ -138,8 +137,7 @@
   })
 
   const theme = computed(() => createTheme<Field>(fieldTheme, {
-      overwrite: props.ui,
-      merge: twMerge
+      overwrite: props.ui
   }))
   
   const { valid, errors, value, updateValue, bindForm, unbindForm } = useField(props.name, {

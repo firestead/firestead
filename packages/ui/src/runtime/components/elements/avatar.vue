@@ -33,16 +33,11 @@
     </span>
 </template>
 <script setup lang="ts">
-    import { createTheme, avatarTheme, type PropType, computed } from '#imports'
-    import type { AvatarConfig, Avatar as AvatarType  } from '#theme'
-    import { twMerge } from 'tailwind-merge'
+    import { createTheme, avatarTheme, type PropType, computed, tailwindColors } from '#imports'
+    import type { AvatarConfig, Avatar, TailwindColors  } from '#theme'
     import { transformBoolean } from '../../utils/transformBoolean'
     import { omit } from '../../utils/omit'
     import FsIcon from './icon.vue'
-    import type { TailwindColors } from '../../types'
-    // TODO: Remove
-    // @ts-ignore
-    import appConfig from '#build/app.config'
 
     defineOptions({
         inheritAttrs: false
@@ -63,32 +58,32 @@
         },
         icon: {
             type: String,
-            default: () => appConfig.ui.defaults.avatar.icon
+            default: () => avatarTheme.default.presets.icon
         },
         size: {
             type: String as PropType<keyof AvatarConfig['options']['size']>,
-            default: () => appConfig.ui.defaults.avatar.size,
+            default: () => avatarTheme.default.presets.size,
             validator (value: string) {
                 return Object.keys(avatarTheme.default.options.size).includes(value)
             }
         },
         rounded: {
             type: String as PropType<keyof AvatarConfig['options']['rounded']>,
-            default: () => appConfig.ui.defaults.avatar.rounded,
+            default: () => avatarTheme.default.presets.rounded,
             validator (value: string) {
                 return Object.keys(avatarTheme.default.options.rounded).includes(value)
             }
         },
         chipColor: {
             type: String as PropType<TailwindColors>,
-            default: () => appConfig.ui.defaults.avatar.chipColor,
+            default: () => avatarTheme.default.presets.chipColor,
             validator (value: string) {
-                return [...appConfig.ui.availableColors].includes(value)
+                return [...tailwindColors].includes(value)
             }
         },
         chipPosition: {
             type: String as PropType<keyof AvatarConfig['options']['chipPosition']>,
-            default: () => appConfig.ui.defaults.avatar.chipPosition,
+            default: () => avatarTheme.default.presets.chipPosition,
             validator (value: string) {
                 return Object.keys(avatarTheme.default.options.chipPosition).includes(value)
             }
@@ -107,12 +102,11 @@
         }
     })
 
-    const theme = computed(() => createTheme<AvatarType>(avatarTheme, {
+    const theme = computed(() => createTheme<Avatar>(avatarTheme, {
         overwrite: props.ui,
-        params: {
+        extractors: {
           color: props.chipColor
-        },
-        merge: twMerge
+        }
     }))
 
     const url = computed(() => {

@@ -1,17 +1,11 @@
 import { defineNuxtModule, createResolver, installModule, addComponent, resolvePath, addPlugin } from '@nuxt/kit'
 import { getDependencyModules } from './dependencies'
-import { initTailwind } from './tailwind'
+import { createTailwindConfig } from './tailwind'
 import {
    getComponents
 } from './components'
+import type { ModuleOptions } from './types'
 
-// Module options TypeScript interface definition
-export interface ModuleOptions {
-  global: boolean
-  prefix: string
-  safelistColors: string[]
-  icons: string[] | string
-}
 
 export default defineNuxtModule<ModuleOptions>({
   meta: {
@@ -51,7 +45,7 @@ export default defineNuxtModule<ModuleOptions>({
       })
     })
     // add tailwind
-    nuxt.hook('tailwindcss:config', (tailwindConfig)=>initTailwind(nuxt, options, tailwindConfig))
+    nuxt.hook('tailwindcss:config', (tailwindConfig)=>createTailwindConfig(tailwindConfig, options, resolve('runtime')))
 
     // Register dependencies
     const dependencyModules = getDependencyModules({

@@ -117,5 +117,12 @@
             "lg": "rounded-e-lg",
             "xl": "rounded-e-xl"
         }
+    },
+    "presets": {
+        "color": "primary",
+        "loadingIcon": "i-heroicons-arrow-path-20-solid",
+        "size": "md",
+        "rounded": "md",
+        "shadow": "none"
     }
 }

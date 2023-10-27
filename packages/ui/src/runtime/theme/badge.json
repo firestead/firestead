@@ -32,5 +32,10 @@
             "lg": "rounded-lg",
             "xl": "rounded-xl"
         }
+    },
+    "presets": {
+        "size": "md",
+        "rounded": "md",
+        "color": "primary"
     }
 }

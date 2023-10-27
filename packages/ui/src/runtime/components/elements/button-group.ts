@@ -1,36 +1,30 @@
 import { h, cloneVNode, computed, defineComponent } from 'vue'
 import type { PropType } from 'vue'
-import { twMerge } from 'tailwind-merge'
 import { getSlotsChildren } from '../../utils/getSlotsChildren'
 import { omit } from '../../utils/omit'
 import type { ButtonGroup, ButtonGroupConfig, ButtonConfig } from '#theme'
 import { useAppConfig, buttonGroupTheme } from '#imports'
-// TODO: Remove
-// @ts-expect-error
-import appConfig from '#build/app.config'
-
-// const appConfig = useAppConfig()
 
 export default defineComponent({
   inheritAttrs: false,
   props: {
     size: {
       type: String as PropType<keyof ButtonConfig['options']['size']>,
-      default: appConfig.ui.defaults.buttonGroup.size,
+      default: buttonGroupTheme.default.presets.size,
       validator (value: string) {
         return Object.keys(buttonTheme.default.options.size).includes(value)
       }
     },
     shadow: {
       type: String as PropType<keyof ButtonGroupConfig['options']['shadow']>,
-      default: () => appConfig.ui.defaults.buttonGroup.shadow,
+      default: () => buttonGroupTheme.default.presets.shadow,
       validator (value: string) {
         return Object.keys(buttonTheme.default.options.shadow).includes(value)
       }
     },
     rounded: {
       type: String as PropType<keyof ButtonConfig['options']['rounded']>,
-      default: () => appConfig.ui.defaults.buttonGroup.rounded,
+      default: () => buttonGroupTheme.default.presets.rounded,
       validator (value: string) {
         return Object.keys(buttonTheme.default.options.rounded).includes(value)
       }
@@ -45,8 +39,7 @@ export default defineComponent({
     const appConfig = useAppConfig()
 
     const theme = computed(() => createTheme<ButtonGroup>(buttonGroupTheme, {
-      overwrite: props.ui,
-      merge: twMerge
+      overwrite: props.ui
     }))
 
     const children = computed(() => getSlotsChildren(slots))

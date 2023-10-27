@@ -18,7 +18,6 @@
 </template>
 <script setup lang="ts">
     import { createTheme, cardTheme, type PropType, computed } from '#imports'
-    import { twMerge } from 'tailwind-merge'
     import { omit } from '../../utils/omit'
     import type { CardConfig, Card  } from '#theme'
 
@@ -38,7 +37,6 @@
     })
 
     const theme = computed(() => createTheme<Card>(cardTheme, {
-        overwrite: props.ui,
-        merge: twMerge
+        overwrite: props.ui
     }))
 </script>

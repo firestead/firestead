@@ -12,5 +12,10 @@
             "lg": "shadow-lg",
             "xl": "shadow-xl"
         }
+    },
+    "presets": {
+        "size": "md",
+        "rounded": "md",
+        "shadow": "none"
     }
 }

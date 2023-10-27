@@ -13,7 +13,8 @@
         rounded: rounded,
         padding: padded ? size : 'none',
         leadingPadding: (isLeading || $slots.leading) ? size : 'none',
-        trailingPadding: (isTrailing || $slots.trailing) ? size : 'none'
+        trailingPadding: (isTrailing || $slots.trailing) ? size : 'none',
+        errorInput: transformBoolean(!fieldContext?.valid.value || false)
       }, props.inputClass)"
       v-bind="omit($attrs, ['class'])"
       @input="onInput"
@@ -32,6 +33,7 @@
           :class="theme('icon',{
             iconSize: size,
             loading: loading ? 'true' : 'false',
+            errorIcon: transformBoolean(!fieldContext?.valid.value || false)
           })" />
       </slot>
     </span>
@@ -51,18 +53,12 @@
   </div>
 </template>
 <script setup lang="ts">
-  import { twMerge } from 'tailwind-merge'
-  import { createTheme, inputTheme, PropType, computed, inject, type Ref } from '#imports'
+  import { createTheme, inputTheme, tailwindColors, type PropType, computed, inject } from '#imports'
   import { omit } from '../../utils/omit'
+  import { transformBoolean } from '../../utils/transformBoolean'
   import FsIcon from '../elements/icon.vue'
-  import type { InputConfig, Input  } from '#theme'
-  import type { TailwindColors } from '../../types'
+  import type { InputConfig, Input, TailwindColors  } from '#theme'
   import type { FielContext, FieldEmits } from '../../types/field'
-
-  // TODO: Remove, nuxt-theming should support presets and overwrite by app.config
-  // @ts-ignore
-  import appConfig from '#build/app.config'
-
 
   const props = defineProps({
     modelValue: {
@@ -147,7 +143,7 @@
       type: String as PropType<TailwindColors>,
       default: inputTheme.default.presets.color,
       validator (value: string) {
-        return [...appConfig.ui.availableColors].includes(value)
+        return [...tailwindColors].includes(value)
       }
     },
     variant: {
@@ -180,11 +176,9 @@
   const theme = computed(() => createTheme<Input>(inputTheme, {
       variant: props.variant,
       overwrite: props.ui,
-      params: {
-          color: fieldContext?.valid?.value === true ? props.color : 'red',
-          colorDefault: fieldContext?.valid?.value === true ? 'gray' : 'red'
-      },
-      merge: twMerge
+      extractors: {
+          color: props.color
+      }
   }))
 
   const input = ref<HTMLInputElement | null>(null)

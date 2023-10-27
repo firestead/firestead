@@ -31,16 +31,10 @@
     </div>
 </template>
 <script setup lang="ts">
-    import { twMerge } from 'tailwind-merge'
-    import { createTheme, checkboxTheme, PropType, computed, inject, type Ref } from '#imports'
+    import { createTheme, checkboxTheme, tailwindColors, type PropType, computed, inject } from '#imports'
     import { omit } from '../../utils/omit'
-    import type { CheckboxConfig, Checkbox  } from '#theme'
-    import type { TailwindColors } from '../../types'
+    import type { CheckboxConfig, Checkbox, TailwindColors  } from '#theme'
     import type { FielContext, FieldEmits } from '../../types/field'
-
-    // TODO: Remove, nuxt-theming should support presets and overwrite by app.config
-    // @ts-ignore
-    import appConfig from '#build/app.config'
 
     const props = defineProps({
         value: {
@@ -83,7 +77,7 @@
             type: String as PropType<TailwindColors>,
             default: checkboxTheme.default.presets.color,
             validator (value: string) {
-                return [...appConfig.ui.availableColors].includes(value)
+                return [...tailwindColors].includes(value)
             }
         },
         rounded: {
@@ -113,10 +107,9 @@
 
     const theme = computed(() => createTheme<Checkbox>(checkboxTheme, {
         overwrite: props.ui,
-        params: {
+        extractors: {
             color: fieldContext?.valid?.value ? props.color : 'red'
-        },
-        merge: twMerge
+        }
     }))
 
     const toggle = computed({

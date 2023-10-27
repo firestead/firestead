@@ -17,11 +17,11 @@
         "firestead": "workspace:*",
         "@firestead/ui": "workspace:*",
         "@firestead/auth": "workspace:*",
-        "nuxt": "^3.7.3",
-        "@nuxt/kit": "^3.7.3"
+        "nuxt": "^3.8.0",
+        "@nuxt/kit": "^3.8.0"
     },
     "devDependencies": {
-        "nuxt": "^3.7.4",
+        "nuxt": "^3.8.0",
         "vitest": "^0.34.6",
         "rimraf": "^5.0.5"
     },

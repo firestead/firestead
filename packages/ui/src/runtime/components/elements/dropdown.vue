@@ -89,14 +89,8 @@
     import FsLink from './link.vue'
     import type { DropdownItem } from '../../types/dropdown'
     import type { PopperOptions } from '../../types/popper'
-    import { twMerge } from 'tailwind-merge'
-    import { createTheme, dropdownTheme, PropType } from '#imports'
-    import type { DropdownConfig, Dropdown  } from '#theme'
-    // TODO: Remove
-    // @ts-expect-error
-    import appConfig from '#build/app.config'
-
-    // const appConfig = useAppConfig()
+    import { createTheme, dropdownTheme, type PropType } from '#imports'
+    import type { DropdownConfig, Dropdown, AvatarConfig  } from '#theme'
 
     const props = defineProps({
         items: {
@@ -131,28 +125,13 @@
     })
 
     const theme = computed(() => createTheme<Dropdown>(dropdownTheme, {
-      overwrite: props.ui,
-      merge: twMerge
+      overwrite: props.ui
     }))
 
-    //TODO: Remove if nuxt-theming supports presets
-    const avatarSize = "3xs"
-
-    //TODO: Remove if nuxt-theming supports presets
-    const transitionPreset = {
-        "enterActiveClass": "transition duration-100 ease-out",
-        "enterFromClass": "transform scale-95 opacity-0",
-        "enterToClass": "transform scale-100 opacity-100",
-        "leaveActiveClass": "transition duration-75 ease-in",
-        "leaveFromClass": "transform scale-100 opacity-100",
-        "leaveToClass": "transform scale-95 opacity-0"
-    }
-
-    //TODO: Remove if nuxt-theming supports presets
-    const popperPreset = {
-        "placement": "bottom-end",
-        "strategy": "fixed"
-    } as PopperOptions
+    //Get presets
+    const avatarSize = theme.value('preset:avatarSize') as keyof AvatarConfig['options']['size']
+    const transitionPreset = theme.value('preset:transition') as Object
+    const popperPreset = theme.value('preset:popper') as PopperOptions
 
     const popper = computed<PopperOptions>(() => defu(props.mode === 'hover' ? { offsetDistance: 0 } : {}, props.popper, popperPreset))
 

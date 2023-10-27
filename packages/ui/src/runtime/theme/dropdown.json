@@ -22,5 +22,20 @@
             "true": "text-gray-500 dark:text-gray-400",
             "false": "text-gray-400 dark:text-gray-500"
         }
+    },
+    "presets": {
+        "avatarSize": "3xs",
+        "transition": {
+            "enterActiveClass": "transition duration-100 ease-out",
+            "enterFromClass": "transform scale-95 opacity-0",
+            "enterToClass": "transform scale-100 opacity-100",
+            "leaveActiveClass": "transition duration-75 ease-in",
+            "leaveFromClass": "transform scale-100 opacity-100",
+            "leaveToClass": "transform scale-95 opacity-0"
+        },
+        "popper": {
+            "placement": "bottom-end",
+            "strategy": "fixed"
+        }
     }
 }
