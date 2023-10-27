@@ -5,12 +5,12 @@
         v-bind="omit($attrs, ['class'])" 
         @mouseleave="onMouseLeave">
         <HMenuButton
-            ref="trigger"
-            as="div"
-            :disabled="disabled"
-            class="inline-flex w-full"
-            role="button"
-            @mouseover="onMouseOver"
+          ref="trigger"
+          as="div"
+          :disabled="disabled"
+          class="inline-flex w-full"
+          role="button"
+          @mouseover="onMouseOver"
         >
             <slot :open="open" :disabled="disabled">
                 <button :disabled="disabled">
@@ -20,60 +20,66 @@
         </HMenuButton>
 
         <div 
-            v-if="open && items.length" 
-            ref="container" 
-            :class="theme('container')" 
-            :style="containerStyle" 
-            @mouseover="onMouseOver">
+          v-if="open && items.length" 
+          ref="container" 
+          :class="['group',theme('container')]" 
+          :style="containerStyle" 
+          @mouseover="onMouseOver">
             <Transition appear v-bind="transitionPreset">
+              <div>
+                <div 
+                  v-if="popper.arrow" 
+                  data-popper-arrow 
+                  :class="['invisible before:visible before:block before:rotate-45 before:z-[-1]', theme('arrow')]" />
                 <HMenuItems 
-                    :class="theme('menu')" static>
-                    <div 
-                        v-for="(subItems, index) of items" 
-                        :key="index" 
-                        :class="theme('itemContainer')">
-                        <HMenuItem 
-                            v-for="(item, subIndex) of subItems" 
-                            :key="subIndex" 
-                            v-slot="{ active, disabled: itemDisabled }" 
-                            :disabled="item.disabled">
-                            <FsLink
-                                v-bind="omit(item, ['label', 'slot', 'icon', 'iconClass', 'avatar', 'shortcuts', 'disabled', 'click'])"
-                                :class="theme('item', {
-                                    itemActive: transformBoolean(active),
-                                    itemDisabled: transformBoolean(itemDisabled),
-                                })"
-                                @click="item.click"
-                            >
-                                <slot :name="item.slot || 'item'" :item="item">
-                                <FsIcon 
-                                    v-if="item.icon" 
-                                    :name="item.icon" 
-                                    :class="theme('icon', {
-                                        iconActive: transformBoolean(active),
-                                    },item.iconClass)" />
-                                <FsAvatar 
-                                    v-else-if="item.avatar" 
-                                    v-bind="{ 
-                                        size: avatarSize, 
-                                        ...item.avatar 
-                                    }" 
-                                    :class="theme('avatar')" />
+                  :class="theme('menu')" static>
+                  <div 
+                    v-for="(subItems, index) of items" 
+                  :key="index" 
+                  :class="theme('itemContainer')">
+                    <HMenuItem 
+                        v-for="(item, subIndex) of subItems" 
+                        :key="subIndex" 
+                        v-slot="{ active, disabled: itemDisabled }" 
+                        :disabled="item.disabled">
+                        <FsLink
+                            v-bind="omit(item, ['label', 'slot', 'icon', 'iconClass', 'avatar', 'shortcuts', 'disabled', 'click'])"
+                            :class="theme('item', {
+                                itemActive: transformBoolean(active),
+                                itemDisabled: transformBoolean(itemDisabled),
+                            })"
+                            @click="item.click"
+                        >
+                            <slot :name="item.slot || 'item'" :item="item">
+                            <FsIcon 
+                                v-if="item.icon" 
+                                :name="item.icon" 
+                                :class="theme('icon', {
+                                    iconActive: transformBoolean(active),
+                                },item.iconClass)" />
+                            <FsAvatar 
+                                v-else-if="item.avatar" 
+                                v-bind="{ 
+                                    size: avatarSize, 
+                                    ...item.avatar 
+                                }" 
+                                :class="theme('avatar')" />
 
-                                <span class="truncate">{{ item.label }}</span>
+                            <span class="truncate">{{ item.label }}</span>
 
-                                <span 
-                                    v-if="item.shortcuts?.length" 
-                                    :class="theme('shortcuts')">
-                                    <FsKbd v-for="shortcut of item.shortcuts" :key="shortcut">{{ shortcut }}</FsKbd>
-                                </span>
-                                </slot>
-                            </FsLink>
-                        </HMenuItem>
-                    </div>
-                </HMenuItems>
-            </Transition>
-        </div>
+                            <span 
+                                v-if="item.shortcuts?.length" 
+                                :class="theme('shortcuts')">
+                                <FsKbd v-for="shortcut of item.shortcuts" :key="shortcut">{{ shortcut }}</FsKbd>
+                            </span>
+                            </slot>
+                        </FsLink>
+                    </HMenuItem>
+                  </div>
+              </HMenuItems>
+            </div>
+          </Transition>
+      </div>
   </HMenu>
 </template>
 <script setup lang="ts">

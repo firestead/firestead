@@ -1,6 +1,6 @@
 <template>
     <Block label="Dropdown">
-        <FsDropdown :items="items" :popper="{ placement: 'bottom-start' }">
+        <FsDropdown :items="items" :popper="{ arrow: true }">
             <FsButton trailing-icon="i-heroicons-chevron-down-20-solid">Dropdown</FsButton>
         </FsDropdown>
     </Block>

@@ -7,7 +7,8 @@
         "item": "group flex items-center gap-2 w-full px-2 py-1.5 text-sm rounded-md",
         "icon": "flex-shrink-0 h-4 w-4",
         "avatar": "flex-shrink-0",
-        "shortcuts": "hidden md:inline-flex flex-shrink-0 gap-0.5 ms-auto"
+        "shortcuts": "hidden md:inline-flex flex-shrink-0 gap-0.5 ms-auto",
+        "arrow": "before:w-2 before:h-2 before:ring-1 before:ring-gray-200 dark:before:ring-gray-700 before:rounded-sm before:bg-white dark:before:bg-gray-700 before:shadow group-data-[popper-placement*='right']:-left-1 group-data-[popper-placement*='left']:-right-1 group-data-[popper-placement*='top']:-bottom-1 group-data-[popper-placement*='bottom']:-top-1"
     },
     "options": {
         "itemActive": {
