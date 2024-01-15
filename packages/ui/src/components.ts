@@ -10,6 +10,9 @@ const components = [
     name: 'Avatar',
     path: 'components/elements/avatar.vue'
 },{
+    name: 'AvatarRadix',
+    path: 'components/elements/avatar-radix.vue'
+},{
     name: 'AvatarGroup',
     path: 'components/elements/avatar-group.ts'
 },{

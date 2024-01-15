@@ -105,6 +105,11 @@
 
     const fieldContext = inject<FielContext | null>('fs-field-context', null)
 
+    // init value
+    if(fieldContext?.value?.value === null) {
+        fieldContext.updateValue(props.modelValue || props.value || false, true)
+    }
+
     const theme = computed(() => createTheme<Checkbox>(checkboxTheme, {
         overwrite: props.ui,
         extractors: {

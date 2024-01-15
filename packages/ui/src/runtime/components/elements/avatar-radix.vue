@@ -1,36 +1,35 @@
 <template>
-    <span 
+    <AvatarRoot
         :class="theme('wrapper', {
             background: transformBoolean(error || !url),
             size: size,
             rounded: rounded
-        }, $attrs?.class)"
-    >
-        <img
-            v-if="url && !error"
+        }, $attrs?.class)">
+        <AvatarImage
+            v-if="url"
             :class="theme('image', {
-                size: size,
-                rounded: rounded
+                    size: size,
+                    rounded: rounded
             }, imgClass)"
             :alt="alt"
             :src="url"
             v-bind="omit($attrs, ['class'])"
-            @error="onError"
+            @loadingStatusChange="onStatusChange"
+        />
+        <AvatarFallback
+            class="text-grass11 leading-1 flex h-full w-full items-center justify-center text-[15px] font-medium"
+            :delay-ms="600"
         >
-        <span v-else-if="text" :class="theme('text')">{{ text }}</span>
-        <FsIcon v-else-if="icon" :name="icon" :class="theme('icon', {
-            iconSize: size
-        })" />
-        <span v-else-if="placeholder" :class="theme('placeholder')">{{ placeholder }}</span>
+            CT
+        </AvatarFallback>
         <span v-if="chipColor" :class="theme('chip', {
-            chipSize: size,
-            chipPosition: chipPosition,
-            chipBackground: transformBoolean(chipColor? true : false)
-        })">
+                chipSize: size,
+                chipPosition: chipPosition,
+                chipBackground: transformBoolean(chipColor? true : false)
+            })">
             {{ chipText }}
         </span>
-        <slot />
-    </span>
+    </AvatarRoot>
 </template>
 <script setup lang="ts">
     import { createTheme, avatarTheme, type PropType, computed, tailwindColors } from '#imports'
@@ -38,6 +37,7 @@
     import { transformBoolean } from '../../utils/transformBoolean'
     import { omit } from '../../utils/omit'
     import FsIcon from './icon.vue'
+    import { AvatarFallback, AvatarImage, AvatarRoot } from 'radix-vue'
 
     defineOptions({
         inheritAttrs: false
@@ -122,7 +122,10 @@
       return (props.alt || '').split(' ').map(word => word.charAt(0)).join('').substring(0, 2)
     })
 
-    function onError () {
-      error.value = true
+    function onStatusChange (status: string) {
+        console.log('status', status)
+        if (status === 'error') {
+            error.value = true
+        }
     }
 </script>

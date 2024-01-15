@@ -8,15 +8,9 @@
                 <FsInput icon="i-heroicons-key" size="md" type="password" placeholder="Password"></FsInput>
           </FsField>
 
-          <div class="flex items-center justify-between">
-            <FsField name="remember">
-              <FsCheckbox name="remember" label="Remember me"></FsCheckbox>
-            </FsField>
-
-            <div class="text-sm leading-6">
-              <FsLink to="#" class="font-semibold text-indigo-600 hover:text-indigo-500">Forgot password?</FsLink>
-            </div>
-          </div>
+          <FsField v-if="termsValidator" name="terms" :validate="termsValidator" :validate-on-change="true" help="You must accept our terms"   >
+            <FsCheckbox name="terms" label="Accept terms" :value="false"></FsCheckbox>
+          </FsField>
 
           <div>
             <FsButton type="submit" label="Sign in" block />
@@ -24,21 +18,35 @@
     </FsForm>
 </template>
 <script setup lang="ts">
-    import { type Input, object, string, email, endsWith, minLength, boolean, equal } from 'valibot'
+    import { type Input, object, string, email, endsWith, minLength, boolean, value } from 'valibot'
+
+    const props = defineProps({
+        terms: {
+            type: Boolean,
+            required: false,
+        }
+    })
 
     const formSchema = object({
         email: string('Your email must be a string.',[
-            email('The email address is badly formatted.'), 
-            endsWith('@example.com', 'The email address must end with @example.com')]),
+            email('The email address is badly formatted.')
+        ]),
         password: string('Your password must be a string.',
         [
             minLength(8, 'Your password must be at least 8 characters long.'),
             endsWith('123', 'Your password must end with 123')
-        ]),
-        remember: boolean('Your remember must be a boolean.',[
-            equal(true, 'You must accept the terms and conditions.')
         ])
     })
+
+    let termsValidator = null
+
+    if(props.terms){
+        const termsSchema = boolean([
+            value(true, 'You must accept the terms and conditions.')
+        ])
+        termsValidator = useValibotValidator(termsSchema)
+    }
+
     const formValidator = useValibotValidator(formSchema)
 
     type Register = Input<typeof formSchema>;

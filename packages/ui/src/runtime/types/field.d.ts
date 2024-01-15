@@ -8,5 +8,5 @@ export type FielContext = {
     name: string
     value: Ref<any>
     valid: Ref<boolean>
-    updateValue: (value: any) => void
+    updateValue: (value: any, silent?: boolean) => void
 }

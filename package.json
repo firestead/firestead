@@ -17,13 +17,13 @@
         "firestead": "workspace:*",
         "@firestead/ui": "workspace:*",
         "@firestead/auth": "workspace:*",
-        "nuxt": "^3.8.0",
-        "@nuxt/kit": "^3.8.0"
+        "nuxt": "^3.8.2",
+        "@nuxt/kit": "^3.8.2"
     },
     "devDependencies": {
-        "nuxt": "^3.8.0",
+        "nuxt": "^3.8.2",
         "vitest": "^0.34.6",
         "rimraf": "^5.0.5"
     },
-    "packageManager": "pnpm@8.7.1"
+    "packageManager": "pnpm@8.10.2"
 }

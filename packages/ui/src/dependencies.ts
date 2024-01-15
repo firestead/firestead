@@ -1,7 +1,6 @@
 import { resolve } from 'node:path'
-import type { ModuleOptions } from './module'
+import type { ModuleOptions } from './types'
 import type { Nuxt } from '@nuxt/schema'
-import { defaultExtractor, customSafelistExtractor } from './tailwind'
 
 type Modules = 
 'nuxt-theming'
@@ -36,7 +35,7 @@ export function getDependencyModules(config: DependencyConfig): DependencyModule
               safelistExtractors:{ 
                 color: {
                   component: `${prefix}Avatar`,
-                  safelistByProp: true,
+                  safelistByProp: "chipColor",
                   values: ['primary']
                 }
               }

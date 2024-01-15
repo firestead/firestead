@@ -20,11 +20,12 @@
             <ExamplesForm></ExamplesForm>
             <ExamplesDropdown></ExamplesDropdown>
             <Block label="Avatar">
+              <FsAvatarRadix size="sm" chip-color="green" src="https://images.unsplash.com/photo-1492633423870-43d1cd27"></FsAvatarRadix>
               <FsAvatarGroup size="sm" :max="3">
                 <FsAvatar src="https://i.pravatar.cc/3000" img-class="imgTest" chip-color="red" chip-text="" class="test"/>
-                <FsAvatar alt="Benjamin Button" chip-color="green" chip-text="" class="test"/>
-                <FsAvatar src="https://i.pravatar.cc/1000" img-class="imgTest" chip-color="red" chip-text="" class="test"/>
-                <FsAvatar src="https://i.pravatar.cc/2000" img-class="imgTest" chip-color="red" chip-text="" class="test"/>
+                <FsAvatar alt="Benjamin Button" chip-color="blue" chip-text="" class="test"></FsAvatar>
+                <FsAvatar src="https://i.pravatar.cc/3000" img-class="imgTest" chip-color="red" chip-text="" class="test"/>
+                <FsAvatar src="https://i.pravatar.cc/3000" img-class="imgTest" chip-color="red" chip-text="" class="test"/>
               </FsAvatarGroup>
             </Block>
             <Block label="Badge">

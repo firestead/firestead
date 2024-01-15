@@ -7,6 +7,7 @@ import Avatar from './Avatar.vue'
 import { avatarTheme, avatarGroupTheme } from '#imports'
 
 export default defineComponent({
+  name: 'AvatarGroup',
   inheritAttrs: false,
   props: {
     size: {
@@ -53,6 +54,7 @@ export default defineComponent({
           return h(Avatar, {
             size: props.size || avatarTheme.default.presets.size,
             text: `+${children.value.length - max.value}`,
+            chipColor: null,
             class: theme.value('children')
           })
         }
