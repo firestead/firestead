@@ -1,7 +1,7 @@
 {
     "hosting": [
       {
-        "site": "firestead",
+        "site": "demo-default",
         "source": "."
       }
     ],

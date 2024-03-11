@@ -8,7 +8,12 @@
                 <FsInput icon="i-heroicons-key" size="md" type="password" placeholder="Password"></FsInput>
           </FsField>
 
-          <FsField v-if="termsValidator" name="terms" :validate="termsValidator" :validate-on-change="true" help="You must accept our terms"   >
+          <FsField 
+            v-if="termsValidator" 
+            name="terms" 
+            :validate="termsValidator" 
+            :validate-on-change="true" 
+            help="You must accept our terms">
             <FsCheckbox name="terms" label="Accept terms" :value="false"></FsCheckbox>
           </FsField>
 
@@ -18,7 +23,7 @@
     </FsForm>
 </template>
 <script setup lang="ts">
-    import { type Input, object, string, email, endsWith, minLength, boolean, value } from 'valibot'
+    import { type Input, object, string, email, endsWith, minLength, boolean, value, type BooleanSchema } from 'valibot'
 
     const props = defineProps({
         terms: {
@@ -38,7 +43,7 @@
         ])
     })
 
-    let termsValidator = null
+    let termsValidator = null as null | BooleanSchema
 
     if(props.terms){
         const termsSchema = boolean([
