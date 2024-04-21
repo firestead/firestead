@@ -3,27 +3,30 @@
     "private": true,
     "repository": "disedia/firestead",
     "type": "module",
+    "workspaces": [
+        "./packages/**", 
+        "./playground"
+    ],
     "scripts": {
-        "build": "FORCE_COLOR=1 pnpm --filter './packages/**' prepack",
-        "build:stub": "pnpm --filter './packages/**' prepack --stub",
-        "cleanup": "rimraf 'packages/core/node_modules' 'packages/ui/node_modules' 'playground/node_modules' 'node_modules'",
-        "dev": "pnpm build:stub && pnpm play",
+        "build": "FORCE_COLOR=1 npm run --workspace './packages/**' prepack",
+        "build:stub": "npm run --workspace './packages/**' prepack:stub",
+        "cleanup": "rimraf 'node_modules'",
+        "dev": "npm run build:stub && npm play",
         "play": "nuxi dev playground",
         "play:firebase": "firebase emulators:start --project demo-default --config ./playground/firebase.json",
         "play:build": "nuxi build playground",
         "play:preview": "nuxi preview playground"
     },
     "resolutions": {
-        "firestead": "workspace:*",
-        "@firestead/ui": "workspace:*",
-        "@firestead/auth": "workspace:*",
-        "nuxt": "^3.10.3",
-        "@nuxt/kit": "^3.10.3"
+        "firebase-admin": "^12.0.0",
+        "nuxt": "^3.11.2",
+        "@nuxt/kit": "^3.11.2"
     },
     "devDependencies": {
-        "nuxt": "^3.10.3",
-        "vitest": "^1.3.1",
-        "rimraf": "^5.0.5"
+        "nuxt": "^3.11.2",
+        "vitest": "^1.5.0",
+        "rimraf": "^5.0.5",
+        "@nuxt/module-builder": "^0.5.5"
     },
-    "packageManager": "pnpm@8.15.4"
+    "packageManager": "npm@10.5.0"
 }

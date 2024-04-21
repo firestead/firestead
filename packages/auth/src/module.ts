@@ -19,15 +19,6 @@ export default defineNuxtModule<ModuleOptions>({
         const runtimeDir = resolve('./runtime')
         nuxt.options.build.transpile.push(runtimeDir)
 
-        // add theming
-        nuxt.hook('theme:extend', (themeDirs)=>{
-            themeDirs.unshift({
-                cwd: resolve('runtime'),
-                dir: 'theme',
-                priority: 1000
-            })
-        })
-
         nuxt.hook('tailwindcss:config', (tailwindConfig)=>{
             // @ts-ignore
             tailwindConfig.content?.files.push(resolve('runtime/**/*.{vue,mjs,ts}'))

@@ -5,11 +5,11 @@ type Options = {
 }
 
 const components = [
-//Auth elements
-{
-    name: 'EmailPasswordSignIn',
-    path: 'components/emailPasswordSignIn.vue'
-}
+    //Auth elements
+    {
+        name: 'EmailPasswordSignIn',
+        path: 'components/emailPasswordSignIn.vue'
+    }
 ]
 
 

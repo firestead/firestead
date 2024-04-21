@@ -2,9 +2,9 @@ export default defineNuxtConfig({
     ssr: false,
     modules: [
         'firestead',
-        '@firestead/auth'
+        '@firestead/auth',
+        '@firestead/admin'
     ],
-    devtools: true,
     colorMode: {
         preference: 'light'
     },

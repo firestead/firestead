@@ -2,7 +2,7 @@ import type { ModuleOptions } from './module'
 import type { FirebaseOptions } from 'firebase/app'
 
 type Modules = 
-'@firestead/ui' |
+'@nuxt/ui' |
 'nuxt-vuefire'
 
 type DependencyModule = {
@@ -19,12 +19,15 @@ type DependencyConfig = {
 
 export function getDependencyModules(config: DependencyConfig): DependencyModules {
     const dependencyModules = [{
-        name: '@firestead/ui',
+        name: '@nuxt/ui',
+        options: {
+            prefix: config.options.ui?.prefix || 'Fs',
+        }
     },{
         name: 'nuxt-vuefire',
         options: {
             auth: {
-                enabled: false
+                enabled: true
             },
             emulators: {
                 enabled: true,
@@ -41,6 +44,7 @@ export function getDependencyModules(config: DependencyConfig): DependencyModule
                 // currently there is a bug in firebase-tools, that does not support this feature with frameworks
                 // see https://github.com/firebase/firebase-tools/issues/6377
                 projectId: 'demo-default',
+                apiKey: 'app-id'
             } as FirebaseOptions
         }
     }] as DependencyModules

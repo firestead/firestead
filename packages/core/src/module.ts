@@ -1,11 +1,19 @@
-import { defineNuxtModule, createResolver, installModule, addLayout, addComponent } from '@nuxt/kit'
+import { defineNuxtModule, createResolver, installModule, addLayout, addComponent, resolvePath } from '@nuxt/kit'
 import { getDependencyModules } from './dependencies'
 import {
     getComponents
 } from './components'
+import type { DefaultColors } from 'tailwindcss/types/generated/colors'
+
+type TWColors = keyof DefaultColors | 'primary'
 
 export interface ModuleOptions {
-    defaultLayout?: 'stacked' | 'sidebar'
+    layout?: 'stacked' | 'sidebar'
+    ui?: {
+        prefix: string,
+        safelistColors: TWColors[],
+        icons: string[]
+    }
 }
 
 export default defineNuxtModule<ModuleOptions>({
@@ -15,7 +23,12 @@ export default defineNuxtModule<ModuleOptions>({
     },
     // Default configuration options of the Nuxt module
     defaults: {
-        defaultLayout: 'sidebar'
+        layout: 'sidebar',
+        ui: {
+            prefix: 'Fs',
+            safelistColors: ['primary', 'red'],
+            icons: ['heroicons']
+        }
     },
     async setup (options, nuxt) {
         const { resolve } = createResolver(import.meta.url)
@@ -24,9 +37,17 @@ export default defineNuxtModule<ModuleOptions>({
         const runtimeDir = resolve('./runtime')
         nuxt.options.build.transpile.push(runtimeDir)
 
+        nuxt.options.nitro.preset = resolve('runtime/nitro.preset')
+
         nuxt.hook('tailwindcss:config', (tailwindConfig)=>{
             // @ts-ignore
             tailwindConfig.content?.files.push(resolve('runtime/**/*.{vue,mjs,ts}'))
+        })
+
+        // default app config for core module
+        const appConfigFile = await resolvePath(resolve(runtimeDir, 'app.config'))
+        nuxt.hook('app:resolve', (app) => {
+            app.configs.push(appConfigFile)
         })
 
         // check if auth module is enabled this needs to be installed before @firested/ui because of tailwind initialisation
@@ -46,7 +67,7 @@ export default defineNuxtModule<ModuleOptions>({
 
         addLayout({
             filename: 'default.vue',
-            src: resolve(`runtime/layouts/${options.defaultLayout}.vue`),
+            src: resolve(`runtime/layouts/${options.layout}.vue`),
         })
         addLayout({
             filename: 'empty.vue',
