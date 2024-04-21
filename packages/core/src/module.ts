@@ -14,6 +14,9 @@ export interface ModuleOptions {
         safelistColors: TWColors[],
         icons: string[]
     }
+    i18n?: {
+        langDir: string
+    }
 }
 
 export default defineNuxtModule<ModuleOptions>({
@@ -28,6 +31,9 @@ export default defineNuxtModule<ModuleOptions>({
             prefix: 'Fs',
             safelistColors: ['primary', 'red'],
             icons: ['heroicons']
+        },
+        i18n: {
+            langDir: './lang'
         }
     },
     async setup (options, nuxt) {

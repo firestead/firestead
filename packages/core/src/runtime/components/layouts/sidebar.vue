@@ -5,20 +5,33 @@
           <div class="flex h-16 p-4 shrink-0 items-center">
             <slot name="logo">
               <Logo class="h-12 w-auto" alt="Firestead"></Logo>
+              <h1>{{ t('test') }}</h1>
             </slot>
           </div>
           <nav class="flex flex-1 flex-col">
+            <div>
+              <h1>{{ t('login.title') }}</h1>
+            <a
+              href="#"
+              v-for="locale in availableLocales"
+              :key="locale.code"
+              @click.prevent.stop="setLocale(locale.code)"
+              >{{ locale.name }}</a
+            >
+          </div>
           </nav>
         </div>
       </div>
       <div class="lg:pl-72">
-        <main>
+        <main>  
             <slot />
         </main>
       </div>
   </div>
 </template>
 <script setup lang="ts">
+    import type { Locales } from '#build/locales'
+
     const props = defineProps({
         headerbar: {
             type: Boolean,
@@ -34,4 +47,13 @@
             class: 'h-full'
         }
     })
+    const { t, locale, locales, setLocale } = useI18n<{ message: Locales}>({
+      inheritLocale: true,
+    })
+
+    const availableLocales = computed(() => {
+      return (locales.value).filter(i => i.code !== locale.value)
+    })
+
+    console.log(availableLocales.value)
 </script>

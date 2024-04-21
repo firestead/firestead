@@ -1,7 +1,7 @@
 {
-    "name": "firestead",
+    "name": "@firestead/i18n",
     "version": "0.0.1",
-    "description": "Firestead Core Module",
+    "description": "Firestead i18n Module",
     "repository": "disedia/firestead",
     "license": "MIT",
     "type": "module",
@@ -25,17 +25,7 @@
       "prepack:stub": "nuxt-module-build build --stub"
     },
     "dependencies": {
-        "firebase": "^10.11.0",
-        "vuefire": "^3.1.23",
-        "nuxt-vuefire": "^1.0.2",
-        "firebase-admin": "12.0.0",
-        "@nuxt/ui": "^2.15.2",
-        "firebase-functions": "^4.9.0",
-        "@firebase/app-types": "^0.9.1",
-        "@firebase/app": "^0.10.1",
-        "@nuxt/kit": "^3.11.2",
-        "@nuxtjs/i18n": "^8.3.0",
-        "@firestead/i18n": "*"
+        "@nuxt/kit": "^3.11.2"
     },
     "devDependencies": {
 

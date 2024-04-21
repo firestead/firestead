@@ -2,12 +2,15 @@ export default defineNuxtConfig({
     ssr: false,
     modules: [
         'firestead',
-        '@firestead/auth',
-        '@firestead/admin'
+        '@firestead/admin',
+        '@firestead/auth'
     ],
     colorMode: {
         preference: 'light'
     },
     vuefire: {
+    },
+    i18n: {
+        defaultLocale: 'de'
     }
 })

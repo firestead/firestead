@@ -1,0 +1,12 @@
+{
+    "test": "test from i18n",
+    "test2": "test2 from i18n",
+    "login": {
+        "title": "Login",
+        "username": "Username",
+        "password": "Password",
+        "login": "Login",
+        "forgot": "Forgot password?",
+        "register": "Register"
+    }
+}

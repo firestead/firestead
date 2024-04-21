@@ -3,7 +3,9 @@ import type { FirebaseOptions } from 'firebase/app'
 
 type Modules = 
 '@nuxt/ui' |
-'nuxt-vuefire'
+'nuxt-vuefire' |
+'@nuxtjs/i18n' |
+'@firestead/i18n'
 
 type DependencyModule = {
     name: Modules
@@ -22,6 +24,14 @@ export function getDependencyModules(config: DependencyConfig): DependencyModule
         name: '@nuxt/ui',
         options: {
             prefix: config.options.ui?.prefix || 'Fs',
+        }
+    },{
+        name: '@firestead/i18n'
+    },{
+        name: '@nuxtjs/i18n',
+        options: {
+            lazy: true,
+            strategy: 'no_prefix'
         }
     },{
         name: 'nuxt-vuefire',
