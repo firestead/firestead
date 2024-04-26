@@ -15,6 +15,9 @@ const components = [
     name: 'Logo',
     prefix: false,
     path: 'components/logo.vue'
+},{
+    name: 'LocaleSwitcher',
+    path: 'components/localeSwitcher.vue'
 }]
 export function getComponents(options: Options = {
     cwd: process.cwd(),

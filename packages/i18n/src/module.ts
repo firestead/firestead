@@ -16,22 +16,24 @@ export default defineNuxtModule<ModuleOptions>({
         addTypeTemplate({
           filename: 'locales.d.ts',
           getContents: () => `
-            export type Locales  = typeof import('${resolve('runtime/lang/en.json')}')`
+            export type Locales  = typeof import('${resolve('./runtime/locales/en.json')}')`
         })
 
         nuxt.hook('i18n:registerModule', register => {
             register({
-              langDir: resolve('./runtime/lang'),
+              langDir: resolve('./runtime/locales'),
               locales: [
                 {
                   code: 'en',
                   name: 'English',
-                  file: 'en.json'
+                  file: 'en.json',
+                  iso: 'en',
                 },
                 {
                   code: 'de',
                   name: 'Deutsch',
-                  file: 'de.json'
+                  file: 'de.json',
+                  iso: 'de'
                 }
               ]
             })

@@ -30,6 +30,7 @@
         "nuxt-vuefire": "^1.0.2",
         "firebase-admin": "12.0.0",
         "@nuxt/ui": "^2.15.2",
+        "@iconify-json/flagpack": "1.1.14",
         "firebase-functions": "^4.9.0",
         "@firebase/app-types": "^0.9.1",
         "@firebase/app": "^0.10.1",

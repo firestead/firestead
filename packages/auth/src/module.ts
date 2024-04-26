@@ -21,14 +21,14 @@ export default defineNuxtModule<ModuleOptions>({
 
         nuxt.hook('tailwindcss:config', (tailwindConfig)=>{
             // @ts-ignore
-            tailwindConfig.content?.files.push(resolve('runtime/**/*.{vue,mjs,ts}'))
+            tailwindConfig.content?.files.push(resolve('./runtime/**/*.{vue,mjs,ts}'))
         })
 
         extendPages((pages) => {
             pages.push({
                 name: 'login',
                 path: '/login',
-                file:  resolve('runtime/pages/login.vue')
+                file:  resolve('./runtime/pages/login.vue')
             })
         })
             //Add global firestead components

@@ -7,7 +7,7 @@
 
     <div class="mt-8 sm:mx-auto sm:w-full sm:max-w-[480px]">
       <FsCard>
-        <FsEmailPasswordSignIn :terms="true"></FsEmailPasswordSignIn>
+        <FsEmailPasswordSignIn></FsEmailPasswordSignIn>
         <div>
           <div class="relative mt-10">
             <div class="absolute inset-0 flex items-center" aria-hidden="true">

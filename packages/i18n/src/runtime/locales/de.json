@@ -1,0 +1,21 @@
+{
+    "test": "Test von i18n",
+    "test2": "Test von i18n 2",
+    "auth": {
+        "email": "E-Mail",
+        "password": "Passwort",
+        "signInButton": "Anmelden",
+        "errorEmailEmpty": "E-Mail darf nicht leer sein",
+        "errorEmailInvalid": "E-Mail ist ungültig",
+        "errorPasswordEmpty": "Passwort darf nicht leer sein",
+        "errorPasswordMinLength": "Passwort muss mindestens {length} Zeichen lang sein"
+    },
+    "login": {
+        "title": "Login",
+        "username": "Benutzername",
+        "password": "Passwort",
+        "login": "Login",
+        "forgot": "Passwort vergessen?",
+        "register": "Registrieren"
+    }
+}

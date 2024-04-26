@@ -1,1 +1,0 @@
-export type Locales  = typeof import('./lang/en.json')

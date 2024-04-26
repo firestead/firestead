@@ -48,7 +48,7 @@
         }
     })
     const { t, locale, locales, setLocale } = useI18n<{ message: Locales}>({
-      inheritLocale: true,
+      useScope: 'global'
     })
 
     const availableLocales = computed(() => {

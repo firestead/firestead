@@ -3,32 +3,26 @@
         class="space-y-6"
         :state="state"
         :validateOn="['submit', 'input', 'change']"
-        :validate="validate"
         @submit="onSubmit" 
         :schema="schema">
-          <FsFormGroup name="email" label="Email address">
-                <FsInput v-model="state.email" icon="i-heroicons-at-symbol" size="md" type="email" placeholder="Email"></FsInput>
+          <FsFormGroup name="email" :label="t('auth.email')">
+                <FsInput v-model="state.email" icon="i-heroicons-at-symbol" size="md" type="email" :placeholder="t('auth.email')"></FsInput>
           </FsFormGroup>
 
-          <FsFormGroup name="password" label="Passwort">
-                <FsInput v-model="state.password" icon="i-heroicons-key" size="md" type="password" placeholder="Password"></FsInput>
-          </FsFormGroup>
-
-          <FsFormGroup
-            v-if="terms" 
-            name="terms"
-            help="You must accept our terms">
-            <FsCheckbox v-model="state.terms" name="terms" label="Accept terms"></FsCheckbox>
+          <FsFormGroup name="password" :label="t('auth.password')">
+                <FsInput v-model="state.password" icon="i-heroicons-key" size="md" type="password" :placeholder="t('auth.password')"></FsInput>
           </FsFormGroup>
 
           <div>
-            <FsButton type="submit" label="Sign in" block />
+            <FsButton type="submit" :label="t('auth.signInButton')" block />
           </div>
     </FsForm>
 </template>
 <script setup lang="ts">
-    import { type Input, objectAsync, string, email, endsWith, minLength, type BooleanSchema } from 'valibot'
+    import { type Input, objectAsync, string, email, minLength } from 'valibot'
     import type { FormError, FormSubmitEvent } from '#ui/types'
+    import type { Locales } from '#build/locales'
+    import { useI18n } from '#imports'
 
     const props = defineProps({
         terms: {
@@ -43,21 +37,18 @@
         terms: false
     })
 
+    const { t } = useI18n<{message: Locales}>({
+        useScope: 'global'
+    })
+
     const schema = objectAsync({
-        email: string('Your email must be a string.', [email('Invalid email')]),
-        password: string('Your password must be a string.', [
-            minLength(8, 'Must be at least 8 characters'),
-            endsWith('123', 'Your password must end with 123')
+        email: string(t('auth.errorEmailEmpty'), [email(t('auth.errorEmailInvalid'))]),
+        password: string(t('auth.errorPasswordEmpty'), [
+            minLength(8, t('auth.errorPasswordMinLength', { length: 8 }))
         ])
     })
 
     type Schema = Input<typeof schema>
-
-    const validate = (state: any): FormError[] => {
-        const errors = []
-        if(props.terms && !state.terms) errors.push({ path: 'terms', message: 'You must accept the terms and conditions.' })
-        return errors
-    }
 
     async function onSubmit (event: FormSubmitEvent<Schema>) {
         // Do something with event.data

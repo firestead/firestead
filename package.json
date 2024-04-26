@@ -11,7 +11,7 @@
         "build": "FORCE_COLOR=1 npm run --workspace './packages/**' prepack",
         "build:stub": "npm run --workspace './packages/**' prepack:stub",
         "cleanup": "rimraf 'node_modules'",
-        "dev": "npm run build:stub && npm play",
+        "dev": "npm run build:stub && npm run play",
         "play": "nuxi dev playground",
         "play:firebase": "firebase emulators:start --project demo-default --config ./playground/firebase.json",
         "play:build": "nuxi build playground",

@@ -15,7 +15,7 @@ export default defineNuxtModule<ModuleOptions>({
 
         nuxt.hook('tailwindcss:config', (tailwindConfig)=>{
             // @ts-ignore
-            tailwindConfig.content?.files.push(resolve('runtime/**/*.{vue,mjs,ts}'))
+            tailwindConfig.content?.files.push(resolve('./runtime/**/*.{vue,mjs,ts}'))
         })
 
         await installModule('@scalar/nuxt', {}, nuxt)
@@ -24,7 +24,7 @@ export default defineNuxtModule<ModuleOptions>({
             pages.push({
                 name: 'admin',
                 path: '/admin',
-                file:  resolve('runtime/pages/admin.vue')
+                file:  resolve('./runtime/pages/admin.vue')
             })
         })
 

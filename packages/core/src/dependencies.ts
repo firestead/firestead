@@ -24,6 +24,7 @@ export function getDependencyModules(config: DependencyConfig): DependencyModule
         name: '@nuxt/ui',
         options: {
             prefix: config.options.ui?.prefix || 'Fs',
+            icons: ['heroicons', 'flagpack']
         }
     },{
         name: '@firestead/i18n'

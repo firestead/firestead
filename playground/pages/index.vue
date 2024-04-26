@@ -10,6 +10,7 @@
         </div>
       </header>
         <div class="mx-auto max-w-7xl sm:px-6 lg:px-8">
+            <FsLocaleSwitcher />
         </div>
     </section>
 </template>
@@ -30,5 +31,6 @@
     }
 
     const { t } = useI18n<{message: Locales}>({
+      useScope: 'global'
     })
 </script>
