@@ -2,8 +2,7 @@ export default defineNuxtConfig({
     ssr: false,
     modules: [
         'firestead',
-        '@firestead/admin',
-        '@firestead/auth'
+        '@firestead/admin'
     ],
     colorMode: {
         preference: 'light'

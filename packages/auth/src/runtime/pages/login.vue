@@ -2,7 +2,7 @@
   <div class="flex min-h-full flex-1 flex-col justify-center py-12 sm:px-6 lg:px-8">
     <div class="sm:mx-auto sm:w-full sm:max-w-md">
       <Logo class="flex justify-center h-28" layout="centered"></Logo>
-      <h2 class="mt-8 text-center text-2xl font-medium leading-9 tracking-tight text-gray-700">Sign in to your account</h2>
+      <h2 class="mt-8 text-center text-2xl font-medium leading-9 tracking-tight text-gray-700">{{ t('auth.pageLoginTitle') }}</h2>
     </div>
 
     <div class="mt-8 sm:mx-auto sm:w-full sm:max-w-[480px]">
@@ -14,7 +14,7 @@
               <div class="w-full border-t border-gray-200" />
             </div>
             <div class="relative flex justify-center text-sm font-medium leading-6">
-              <span class="bg-white px-6 text-gray-900">Or continue with</span>
+              <span class="bg-white px-6 text-gray-900">{{ t('auth.pageLoginProviderAuthTitle') }}</span>
             </div>
           </div>
 
@@ -36,16 +36,22 @@
         </div>
       </FsCard>
 
-      <p class="mt-10 text-center text-sm text-gray-500">
-        Not a member?
-        {{ ' ' }}
-        <a href="#" class="font-semibold leading-6 text-indigo-600 hover:text-indigo-500">Start a 14 day free trial</a>
-      </p>
+      <div class="mt-10 text-center text-sm text-gray-500">
+        {{ t('auth.pageLoginRegisterText') }}
+        <FsButton :label="t('auth.pageLoginRegisterLink')" variant="link" to="/register" />
+      </div>
     </div>
   </div>
 </template>
 <script setup lang="ts">
+    import type { Locales } from '#build/locales'
+    import { useI18n } from '#imports'
+
     definePageMeta({
         layout: 'empty'
+    })
+
+    const { t } = useI18n<{message: Locales}>({
+        useScope: 'global'
     })
 </script>

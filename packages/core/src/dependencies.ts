@@ -1,5 +1,6 @@
 import type { ModuleOptions } from './module'
 import type { FirebaseOptions } from 'firebase/app'
+import type { connectAuthEmulator } from 'firebase/auth'
 
 type Modules = 
 '@nuxt/ui' |
@@ -27,6 +28,8 @@ export function getDependencyModules(config: DependencyConfig): DependencyModule
             icons: ['heroicons', 'flagpack']
         }
     },{
+        name: '@firestead/auth'
+    },{
         name: '@firestead/i18n'
     },{
         name: '@nuxtjs/i18n',
@@ -42,7 +45,7 @@ export function getDependencyModules(config: DependencyConfig): DependencyModule
             },
             emulators: {
                 enabled: true,
-      
+                
                 auth: {
                   options: {
                     // removes the HTML footer and console warning

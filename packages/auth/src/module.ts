@@ -1,4 +1,4 @@
-import { defineNuxtModule, extendPages, createResolver, addComponent } from '@nuxt/kit'
+import { defineNuxtModule, extendPages, createResolver, addComponent, addRouteMiddleware, addImportsDir } from '@nuxt/kit'
 import { getComponents } from './components'
 
 export interface ModuleOptions {
@@ -30,8 +30,13 @@ export default defineNuxtModule<ModuleOptions>({
                 path: '/login',
                 file:  resolve('./runtime/pages/login.vue')
             })
+            pages.push({
+                name: 'register',
+                path: '/register',
+                file:  resolve('./runtime/pages/register.vue')
+            })
         })
-            //Add global firestead components
+        //Add global firestead components
         const components = getComponents({
             cwd: resolve('runtime'),
             prefix: 'Fs',
@@ -40,5 +45,14 @@ export default defineNuxtModule<ModuleOptions>({
         for(const component of components) {
             addComponent(component)
         }
+        
+        addImportsDir(resolve('./runtime/composables'))
+
+        //Add global route middleware
+        addRouteMiddleware({
+            name: 'auth',
+            path: resolve('./runtime/middleware/auth.global.ts'),
+            global: true
+        })
     }
 })

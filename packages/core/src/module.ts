@@ -39,6 +39,8 @@ export default defineNuxtModule<ModuleOptions>({
     async setup (options, nuxt) {
         const { resolve } = createResolver(import.meta.url)
 
+        await new Promise(r => setTimeout(r, 5000)); 
+
         // Transpile runtime
         const runtimeDir = resolve('./runtime')
         nuxt.options.build.transpile.push(runtimeDir)
@@ -56,11 +58,6 @@ export default defineNuxtModule<ModuleOptions>({
             app.configs.push(appConfigFile)
         })
 
-        // check if auth module is enabled this needs to be installed before @firested/ui because of tailwind initialisation
-        const authModule = nuxt.options.modules.find((module) => module === '@firestead/auth')
-        if(authModule) {
-            await installModule('@firestead/auth', {}, nuxt)
-        }
         // Register dependencies
         const dependencyModules = getDependencyModules({
             options: options,

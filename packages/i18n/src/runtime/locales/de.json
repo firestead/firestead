@@ -5,10 +5,22 @@
         "email": "E-Mail",
         "password": "Passwort",
         "signInButton": "Anmelden",
+        "signUpButton": "Registrieren",
+        "signOutButton": "Abmelden",
+        "termsLabel": "Nutzungsbedingungen akzeptieren",
+        "termsHelp": "Unsere AGBs finden Sie",
+        "termsLink": "hier",
         "errorEmailEmpty": "E-Mail darf nicht leer sein",
         "errorEmailInvalid": "E-Mail ist ungültig",
         "errorPasswordEmpty": "Passwort darf nicht leer sein",
-        "errorPasswordMinLength": "Passwort muss mindestens {length} Zeichen lang sein"
+        "errorPasswordMinLength": "Passwort muss mindestens {length} Zeichen lang sein",
+        "errorTermsText": "Bitte akzeptieren Sie die Nutzungsbedingungen",
+        "errorUserNotFound": "Benutzer nicht gefunden, bitte überprüfen Sie Ihre Eingaben",
+        "pageLoginTitle": "Benutzer anmelden",
+        "pageLoginProviderAuthTitle": "Anmeldung über",
+        "pageLoginRegisterText": "Noch nicht dabei?",
+        "pageLoginRegisterLink": "Jetzt 14 Tage kostenlos testen",
+        "pageRegisterTitle": "Benutzer registrieren"
     },
     "login": {
         "title": "Login",

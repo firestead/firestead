@@ -1,5 +1,7 @@
 # Firebase
 .firebase
+/playground/data
+
 # Dependencies
 node_modules
 

@@ -7,8 +7,16 @@ type Options = {
 const components = [
     //Auth elements
     {
+        name: 'Logout',
+        path: 'components/logout.vue'
+    },
+    {
         name: 'EmailPasswordSignIn',
         path: 'components/emailPasswordSignIn.vue'
+    },
+    {
+        name: 'EmailPasswordSignUp',
+        path: 'components/emailPasswordSignUp.vue'
     }
 ]
 

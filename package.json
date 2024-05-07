@@ -13,7 +13,7 @@
         "cleanup": "rimraf 'node_modules'",
         "dev": "npm run build:stub && npm run play",
         "play": "nuxi dev playground",
-        "play:firebase": "firebase emulators:start --project demo-default --config ./playground/firebase.json",
+        "play:firebase": "firebase emulators:start --project demo-default --config ./playground/firebase.json --import ./playground/data --export-on-exit ./playground/data",
         "play:build": "nuxi build playground",
         "play:preview": "nuxi preview playground"
     },

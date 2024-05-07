@@ -10,7 +10,6 @@
       "nuxt": "^3.11.2",
       "valibot": "^0.30.0",
       "firestead": "*",
-      "@firestead/auth": "*",
       "@firestead/admin": "*",
       "@nuxt/devtools": "^1.2.0"
     }

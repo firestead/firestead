@@ -5,10 +5,22 @@
         "email": "Email",
         "password": "Password",
         "signInButton": "Sign In",
+        "signUpButton": "Sign Up",
+        "signOutButton": "Sign Out",
+        "termsLabel": "Accept terms",
+        "termsHelp": "You must accept our terms",
+        "termsLink": "Link",
         "errorEmailEmpty": "Email is required",
         "errorEmailInvalid": "Email is invalid",
         "errorPasswordEmpty": "Password is required",
-        "errorPasswordMinLength": "Password must be at least {length} characters"
+        "errorPasswordMinLength": "Password must be at least {length} characters",
+        "errorTermsText": "You must agree to the terms and conditions",
+        "errorUserNotFound": "User not found, there is no user corresponding to this email",
+        "pageLoginTitle": "Sign in to your account",
+        "pageLoginProviderAuthTitle": "Or continue with",
+        "pageLoginRegisterText": "Not a member?",
+        "pageLoginRegisterLink": "Start a 14 day free trial",
+        "pageRegisterTitle": "Create your account"
     },
     "login": {
         "title": "Login",
