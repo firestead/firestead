@@ -7,17 +7,20 @@ type Options = {
 const components = [
 {
     name: 'LayoutSidebar',
-    path: 'components/layouts/sidebar.vue'
+    path: 'components/layouts/Sidebar.vue'
 },{
     name: 'LayoutStacked',
-    path: 'components/layouts/stacked.vue'
+    path: 'components/layouts/Stacked.vue'
 },{
     name: 'Logo',
     prefix: false,
-    path: 'components/logo.vue'
+    path: 'components/Logo.vue'
 },{
     name: 'LocaleSwitcher',
-    path: 'components/localeSwitcher.vue'
+    path: 'components/LocaleSwitcher.vue'
+}, {
+    name: 'UserProfile',
+    path: 'components/elements/UserProfile.vue'
 }]
 export function getComponents(options: Options = {
     cwd: process.cwd(),

@@ -69,12 +69,12 @@ export default defineNuxtModule<ModuleOptions>({
         }
 
         addLayout({
-            filename: 'default.vue',
-            src: resolve(`runtime/layouts/${options.layout}.vue`),
+            filename: 'Default.vue',
+            src: resolve(`runtime/layouts/${options.layout?.charAt(0).toUpperCase() + options.layout?.slice(1)}.vue`),
         })
         addLayout({
-            filename: 'empty.vue',
-            src: resolve(`runtime/layouts/empty.vue`),
+            filename: 'Empty.vue',
+            src: resolve(`runtime/layouts/Empty.vue`),
         })
 
         //Add global firestead components

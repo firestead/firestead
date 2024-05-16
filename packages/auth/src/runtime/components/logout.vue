@@ -1,8 +1,10 @@
 <template>
-    <FsButton v-bind="{...props, ...$attrs}" @click.prevent="onLogout"> {{ props.label ? props.label : t('auth.signOutButton') }} </FsButton>
+    <span
+        @click.prevent="onLogout"> 
+        {{ props.label ? props.label : t('auth.signOutButton') }} 
+    </span>
 </template>
 <script setup lang="ts">
-    import type Colors from '#ui-colors'
     import {  signOut } from "firebase/auth"
     import { useFirebaseAuth } from 'vuefire'
     import type { Locales } from '#build/locales'
@@ -12,9 +14,7 @@
     const auth = useFirebaseAuth()!
 
     type Button = {
-        color?: typeof Colors[number]
         label?: string
-        variant?: 'solid' | 'outline' | 'ghost' | 'link' | 'soft'
     }
 
     interface Props extends Button {
@@ -26,8 +26,6 @@
     })
 
     const props = withDefaults(defineProps<Props>(), {
-        color: 'primary',
-        variant: 'link'
     })
 
     const onLogout = () => {

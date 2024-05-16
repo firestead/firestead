@@ -22,6 +22,9 @@
         "pageLoginRegisterLink": "Start a 14 day free trial",
         "pageRegisterTitle": "Create your account"
     },
+    "profile": {
+        "dropdownSignedInAs": "Signed in as"
+    },
     "login": {
         "title": "Login",
         "username": "Username",

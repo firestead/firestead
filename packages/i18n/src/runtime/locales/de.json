@@ -22,6 +22,9 @@
         "pageLoginRegisterLink": "Jetzt 14 Tage kostenlos testen",
         "pageRegisterTitle": "Benutzer registrieren"
     },
+    "profile": {
+        "dropdownSignedInAs": "Benutzer"
+    },
     "login": {
         "title": "Login",
         "username": "Benutzername",
